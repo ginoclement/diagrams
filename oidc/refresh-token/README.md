@@ -59,7 +59,7 @@ forces re-authentication.
   OS keystore); never in SPA localStorage if avoidable — or keep them in a backend-for-frontend.
 - Sender-constraining (mTLS or DPoP) beats rotation alone: a stolen token can't be used at all.
 - Revoke the family on logout ([RP-Initiated Logout](../rp-initiated-logout/README.md)),
-  password change, and [leaver events](../../lifecycle/leaver/README.md).
+  password change, and [leaver events](../../user-lifecycle/leaver-offboarding/README.md).
 
 ## Diagrams
 
@@ -73,4 +73,4 @@ forces re-authentication.
 - [Authorization Code + PKCE](../authorization-code-pkce/README.md) — public clients, where rotation is mandatory.
 - [Client Credentials](../client-credentials/README.md) — M2M: no refresh tokens, just re-request.
 - [Back-Channel Logout](../back-channel-logout/README.md) — server-side teardown that should revoke families.
-- [Password Self-Service Reset](../../password/self-service-reset/README.md) — an event that must revoke refresh tokens.
+- [Password Self-Service Reset](../../password-management/self-service-reset/README.md) — an event that must revoke refresh tokens.

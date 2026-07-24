@@ -28,5 +28,5 @@ service-to-service traffic.
 - [oidc/](../oidc/) — token-based delegated authorization and federated login.
 - [saml/](../saml/) — assertion-based enterprise federation.
 - [kerberos/](../kerberos/) — ticket-based authentication in Windows/AD environments.
-- [network-security/zero-trust-network-access](../network-security/zero-trust-network-access/README.md) — the modern replacement for network-location-based trust.
-- [enrollment/passkey-enrollment](../enrollment/passkey-enrollment/README.md) — how the credentials used in the WebAuthn ceremony get created.
+- [network-security/zero-trust-network-access](../architecture/zero-trust-architecture/README.md) — the modern replacement for network-location-based trust.
+- [enrollment/passkey-enrollment](../enrollment-and-update/fido2-passkey-registration/README.md) — how the credentials used in the WebAuthn ceremony get created.

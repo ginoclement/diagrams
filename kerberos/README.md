@@ -24,4 +24,4 @@ The core protocol chain is: [AS Exchange](as-exchange/README.md) →
 ## Related categories
 
 - [Tokenless authentication](../tokenless/README.md) — SPNEGO is one of several browser SSO mechanisms; see [Header-Based SSO](../tokenless/header-based-sso/README.md) and [Mutual TLS](../tokenless/mutual-tls/README.md).
-- [Architecture](../architecture/README.md) — where Kerberos fits in an [IAM reference architecture](../architecture/iam-reference-architecture/README.md).
+- [Architecture](../architecture/README.md) — where Kerberos fits in an [IAM reference architecture](../architecture/identity-provider-reference-architecture/README.md).

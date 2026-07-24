@@ -18,7 +18,7 @@ HTTPS and to be able to terminate sessions from outside a browser request contex
 
 - Single logout where completeness matters (finance, healthcare, admin consoles).
 - Session revocation triggered without any browser: admin "kill sessions", account
-  compromise response, password reset, [leaver deprovisioning](../../lifecycle/leaver/README.md).
+  compromise response, password reset, [leaver deprovisioning](../../user-lifecycle/leaver-offboarding/README.md).
 - Environments where browser third-party-cookie restrictions break
   [Front-Channel Logout](../front-channel-logout/README.md).
 
@@ -95,4 +95,4 @@ HTTPS and to be able to terminate sessions from outside a browser request contex
 - [Refresh Token](../refresh-token/README.md) — refresh tokens should be revoked alongside the session.
 - [Authorization Code](../authorization-code/README.md) — where `sid`/`sub` were originally issued.
 - [SAML SLO (IdP-initiated)](../../saml/slo-idp-initiated/README.md) — SAML's logout propagation, including its SOAP back-channel binding.
-- [Leaver](../../lifecycle/leaver/README.md) — deprovisioning scenario that fires back-channel logout at scale.
+- [Leaver](../../user-lifecycle/leaver-offboarding/README.md) — deprovisioning scenario that fires back-channel logout at scale.

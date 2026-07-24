@@ -63,5 +63,5 @@ the app, and the proxy always strips/overwrites those headers on inbound traffic
 - [session-cookie](../session-cookie/README.md) — the proxy's own session with the browser is usually cookie-based.
 - [mutual-tls](../mutual-tls/README.md) — hardening the proxy-to-app hop.
 - [ip-allowlist-network-auth](../ip-allowlist-network-auth/README.md) — the network-reachability assumption this pattern depends on.
-- [DMZ segmentation](../../network-security/dmz-segmentation/README.md) — network layout that enforces the trust boundary.
-- [ForgeRock CDSSO](../../platforms/forgerock/cdsso/README.md) — a productized gateway/agent variant of this pattern.
+- [DMZ segmentation](../../network-security/network-segmentation-dmz/README.md) — network layout that enforces the trust boundary.
+- [ForgeRock CDSSO](../../platform-specific/forgerock-authentication-journey/README.md) — a productized gateway/agent variant of this pattern.

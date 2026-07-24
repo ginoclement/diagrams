@@ -23,4 +23,4 @@ actors, alternates, and security notes.
 - [SAML flows](../saml/README.md) — the other major web federation protocol; compare
   [SP-initiated SSO](../saml/sp-initiated-sso/README.md) with [authorization-code](authorization-code/README.md).
 - [Tokenless patterns](../tokenless/README.md) — session cookies, mTLS, and other non-token schemes.
-- [Reference architecture](../architecture/iam-reference-architecture/README.md) — where the OIDC IdP sits in a full IAM estate.
+- [Reference architecture](../architecture/identity-provider-reference-architecture/README.md) — where the OIDC IdP sits in a full IAM estate.

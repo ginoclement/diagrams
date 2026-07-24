@@ -80,5 +80,5 @@ never types a code or visits a URL — the IdP reaches out to them.
 - [Authorization Code](../authorization-code/README.md) — redirect-based baseline when user and client share a browser.
 - [Client Credentials](../client-credentials/README.md) — no user involvement at all.
 - [Refresh Token](../refresh-token/README.md) — session continuation after CIBA completes.
-- [MFA Enrollment](../../enrollment/mfa-enrollment/README.md) — how the authentication device gets registered in the first place.
-- [Okta FastPass](../../platforms/okta/fastpass/README.md) — a vendor take on phishing-resistant device-bound authentication.
+- [MFA Enrollment](../../enrollment-and-update/mfa-enrollment/README.md) — how the authentication device gets registered in the first place.
+- [Okta FastPass](../../platform-specific/okta-fastpass-passwordless/README.md) — a vendor take on phishing-resistant device-bound authentication.

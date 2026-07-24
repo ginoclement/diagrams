@@ -41,7 +41,7 @@ diagrammed; it survives as a **secondary control** layered under real authentica
   concentrator, or office network looks identical; one compromised device on the
   trusted network inherits the access of everyone else. This is exactly the
   "castle-and-moat" model that
-  [zero-trust network access](../../network-security/zero-trust-network-access/README.md)
+  [zero-trust network access](../../architecture/zero-trust-architecture/README.md)
   replaces: authenticate the **user and device on every request**, not the network.
 - Source IPs can be misleading: `X-Forwarded-For` is client-controlled unless set by
   your own edge; only trust the transport-level peer address or a header set by an
@@ -62,7 +62,7 @@ diagrammed; it survives as a **secondary control** layered under real authentica
 
 ## Related diagrams
 
-- [Zero-trust network access](../../network-security/zero-trust-network-access/README.md) — the successor model; why location-based trust fails.
-- [Defense in depth](../../network-security/defense-in-depth/README.md) — the legitimate role of allowlists as one layer.
+- [Zero-trust network access](../../architecture/zero-trust-architecture/README.md) — the successor model; why location-based trust fails.
+- [Defense in depth](../../network-security/defense-in-depth-firewall/README.md) — the legitimate role of allowlists as one layer.
 - [header-based-sso](../header-based-sso/README.md) — another pattern that leans on network reachability as its trust boundary.
 - [mutual-tls](../mutual-tls/README.md) — cryptographic machine identity instead of address-based identity.

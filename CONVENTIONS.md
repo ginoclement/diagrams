@@ -33,7 +33,7 @@ Folder names are `kebab-case`.
    own diagram, link to it from the README instead of duplicating (e.g. SP-initiated SSO links to
    IdP-initiated SSO rather than re-drawing it).
 6. **Cross-references** are relative Markdown links to the other diagram's folder README,
-   e.g. `[Authorization Code + PKCE](../authorization-code-pkce/README.md)`.
+   e.g. `[Authorization Code + PKCE](oidc/authorization-code-pkce/README.md)`.
 
 ## Mermaid syntax safety
 

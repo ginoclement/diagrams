@@ -16,7 +16,7 @@ ordinary [session cookie](../session-cookie/README.md).
 - As a fallback/recovery channel next to passwords or
   [passkeys](../webauthn-passkey-authentication/README.md).
 - Effectively the same mechanic as
-  [self-service password reset](../../password/self-service-reset/README.md) —
+  [self-service password reset](../../password-management/self-service-reset/README.md) —
   a reset link *is* a magic link; both deserve the same protections.
 
 ## Actors
@@ -69,5 +69,5 @@ ordinary [session cookie](../session-cookie/README.md).
 
 - [session-cookie](../session-cookie/README.md) — what the magic link ultimately establishes.
 - [webauthn-passkey-authentication](../webauthn-passkey-authentication/README.md) — the phishing-resistant upgrade path.
-- [Self-service password reset](../../password/self-service-reset/README.md) — the same mechanism guarding password recovery.
-- [Auth0 lazy migration](../../platforms/auth0/lazy-migration/README.md) — passwordless options during migration.
+- [Self-service password reset](../../password-management/self-service-reset/README.md) — the same mechanism guarding password recovery.
+- [Auth0 lazy migration](../../platform-specific/auth0-universal-login-actions/README.md) — passwordless options during migration.

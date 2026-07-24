@@ -90,4 +90,4 @@ security-grade:
 - [Authorization Code](../authorization-code/README.md) — where the `sid` claim originates.
 - [SAML SLO (IdP-initiated)](../../saml/slo-idp-initiated/README.md) — SAML's front-channel logout equivalent.
 - [Session Cookie](../../tokenless/session-cookie/README.md) — the artifact each RP is clearing.
-- [ForgeRock CDSSO](../../platforms/forgerock/cdsso/README.md) — cross-domain session patterns with the same third-party-cookie constraints.
+- [ForgeRock CDSSO](../../platform-specific/forgerock-authentication-journey/README.md) — cross-domain session patterns with the same third-party-cookie constraints.

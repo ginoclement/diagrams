@@ -11,9 +11,9 @@ and phishing sites cannot obtain a valid assertion because the browser scopes
 credentials to the RP ID.
 
 This diagram covers the **authentication** ceremony only. Credential creation is in
-[enrollment/passkey-enrollment](../../enrollment/passkey-enrollment/README.md); a
+[enrollment/passkey-enrollment](../../enrollment-and-update/fido2-passkey-registration/README.md); a
 concrete product implementation is in
-[platforms/pocketid/passkey-login](../../platforms/pocketid/passkey-login/README.md).
+[platforms/pocketid/passkey-login](../../platform-specific/pocketid-passkey-oidc/README.md).
 
 ## When it's used
 
@@ -70,8 +70,8 @@ concrete product implementation is in
 
 ## Related diagrams
 
-- [Passkey enrollment](../../enrollment/passkey-enrollment/README.md) — the registration ceremony that creates the credential.
-- [Pocket ID passkey login](../../platforms/pocketid/passkey-login/README.md) — passkey-only OIDC provider using this ceremony.
+- [Passkey enrollment](../../enrollment-and-update/fido2-passkey-registration/README.md) — the registration ceremony that creates the credential.
+- [Pocket ID passkey login](../../platform-specific/pocketid-passkey-oidc/README.md) — passkey-only OIDC provider using this ceremony.
 - [magic-link](../magic-link/README.md) — the phishable passwordless alternative passkeys improve on.
-- [Okta FastPass](../../platforms/okta/fastpass/README.md) — platform take on phishing-resistant device-bound auth.
-- [MFA enrollment](../../enrollment/mfa-enrollment/README.md) — passkeys as a registered factor.
+- [Okta FastPass](../../platform-specific/okta-fastpass-passwordless/README.md) — platform take on phishing-resistant device-bound auth.
+- [MFA enrollment](../../enrollment-and-update/mfa-enrollment/README.md) — passkeys as a registered factor.

@@ -66,4 +66,4 @@ connection.
 - [http-basic-auth](../http-basic-auth/README.md) — the weaker service-to-service pattern mTLS replaces.
 - [header-based-sso](../header-based-sso/README.md) — passing proxy-verified identity to backends.
 - [Kerberos PKINIT](../../kerberos/pkinit/README.md) — certificates bootstrapping Kerberos tickets.
-- [TLS termination patterns](../../network-security/tls-termination-patterns/README.md) — where the handshake ends and what that means for mTLS.
+- [TLS termination patterns](../../network-security/reverse-proxy-waf/README.md) — where the handshake ends and what that means for mTLS.
