@@ -80,6 +80,6 @@ PSM, BeyondTrust, Teleport, and StrongDM.
 
 ## Files
 
-- [sequence.md](sequence.md) — connect → credential injection → per-command policy → sealed recording, plus block, terminate, and timeout alternates.
-- [swimlane.md](swimlane.md) — lanes for User, Proxy, Policy, Recorder, Target, Reviewer.
-- [flowchart.md](flowchart.md) — per-command decision loop with explicit block and terminate terminals.
+- [sequence.md](./sequence.md) — connect → credential injection → per-command policy → sealed recording, plus block, terminate, and timeout alternates.
+- [swimlane.md](./swimlane.md) — lanes for User, Proxy, Policy, Recorder, Target, Reviewer.
+- [flowchart.md](./flowchart.md) — per-command decision loop with explicit block and terminate terminals.

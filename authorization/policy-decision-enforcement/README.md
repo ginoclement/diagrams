@@ -91,6 +91,6 @@ services because they all delegate the decision.
 
 ## Files
 
-- [sequence.md](sequence.md) — decision request, PIP attribute fetch, decision + obligations, and deny/fail-closed alternates.
-- [swimlane.md](swimlane.md) — lanes for Client, PEP, PDP, PIP, PAP, Resource.
-- [flowchart.md](flowchart.md) — evaluation logic with Indeterminate/deny and obligation-failure terminals.
+- [sequence.md](./sequence.md) — decision request, PIP attribute fetch, decision + obligations, and deny/fail-closed alternates.
+- [swimlane.md](./swimlane.md) — lanes for Client, PEP, PDP, PIP, PAP, Resource.
+- [flowchart.md](./flowchart.md) — evaluation logic with Indeterminate/deny and obligation-failure terminals.

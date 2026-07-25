@@ -68,13 +68,13 @@ Microsoft Entra Privileged Identity Management (PIM); the same pattern exists in
 
 ## Related diagrams
 
-- [cloud-iam/entra/pim-jit-elevation](../../cloud-iam/entra/pim-jit-elevation/README.md) — the concrete Entra PIM implementation of this pattern.
+- [cloud-iam/entra/pim-jit-elevation](../../platforms/cloud-iam/entra/pim-jit-elevation/README.md) — the concrete Entra PIM implementation of this pattern.
 - [credential-vault-checkout](../credential-vault-checkout/README.md) — the alternative when the privilege is a *shared secret* rather than a role on your own identity.
 - [break-glass-emergency-access](../break-glass-emergency-access/README.md) — the pre-provisioned exception for when PIM/approval flows themselves are unavailable.
 - [session-recording-monitoring](../session-recording-monitoring/README.md) — what an elevated session is often routed through.
 
 ## Files
 
-- [sequence.md](sequence.md) — eligible → request → (approval) → time-bound activation → auto-revoke, plus denied and early-deactivation alternates.
-- [swimlane.md](swimlane.md) — lanes for User, PIM, Approver, Directory, Target.
-- [flowchart.md](flowchart.md) — activation policy gates and revocation with explicit deny terminals.
+- [sequence.md](./sequence.md) — eligible → request → (approval) → time-bound activation → auto-revoke, plus denied and early-deactivation alternates.
+- [swimlane.md](./swimlane.md) — lanes for User, PIM, Approver, Directory, Target.
+- [flowchart.md](./flowchart.md) — activation policy gates and revocation with explicit deny terminals.

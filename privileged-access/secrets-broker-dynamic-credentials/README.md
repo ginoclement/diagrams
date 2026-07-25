@@ -84,6 +84,6 @@ STS / workload-identity federation.
 
 ## Files
 
-- [sequence.md](sequence.md) — authenticate → policy → mint ephemeral credential with lease → use → renew / auto-revoke, plus early-revoke and denial alternates.
-- [swimlane.md](swimlane.md) — lanes for Client, Broker, Backend, Resource.
-- [flowchart.md](flowchart.md) — issuance and lease-lifecycle decisions with explicit deny and expiry terminals.
+- [sequence.md](./sequence.md) — authenticate → policy → mint ephemeral credential with lease → use → renew / auto-revoke, plus early-revoke and denial alternates.
+- [swimlane.md](./swimlane.md) — lanes for Client, Broker, Backend, Resource.
+- [flowchart.md](./flowchart.md) — issuance and lease-lifecycle decisions with explicit deny and expiry terminals.

@@ -78,6 +78,6 @@ expresses rules that would require an explosion of roles under [RBAC](../rbac/RE
 
 ## Files
 
-- [sequence.md](sequence.md) — decision request, PIP attribute fetch, and Deny/Indeterminate alternates.
-- [swimlane.md](swimlane.md) — lanes for Subject, PEP, PDP, PIP, PAP, Resource.
-- [flowchart.md](flowchart.md) — attribute-gathering and policy-evaluation decision logic.
+- [sequence.md](./sequence.md) — decision request, PIP attribute fetch, and Deny/Indeterminate alternates.
+- [swimlane.md](./swimlane.md) — lanes for Subject, PEP, PDP, PIP, PAP, Resource.
+- [flowchart.md](./flowchart.md) — attribute-gathering and policy-evaluation decision logic.

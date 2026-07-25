@@ -82,6 +82,6 @@ Indeterminate, optionally carrying obligations and advice). Its named components
 
 ## Files
 
-- [sequence.md](sequence.md) — request/response exchange with PIP lookup, obligations, and NotApplicable/Indeterminate.
-- [swimlane.md](swimlane.md) — lanes for PEP, Context Handler, PDP, PIP, PAP.
-- [flowchart.md](flowchart.md) — decision resolution with combining algorithm and obligation enforcement.
+- [sequence.md](./sequence.md) — request/response exchange with PIP lookup, obligations, and NotApplicable/Indeterminate.
+- [swimlane.md](./swimlane.md) — lanes for PEP, Context Handler, PDP, PIP, PAP.
+- [flowchart.md](./flowchart.md) — decision resolution with combining algorithm and obligation enforcement.

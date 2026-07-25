@@ -52,6 +52,6 @@ Notes
 - The External lane verifies against the API server's OIDC endpoints (`A2`), not against a
   shared secret — that is what makes the exchange keyless.
 - The `E2` gate is where a token with a valid signature but an unmapped subject is denied —
-  see [flowchart.md](flowchart.md) for the full gate set.
+  see [flowchart.md](./flowchart.md) for the full gate set.
 
-Related: [README](README.md) | [Sequence](sequence.md) | [Flowchart](flowchart.md)
+Related: [README](./README.md) | [Sequence](./sequence.md) | [Flowchart](./flowchart.md)

@@ -76,6 +76,6 @@ value that was checked out can never be reused.
 
 ## Files
 
-- [sequence.md](sequence.md) — check-out, brokered session, check-in with rotation, plus approval and rotation-failure alternates.
-- [swimlane.md](swimlane.md) — lanes for User, PAM, Approver, Target, Directory.
-- [flowchart.md](flowchart.md) — entitlement / approval / rotation decision gates with explicit deny and error terminals.
+- [sequence.md](./sequence.md) — check-out, brokered session, check-in with rotation, plus approval and rotation-failure alternates.
+- [swimlane.md](./swimlane.md) — lanes for User, PAM, Approver, Target, Directory.
+- [flowchart.md](./flowchart.md) — entitlement / approval / rotation decision gates with explicit deny and error terminals.

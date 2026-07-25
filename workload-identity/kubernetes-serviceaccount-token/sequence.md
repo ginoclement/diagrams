@@ -63,4 +63,4 @@ Notes
 - The kubelet, not the workload, owns refresh: the app simply re-reads the file, it never
   calls TokenRequest itself.
 
-Related: [README](README.md) | [Swimlane](swimlane.md) | [Flowchart](flowchart.md)
+Related: [README](./README.md) | [Swimlane](./swimlane.md) | [Flowchart](./flowchart.md)

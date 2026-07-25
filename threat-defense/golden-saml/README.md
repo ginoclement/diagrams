@@ -20,7 +20,7 @@ signed by that key, a forged assertion is indistinguishable from a real one at t
 the attacker becomes a "golden" identity, similar in spirit to a Kerberos
 [Golden Ticket](../golden-silver-ticket/README.md) but for SAML.
 
-It abuses the normal [SAML SSO](../../saml/idp-initiated-sso/README.md) trust model: the SP
+It abuses the normal [SAML SSO](../../authentication/saml/idp-initiated-sso/README.md) trust model: the SP
 validates the assertion **signature** against the IdP's published certificate and then
 trusts the contents. Golden SAML skips the entire authentication and MFA step at the IdP.
 
@@ -86,13 +86,13 @@ assertions and real authentication events.
 
 ## Related diagrams
 
-- [SAML IdP-initiated SSO](../../saml/idp-initiated-sso/README.md) — the legitimate flow whose signed assertion is forged here.
-- [SAML SP-initiated SSO](../../saml/sp-initiated-sso/README.md) — SP-side assertion validation that a golden assertion satisfies.
+- [SAML IdP-initiated SSO](../../authentication/saml/idp-initiated-sso/README.md) — the legitimate flow whose signed assertion is forged here.
+- [SAML SP-initiated SSO](../../authentication/saml/sp-initiated-sso/README.md) — SP-side assertion validation that a golden assertion satisfies.
 - [Golden & Silver Ticket](../golden-silver-ticket/README.md) — the Kerberos analogue of key-theft forgery.
-- [Secrets management](../../architecture/secrets-management/README.md) — HSM / key custody that prevents key theft.
+- [Secrets management](../../infrastructure/architecture/secrets-management/README.md) — HSM / key custody that prevents key theft.
 
 ## Files
 
-- [sequence.md](sequence.md) — the forgery path, then HSM/monitoring defenses in `alt`/`opt` blocks.
-- [swimlane.md](swimlane.md) — Attacker / Victim / IdP / Defender-controls lanes.
-- [flowchart.md](flowchart.md) — where key protection and log correlation force a deny/detect terminal.
+- [sequence.md](./sequence.md) — the forgery path, then HSM/monitoring defenses in `alt`/`opt` blocks.
+- [swimlane.md](./swimlane.md) — Attacker / Victim / IdP / Defender-controls lanes.
+- [flowchart.md](./flowchart.md) — where key protection and log correlation force a deny/detect terminal.

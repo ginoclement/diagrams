@@ -82,6 +82,6 @@ engine, and Netflix BLESS.
 
 ## Files
 
-- [sequence.md](sequence.md) — authenticate to CA → sign short-lived cert → ProxyJump via bastion → target validates, plus expiry, principal-mismatch, and host-cert alternates.
-- [swimlane.md](swimlane.md) — lanes for User, Client, CA, Bastion, Target.
-- [flowchart.md](flowchart.md) — certificate validation gates with explicit deny terminals and the legacy standing-key branch.
+- [sequence.md](./sequence.md) — authenticate to CA → sign short-lived cert → ProxyJump via bastion → target validates, plus expiry, principal-mismatch, and host-cert alternates.
+- [swimlane.md](./swimlane.md) — lanes for User, Client, CA, Bastion, Target.
+- [flowchart.md](./flowchart.md) — certificate validation gates with explicit deny terminals and the legacy standing-key branch.

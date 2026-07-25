@@ -60,7 +60,7 @@ activate a subset of a user's roles at a time (least privilege).
   users, or roles encode data values (region, owner, tier), you have rebuilt ABAC badly. Move
   contextual conditions into attributes/relationships instead of new roles.
 - **Review and recertify** role assignments periodically — stale membership is the most common
-  source of over-privilege; tie it to [joiner-mover-leaver](../../user-lifecycle/README.md).
+  source of over-privilege; tie it to [joiner-mover-leaver](../../identity-lifecycle/user-lifecycle/README.md).
 - RBAC alone cannot express "owner of *this* record" or "same department as the resource" — those
   are relationship/attribute conditions; do not fake them with roles.
 
@@ -72,10 +72,10 @@ activate a subset of a user's roles at a time (least privilege).
   token claim as the coarse layer.
 - [Policy decision and enforcement](../policy-decision-enforcement/README.md) — where the role
   check runs at a gateway/sidecar.
-- [User lifecycle](../../user-lifecycle/README.md) — how role assignments are provisioned and revoked.
+- [User lifecycle](../../identity-lifecycle/user-lifecycle/README.md) — how role assignments are provisioned and revoked.
 
 ## Files
 
-- [sequence.md](sequence.md) — request-time role/permission resolution with hierarchy and SoD alternates.
-- [swimlane.md](swimlane.md) — lanes for User, PEP, RBAC store, resource.
-- [flowchart.md](flowchart.md) — permit/deny decision logic including hierarchy and SoD gates.
+- [sequence.md](./sequence.md) — request-time role/permission resolution with hierarchy and SoD alternates.
+- [swimlane.md](./swimlane.md) — lanes for User, PEP, RBAC store, resource.
+- [flowchart.md](./flowchart.md) — permit/deny decision logic including hierarchy and SoD gates.

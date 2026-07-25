@@ -85,14 +85,14 @@ human involvement.
 
 ## Related diagrams
 
-- [tokenless/mutual-tls](../../tokenless/mutual-tls/README.md) — the steady-state mTLS handshake with the issued certificate.
-- [network-security/mtls-service-mesh](../../network-security/mtls-service-mesh/README.md) — mesh sidecars consuming bootstrapped certificates.
+- [tokenless/mutual-tls](../../authentication/tokenless/mutual-tls/README.md) — the steady-state mTLS handshake with the issued certificate.
+- [network-security/mtls-service-mesh](../../infrastructure/network-security/mtls-service-mesh/README.md) — mesh sidecars consuming bootstrapped certificates.
 - [spiffe-spire-issuance](../spiffe-spire-issuance/README.md) — SPIRE specializes this CSR-plus-attestation bootstrap.
 - [kubernetes-serviceaccount-token](../kubernetes-serviceaccount-token/README.md) — a projected SA token used as bootstrap attestation evidence.
 - [secretless-instance-identity](../secretless-instance-identity/README.md) — cloud IID as the attestation source.
 
 ## Files
 
-- [sequence.md](sequence.md) — CSR-plus-attestation issuance, mTLS, and rotation with alt blocks.
-- [swimlane.md](swimlane.md) — lanes for Workload, Attestor, CA, Peer.
-- [flowchart.md](flowchart.md) — attestation and authorization gates with error terminals.
+- [sequence.md](./sequence.md) — CSR-plus-attestation issuance, mTLS, and rotation with alt blocks.
+- [swimlane.md](./swimlane.md) — lanes for Workload, Attestor, CA, Peer.
+- [flowchart.md](./flowchart.md) — attestation and authorization gates with error terminals.

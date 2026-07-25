@@ -78,6 +78,6 @@ entire control set is compensating detection and accountability rather than prev
 
 ## Files
 
-- [sequence.md](sequence.md) — invocation with M-of-N custodian control, alerting, use, and mandatory reseal, plus lone-responder and abuse alternates.
-- [swimlane.md](swimlane.md) — lanes for User, Custodian, PAM, SIEM, Directory.
-- [flowchart.md](flowchart.md) — authorization, alerting, and reseal gates with explicit deny and containment terminals.
+- [sequence.md](./sequence.md) — invocation with M-of-N custodian control, alerting, use, and mandatory reseal, plus lone-responder and abuse alternates.
+- [swimlane.md](./swimlane.md) — lanes for User, Custodian, PAM, SIEM, Directory.
+- [flowchart.md](./flowchart.md) — authorization, alerting, and reseal gates with explicit deny and containment terminals.

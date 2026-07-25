@@ -63,12 +63,12 @@ just re-reads the endpoint.
 - [workload-identity-federation-generic](../workload-identity-federation-generic/README.md) — the cross-trust-domain counterpart when the workload is *not* on the target cloud.
 - [service-account-key-lifecycle](../service-account-key-lifecycle/README.md) — the static-key approach this removes the need for.
 - [kubernetes-serviceaccount-token](../kubernetes-serviceaccount-token/README.md) — the in-cluster identity source that layers on top of node IMDS.
-- [cloud-iam/entra/managed-identity-imds](../../cloud-iam/entra/managed-identity-imds/README.md), [cloud-iam/gcp/application-default-credentials](../../cloud-iam/gcp/application-default-credentials/README.md), [cloud-iam/aws/sts-assumerole](../../cloud-iam/aws/sts-assumerole/README.md) — vendor specifics.
-- [network-security/reverse-proxy-waf](../../network-security/reverse-proxy-waf/README.md) — SSRF sits alongside the web-layer defenses here.
+- [cloud-iam/entra/managed-identity-imds](../../platforms/cloud-iam/entra/managed-identity-imds/README.md), [cloud-iam/gcp/application-default-credentials](../../platforms/cloud-iam/gcp/application-default-credentials/README.md), [cloud-iam/aws/sts-assumerole](../../platforms/cloud-iam/aws/sts-assumerole/README.md) — vendor specifics.
+- [network-security/reverse-proxy-waf](../../infrastructure/network-security/reverse-proxy-waf/README.md) — SSRF sits alongside the web-layer defenses here.
 
 ## Files
 
-- [sequence.md](sequence.md) — token/credential fetch with alt blocks for v1/v2, no-identity, and SSRF.
-- [swimlane.md](swimlane.md) — lanes for Workload, IMDS, Cloud IAM, Cloud API.
-- [flowchart.md](flowchart.md) — request-validation and SSRF-defense decisions with error terminals.
+- [sequence.md](./sequence.md) — token/credential fetch with alt blocks for v1/v2, no-identity, and SSRF.
+- [swimlane.md](./swimlane.md) — lanes for Workload, IMDS, Cloud IAM, Cloud API.
+- [flowchart.md](./flowchart.md) — request-validation and SSRF-defense decisions with error terminals.
 </content>

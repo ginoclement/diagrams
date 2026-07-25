@@ -85,6 +85,6 @@ SpiceDB, OpenFGA, Ory Keto, and Auth0 FGA. Its building blocks:
 
 ## Files
 
-- [sequence.md](sequence.md) — Check happy path plus rewrite, group, parent-inheritance, and zookie alternates.
-- [swimlane.md](swimlane.md) — lanes for App/PEP, Zanzibar service, tuple store, schema.
-- [flowchart.md](flowchart.md) — Check evaluation walking direct tuples, rewrites, and parent usersets.
+- [sequence.md](./sequence.md) — Check happy path plus rewrite, group, parent-inheritance, and zookie alternates.
+- [swimlane.md](./swimlane.md) — lanes for App/PEP, Zanzibar service, tuple store, schema.
+- [flowchart.md](./flowchart.md) — Check evaluation walking direct tuples, rewrites, and parent usersets.

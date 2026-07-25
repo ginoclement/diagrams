@@ -20,7 +20,7 @@ Two closely-related **credential-replay** lateral-movement techniques:
   cracking the password**.
 - **Pass-the-Ticket (PtT)** — with **Kerberos**, a stolen **TGT** or **service ticket**
   extracted from a host's memory can be injected into the attacker's session and replayed to
-  the [AP exchange](../../kerberos/ap-exchange/README.md) to access services as the victim,
+  the [AP exchange](../../authentication/kerberos/ap-exchange/README.md) to access services as the victim,
   until the ticket expires.
 
 Both abuse legitimate authentication material rather than a protocol flaw: PtH abuses the
@@ -82,20 +82,20 @@ auth), and **detect movement** (logon anomalies).
 - **Unique local admin passwords (LAPS)** so a dumped local hash can't unlock other machines;
   disable/limit NTLM and move to Kerberos and **phishing-resistant** auth.
 - **Network segmentation** and host firewalls to constrain lateral RPC/SMB/WinRM paths — see
-  [Network segmentation / DMZ](../../network-security/network-segmentation-dmz/README.md).
+  [Network segmentation / DMZ](../../infrastructure/network-security/network-segmentation-dmz/README.md).
 - **Reduce credential exposure:** avoid interactive logon of service/admin accounts, enable
   "Restricted Admin"/remote credential guard for RDP, and expire/rotate on compromise.
 
 ## Related diagrams
 
-- [Kerberos AP Exchange](../../kerberos/ap-exchange/README.md) — the service-ticket presentation a stolen ticket is replayed into.
-- [Kerberos TGS Exchange](../../kerberos/tgs-exchange/README.md) — where a stolen TGT is redeemed for new service tickets.
+- [Kerberos AP Exchange](../../authentication/kerberos/ap-exchange/README.md) — the service-ticket presentation a stolen ticket is replayed into.
+- [Kerberos TGS Exchange](../../authentication/kerberos/tgs-exchange/README.md) — where a stolen TGT is redeemed for new service tickets.
 - [Golden & Silver Ticket](../golden-silver-ticket/README.md) — forging tickets rather than stealing existing ones.
 - [Kerberoasting](../kerberoasting/README.md) — another route to service-account credentials.
-- [Network segmentation / DMZ](../../network-security/network-segmentation-dmz/README.md) — constraining lateral paths.
+- [Network segmentation / DMZ](../../infrastructure/network-security/network-segmentation-dmz/README.md) — constraining lateral paths.
 
 ## Files
 
-- [sequence.md](sequence.md) — PtH then PtT replay, with Credential Guard / tiering / detection in `alt`/`opt` blocks.
-- [swimlane.md](swimlane.md) — Attacker / Victim / KDC-and-servers / Defender-controls lanes.
-- [flowchart.md](flowchart.md) — where theft prevention, tiering, and replay detection force deny/detect terminals.
+- [sequence.md](./sequence.md) — PtH then PtT replay, with Credential Guard / tiering / detection in `alt`/`opt` blocks.
+- [swimlane.md](./swimlane.md) — Attacker / Victim / KDC-and-servers / Defender-controls lanes.
+- [flowchart.md](./flowchart.md) — where theft prevention, tiering, and replay detection force deny/detect terminals.

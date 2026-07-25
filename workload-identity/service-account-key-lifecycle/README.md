@@ -70,13 +70,13 @@ loop: **issue → store → use → rotate → revoke**.
 
 - [workload-identity-federation-generic](../workload-identity-federation-generic/README.md) — the recommended secret-free replacement.
 - [secretless-instance-identity](../secretless-instance-identity/README.md) — on-VM alternative with no stored key.
-- [cloud-iam/gcp/application-default-credentials](../../cloud-iam/gcp/application-default-credentials/README.md) — how ADC prefers attached/federated identity over JSON keys.
-- [cloud-iam/gcp/service-account-impersonation](../../cloud-iam/gcp/service-account-impersonation/README.md) — short-lived impersonation instead of downloaded keys.
-- [password-management/](../../password-management/) — the human-secret analogue of rotation and revocation.
+- [cloud-iam/gcp/application-default-credentials](../../platforms/cloud-iam/gcp/application-default-credentials/README.md) — how ADC prefers attached/federated identity over JSON keys.
+- [cloud-iam/gcp/service-account-impersonation](../../platforms/cloud-iam/gcp/service-account-impersonation/README.md) — short-lived impersonation instead of downloaded keys.
+- [password-management/](../../identity-lifecycle/password-management) — the human-secret analogue of rotation and revocation.
 
 ## Files
 
-- [sequence.md](sequence.md) — issue, store, use, rotate, and revoke with alt blocks.
-- [swimlane.md](swimlane.md) — lanes for Admin, Cloud IAM, Secret Store, Workload.
-- [flowchart.md](flowchart.md) — lifecycle decisions and failure/outage terminals.
+- [sequence.md](./sequence.md) — issue, store, use, rotate, and revoke with alt blocks.
+- [swimlane.md](./swimlane.md) — lanes for Admin, Cloud IAM, Secret Store, Workload.
+- [flowchart.md](./flowchart.md) — lifecycle decisions and failure/outage terminals.
 </content>

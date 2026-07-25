@@ -56,7 +56,7 @@ sequenceDiagram
 Notes
 
 - Steps 3–5 are exactly the normal TGS request from
-  [kerberos/tgs-exchange](../../kerberos/tgs-exchange/README.md); nothing is malformed —
+  [kerberos/tgs-exchange](../../authentication/kerberos/tgs-exchange/README.md); nothing is malformed —
   the abuse is intent plus volume plus offline attack.
 - The cracking step is **offline**: no traffic to the KDC, which is why event 4769 at
   request time is the practical detection point, not a failed logon.

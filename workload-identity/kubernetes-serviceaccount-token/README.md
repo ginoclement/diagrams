@@ -86,11 +86,11 @@ an access token).
 - [spiffe-spire-issuance](../spiffe-spire-issuance/README.md) — uses the projected SA token (PSAT) as a node/workload attestor.
 - [workload-identity-federation-generic](../workload-identity-federation-generic/README.md) — the generic OIDC-token-for-cloud-credential exchange this specializes.
 - [service-account-key-lifecycle](../service-account-key-lifecycle/README.md) — the static-key alternative this avoids.
-- [OIDC Token Exchange](../../oidc/token-exchange/README.md) — RFC 8693 exchange mechanics.
-- [OIDC Client Credentials](../../oidc/client-credentials/README.md) — the non-Kubernetes machine-auth baseline.
+- [OIDC Token Exchange](../../authentication/oidc/token-exchange/README.md) — RFC 8693 exchange mechanics.
+- [OIDC Client Credentials](../../authentication/oidc/client-credentials/README.md) — the non-Kubernetes machine-auth baseline.
 
 ## Files
 
-- [sequence.md](sequence.md) — TokenRequest, projection, and external exchange with alt/opt blocks.
-- [swimlane.md](swimlane.md) — lanes for Workload, Kubelet, API server, External system.
-- [flowchart.md](flowchart.md) — issuance and validation gates with error terminals.
+- [sequence.md](./sequence.md) — TokenRequest, projection, and external exchange with alt/opt blocks.
+- [swimlane.md](./swimlane.md) — lanes for Workload, Kubelet, API server, External system.
+- [flowchart.md](./flowchart.md) — issuance and validation gates with error terminals.

@@ -21,7 +21,7 @@ Because that cookie flows back **through the proxy**, the attacker captures it a
 authenticated session** — no password or second factor needed thereafter.
 
 It abuses any password-plus-OTP/push login, and is best contrasted with
-[WebAuthn / Passkey authentication](../../tokenless/webauthn-passkey-authentication/README.md),
+[WebAuthn / Passkey authentication](../../authentication/tokenless/webauthn-passkey-authentication/README.md),
 whose **origin-bound** cryptographic assertion is the primary defense: a passkey signs the
 *real* origin, so an assertion produced against the proxy's origin will not validate at the IdP.
 
@@ -85,13 +85,13 @@ containment.
 
 ## Related diagrams
 
-- [WebAuthn / Passkey Authentication](../../tokenless/webauthn-passkey-authentication/README.md) — the origin-bound, phishing-resistant primary auth that prevents AiTM.
-- [DPoP](../../oidc/dpop/README.md) — proof-of-possession that makes a stolen session token non-replayable.
-- [Mutual TLS](../../tokenless/mutual-tls/README.md) — channel/token binding that similarly defeats replay from another host.
+- [WebAuthn / Passkey Authentication](../../authentication/tokenless/webauthn-passkey-authentication/README.md) — the origin-bound, phishing-resistant primary auth that prevents AiTM.
+- [DPoP](../../authentication/oidc/dpop/README.md) — proof-of-possession that makes a stolen session token non-replayable.
+- [Mutual TLS](../../authentication/tokenless/mutual-tls/README.md) — channel/token binding that similarly defeats replay from another host.
 - [Token Theft & Replay](../token-theft-replay/README.md) — the general stolen-token replay problem AiTM feeds into.
 
 ## Files
 
-- [sequence.md](sequence.md) — the AiTM relay/replay path, then FIDO2 / token-binding / CAE defenses in `alt`/`opt` blocks.
-- [swimlane.md](swimlane.md) — Attacker / Victim / IdP / Defender-controls lanes.
-- [flowchart.md](flowchart.md) — where origin binding and token binding force a deny/detect terminal.
+- [sequence.md](./sequence.md) — the AiTM relay/replay path, then FIDO2 / token-binding / CAE defenses in `alt`/`opt` blocks.
+- [swimlane.md](./swimlane.md) — Attacker / Victim / IdP / Defender-controls lanes.
+- [flowchart.md](./flowchart.md) — where origin binding and token binding force a deny/detect terminal.

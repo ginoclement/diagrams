@@ -29,23 +29,23 @@ is a function of**: roles, attributes, relationships, or externalized policy.
 
 | Diagram | Description |
 |---|---|
-| [rbac](rbac/README.md) | Role-Based Access Control: users are granted roles, roles bundle permissions; role hierarchy and the "role explosion" pitfall. |
-| [abac](abac/README.md) | Attribute-Based Access Control: decisions computed from subject, resource, action, and environment attributes evaluated against policies. |
-| [rebac-zanzibar](rebac-zanzibar/README.md) | Relationship-Based Access Control on the Google Zanzibar model: relation tuples, usersets, Check/Expand, and consistency zookies. |
-| [pbac-policy-engine](pbac-policy-engine/README.md) | Policy-Based Access Control with an externalized engine (OPA/Rego, AWS Cedar): PEP calls PDP, policy bundles, decision logs. |
-| [xacml-pdp-pep](xacml-pdp-pep/README.md) | The classic XACML reference architecture and request/response: PEP, PDP, PIP, PAP, obligations and advice. |
-| [scopes-claims-entitlements](scopes-claims-entitlements/README.md) | How OAuth scopes, ID-token claims, and fine-grained entitlements relate; coarse token authZ vs fine-grained runtime authZ. |
-| [policy-decision-enforcement](policy-decision-enforcement/README.md) | The generic PEP/PDP/PIP/PAP decision-and-enforcement pattern applied at an API gateway or sidecar. |
-| [oauth-consent-authorization](oauth-consent-authorization/README.md) | User consent, admin consent, and incremental/step-up consent as an authorization mechanism for delegated access. |
+| [rbac](./rbac/README.md) | Role-Based Access Control: users are granted roles, roles bundle permissions; role hierarchy and the "role explosion" pitfall. |
+| [abac](./abac/README.md) | Attribute-Based Access Control: decisions computed from subject, resource, action, and environment attributes evaluated against policies. |
+| [rebac-zanzibar](./rebac-zanzibar/README.md) | Relationship-Based Access Control on the Google Zanzibar model: relation tuples, usersets, Check/Expand, and consistency zookies. |
+| [pbac-policy-engine](./pbac-policy-engine/README.md) | Policy-Based Access Control with an externalized engine (OPA/Rego, AWS Cedar): PEP calls PDP, policy bundles, decision logs. |
+| [xacml-pdp-pep](./xacml-pdp-pep/README.md) | The classic XACML reference architecture and request/response: PEP, PDP, PIP, PAP, obligations and advice. |
+| [scopes-claims-entitlements](./scopes-claims-entitlements/README.md) | How OAuth scopes, ID-token claims, and fine-grained entitlements relate; coarse token authZ vs fine-grained runtime authZ. |
+| [policy-decision-enforcement](./policy-decision-enforcement/README.md) | The generic PEP/PDP/PIP/PAP decision-and-enforcement pattern applied at an API gateway or sidecar. |
+| [oauth-consent-authorization](./oauth-consent-authorization/README.md) | User consent, admin consent, and incremental/step-up consent as an authorization mechanism for delegated access. |
 
 ## Related categories
 
-- [OIDC flows](../oidc/README.md) — issues the tokens whose scopes and claims feed coarse
-  authorization; see [scopes-claims-entitlements](scopes-claims-entitlements/README.md).
-- [SAML flows](../saml/README.md) — assertions can carry attribute statements consumed by ABAC.
-- [User lifecycle](../user-lifecycle/README.md) — provisioning and deprovisioning of the role and
+- [OIDC flows](../authentication/oidc/README.md) — issues the tokens whose scopes and claims feed coarse
+  authorization; see [scopes-claims-entitlements](./scopes-claims-entitlements/README.md).
+- [SAML flows](../authentication/saml/README.md) — assertions can carry attribute statements consumed by ABAC.
+- [User lifecycle](../identity-lifecycle/user-lifecycle/README.md) — provisioning and deprovisioning of the role and
   group memberships that RBAC and ABAC read.
-- [Reference architecture](../architecture/identity-provider-reference-architecture/README.md) —
+- [Reference architecture](../infrastructure/architecture/identity-provider-reference-architecture/README.md) —
   where a PDP/policy engine sits relative to the IdP and resource servers.
 
 ## More diagrams

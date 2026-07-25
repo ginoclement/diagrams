@@ -66,12 +66,12 @@ one-time trust configuration registered at the target.
 - [service-account-key-lifecycle](../service-account-key-lifecycle/README.md) — the legacy static-key approach this replaces.
 - [kubernetes-serviceaccount-token](../kubernetes-serviceaccount-token/README.md) — the projected token most often exchanged this way.
 - [secretless-instance-identity](../secretless-instance-identity/README.md) — the on-VM equivalent when the workload already runs on the target cloud.
-- [cloud-iam/aws/sts-assumerole](../../cloud-iam/aws/sts-assumerole/README.md), [cloud-iam/gcp/workload-identity-federation](../../cloud-iam/gcp/workload-identity-federation/README.md), [cloud-iam/entra/workload-identity-federation](../../cloud-iam/entra/workload-identity-federation/README.md) — vendor specifics.
-- [oidc/authorization-code-pkce](../../oidc/authorization-code-pkce/README.md) — OIDC token validation fundamentals.
+- [cloud-iam/aws/sts-assumerole](../../platforms/cloud-iam/aws/sts-assumerole/README.md), [cloud-iam/gcp/workload-identity-federation](../../platforms/cloud-iam/gcp/workload-identity-federation/README.md), [cloud-iam/entra/workload-identity-federation](../../platforms/cloud-iam/entra/workload-identity-federation/README.md) — vendor specifics.
+- [oidc/authorization-code-pkce](../../authentication/oidc/authorization-code-pkce/README.md) — OIDC token validation fundamentals.
 
 ## Files
 
-- [sequence.md](sequence.md) — trust setup, token issuance, exchange, and validation with alt blocks.
-- [swimlane.md](swimlane.md) — lanes for Workload, Platform IdP, Target STS, Target API.
-- [flowchart.md](flowchart.md) — STS validation gates and error terminals.
+- [sequence.md](./sequence.md) — trust setup, token issuance, exchange, and validation with alt blocks.
+- [swimlane.md](./swimlane.md) — lanes for Workload, Platform IdP, Target STS, Target API.
+- [flowchart.md](./flowchart.md) — STS validation gates and error terminals.
 </content>

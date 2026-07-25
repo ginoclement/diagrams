@@ -13,7 +13,7 @@ deprecated: false
 ## What it is
 
 **Kerberoasting** abuses a normal feature of the Kerberos
-[TGS exchange](../../kerberos/tgs-exchange/README.md): any authenticated domain user can
+[TGS exchange](../../authentication/kerberos/tgs-exchange/README.md): any authenticated domain user can
 request a **service ticket (TGS-REP)** for any account that has a **Service Principal Name
 (SPN)** registered. Part of that ticket is encrypted with a key **derived from the service
 account's password**. The attacker requests the ticket, extracts the encrypted portion, and
@@ -78,13 +78,13 @@ passwords, AES) and **detecting the request pattern** (4769 anomalies, honeytoke
 
 ## Related diagrams
 
-- [Kerberos TGS Exchange](../../kerberos/tgs-exchange/README.md) — the legitimate service-ticket request this abuses.
-- [Kerberos AS Exchange](../../kerberos/as-exchange/README.md) — where AS-REP roasting (a sibling attack) lives; the TGT used here is issued there.
+- [Kerberos TGS Exchange](../../authentication/kerberos/tgs-exchange/README.md) — the legitimate service-ticket request this abuses.
+- [Kerberos AS Exchange](../../authentication/kerberos/as-exchange/README.md) — where AS-REP roasting (a sibling attack) lives; the TGT used here is issued there.
 - [Golden & Silver Ticket](../golden-silver-ticket/README.md) — forging tickets outright once keys are known.
 - [Pass-the-Hash / Pass-the-Ticket](../pass-the-hash-ticket/README.md) — reusing the credentials a roast may recover.
 
 ## Files
 
-- [sequence.md](sequence.md) — the roast, then gMSA/AES/4769 defenses in `alt`/`opt` blocks.
-- [swimlane.md](swimlane.md) — Attacker / Victim / KDC / Defender-controls lanes.
-- [flowchart.md](flowchart.md) — where password strength, etype, and monitoring force detect/deny terminals.
+- [sequence.md](./sequence.md) — the roast, then gMSA/AES/4769 defenses in `alt`/`opt` blocks.
+- [swimlane.md](./swimlane.md) — Attacker / Victim / KDC / Defender-controls lanes.
+- [flowchart.md](./flowchart.md) — where password strength, etype, and monitoring force detect/deny terminals.

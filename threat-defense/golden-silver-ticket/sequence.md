@@ -72,10 +72,10 @@ sequenceDiagram
 Notes
 
 - **Golden** forges a TGT (krbtgt key) and is redeemed at the TGS — see
-  [as-exchange](../../kerberos/as-exchange/README.md) and
-  [tgs-exchange](../../kerberos/tgs-exchange/README.md).
+  [as-exchange](../../authentication/kerberos/as-exchange/README.md) and
+  [tgs-exchange](../../authentication/kerberos/tgs-exchange/README.md).
 - **Silver** forges a service ticket (service key) and is presented straight to the service —
-  see [ap-exchange](../../kerberos/ap-exchange/README.md). The KDC never sees it, so its logs
+  see [ap-exchange](../../authentication/kerberos/ap-exchange/README.md). The KDC never sees it, so its logs
   won't show a 4769; that absence is the detection.
 - Rotating krbtgt **twice** is what actually invalidates existing golden tickets; PAC
   validation defeats forged privilege claims in both variants.

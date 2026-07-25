@@ -84,7 +84,7 @@ instance-level permission.
 
 ## Related diagrams
 
-- [Authorization Code](../../oidc/authorization-code/README.md) — how the token that carries scopes
+- [Authorization Code](../../authentication/oidc/authorization-code/README.md) — how the token that carries scopes
   and claims is obtained.
 - [RBAC](../rbac/README.md) — a role claim is the coarse layer; the role check often precedes the
   fine-grained entitlement.
@@ -93,6 +93,6 @@ instance-level permission.
 
 ## Files
 
-- [sequence.md](sequence.md) — token-time scope/claim issuance then runtime entitlement resolution, with deny alternates.
-- [swimlane.md](swimlane.md) — lanes for User, Client, IdP, Gateway, Resource, Policy store.
-- [flowchart.md](flowchart.md) — layered scope-then-entitlement decision with explicit deny terminals.
+- [sequence.md](./sequence.md) — token-time scope/claim issuance then runtime entitlement resolution, with deny alternates.
+- [swimlane.md](./swimlane.md) — lanes for User, Client, IdP, Gateway, Resource, Policy store.
+- [flowchart.md](./flowchart.md) — layered scope-then-entitlement decision with explicit deny terminals.

@@ -86,6 +86,6 @@ relationship rules — it is a *mechanism*, not a distinct model.
 
 ## Files
 
-- [sequence.md](sequence.md) — decision call, bundle pull, decision log, and deny/failure alternates.
-- [swimlane.md](swimlane.md) — lanes for App/PEP, engine/PDP, bundle server/PAP, decision log.
-- [flowchart.md](flowchart.md) — evaluation logic with default-deny and forbid-overrides terminals.
+- [sequence.md](./sequence.md) — decision call, bundle pull, decision log, and deny/failure alternates.
+- [swimlane.md](./swimlane.md) — lanes for App/PEP, engine/PDP, bundle server/PAP, decision log.
+- [flowchart.md](./flowchart.md) — evaluation logic with default-deny and forbid-overrides terminals.

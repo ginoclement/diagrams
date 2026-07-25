@@ -13,10 +13,13 @@ renderable on GitHub, and easy to cross-reference.
 
 ## Folder layout
 
-Each diagram lives in its own folder under a category directory:
+Diagrams are grouped into **domains**, then **categories**, then per-diagram folders:
 
 ```
-<category>/
+<domain>/                   # authentication, authorization, identity-lifecycle,
+                            # privileged-access, workload-identity, platforms,
+                            # infrastructure, threat-defense, reference
+  <category>/
   README.md                 # category index: one line per diagram + link
   <diagram-name>/
     README.md               # what the flow is, when it's used, actors, alternates, related diagrams
@@ -41,7 +44,7 @@ Folder names are `kebab-case`.
    own diagram, link to it from the README instead of duplicating (e.g. SP-initiated SSO links to
    IdP-initiated SSO rather than re-drawing it).
 6. **Cross-references** are relative Markdown links to the other diagram's folder README,
-   e.g. `[Authorization Code + PKCE](oidc/authorization-code-pkce/README.md)`.
+   e.g. `[Authorization Code + PKCE](./authentication/oidc/authorization-code-pkce/README.md)`.
 
 ## Mermaid syntax safety
 
@@ -80,7 +83,7 @@ a **Status line** immediately under the H1 title, using one of:
 - `**Status:** 🔵 Emerging` — newer standard, not yet ubiquitous
 
 Deprecated diagrams are kept (not deleted) for reference, and are listed in the root
-[`DEPRECATED.md`](DEPRECATED.md) index. Examples already in the repo that should carry
+[`DEPRECATED.md`](./DEPRECATED.md) index. Examples already in the repo that should carry
 `⛔ Deprecated`: OIDC Implicit flow, ROPC, SAML (vs OIDC for new greenfield), NTLM,
 unconstrained Kerberos delegation, SMS/voice OTP as a primary factor.
 
@@ -95,7 +98,7 @@ leaves too, marked `⛔` with the recommended replacement.
 
 ## Persona variants
 
-Personas are defined once in [`personas/README.md`](personas/README.md) with a
+Personas are defined once in [`personas/README.md`](./reference/personas/README.md) with a
 persona × flow variance matrix. A flow gets its own persona-specific diagram folder
 **only when the flow materially forks** by persona; otherwise the variance is captured
 as a note in the base diagram and a row in the matrix. Persona names are consistent:

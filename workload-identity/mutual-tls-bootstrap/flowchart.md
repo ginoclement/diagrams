@@ -46,4 +46,4 @@ Notes
 - The handshake gate is mutual: the workload also validates the peer against the returned
   trust bundle, so a valid leaf is necessary but not sufficient to talk to an untrusted peer.
 
-Related: [README](README.md) | [Sequence](sequence.md) | [Swimlane](swimlane.md)
+Related: [README](./README.md) | [Sequence](./sequence.md) | [Swimlane](./swimlane.md)

@@ -17,16 +17,16 @@ whoever can decrypt it, and the KDC does not re-verify a well-formed ticket's or
 
 - **Golden Ticket** — the attacker forges a **Ticket-Granting Ticket (TGT)** using the stolen
   **krbtgt account key**. Because every TGT is encrypted with the krbtgt key, a forged TGT is
-  accepted by the [TGS](../../kerberos/tgs-exchange/README.md) as genuine, for any user
+  accepted by the [TGS](../../authentication/kerberos/tgs-exchange/README.md) as genuine, for any user
   (including a non-existent one), with any group membership in its PAC. It is domain-wide,
   long-lived persistence.
 - **Silver Ticket** — the attacker forges a **service ticket (TGS)** using a single
   **service account's key** (or a computer account key). It is accepted directly by that one
-  service at the [AP exchange](../../kerberos/ap-exchange/README.md) — **the KDC is never
+  service at the [AP exchange](../../authentication/kerberos/ap-exchange/README.md) — **the KDC is never
   contacted**, so KDC-side logging never sees it. Scope is one service, but it is stealthier.
 
-Both abuse the legitimate [AS](../../kerberos/as-exchange/README.md) and
-[AP](../../kerberos/ap-exchange/README.md) exchanges by injecting forged, correctly-encrypted
+Both abuse the legitimate [AS](../../authentication/kerberos/as-exchange/README.md) and
+[AP](../../authentication/kerberos/ap-exchange/README.md) exchanges by injecting forged, correctly-encrypted
 tickets instead of legitimately-issued ones.
 
 ## When it is used
@@ -89,14 +89,14 @@ forged privilege claims don't chain.
 
 ## Related diagrams
 
-- [Kerberos AS Exchange](../../kerberos/as-exchange/README.md) — legitimate TGT issuance the Golden Ticket forges.
-- [Kerberos AP Exchange](../../kerberos/ap-exchange/README.md) — legitimate service-ticket presentation the Silver Ticket forges.
-- [Kerberos TGS Exchange](../../kerberos/tgs-exchange/README.md) — where a forged TGT is redeemed for service tickets.
+- [Kerberos AS Exchange](../../authentication/kerberos/as-exchange/README.md) — legitimate TGT issuance the Golden Ticket forges.
+- [Kerberos AP Exchange](../../authentication/kerberos/ap-exchange/README.md) — legitimate service-ticket presentation the Silver Ticket forges.
+- [Kerberos TGS Exchange](../../authentication/kerberos/tgs-exchange/README.md) — where a forged TGT is redeemed for service tickets.
 - [Kerberoasting](../kerberoasting/README.md) — how a service key/password might be obtained in the first place.
 - [Pass-the-Hash / Pass-the-Ticket](../pass-the-hash-ticket/README.md) — reusing stolen keys/tickets more directly.
 
 ## Files
 
-- [sequence.md](sequence.md) — Golden then Silver forgery, with rotation/PAC defenses in `alt`/`opt` blocks.
-- [swimlane.md](swimlane.md) — Attacker / Victim / KDC / Defender-controls lanes.
-- [flowchart.md](flowchart.md) — where rotation, PAC validation, and log correlation force deny/detect terminals.
+- [sequence.md](./sequence.md) — Golden then Silver forgery, with rotation/PAC defenses in `alt`/`opt` blocks.
+- [swimlane.md](./swimlane.md) — Attacker / Victim / KDC / Defender-controls lanes.
+- [flowchart.md](./flowchart.md) — where rotation, PAC validation, and log correlation force deny/detect terminals.

@@ -20,10 +20,10 @@ logs, a memory dump, an infostealer, or a compromised proxy) can **replay it aga
 password or MFA prompt.
 
 It abuses the normal token model behind flows like the
-[Refresh Token](../../oidc/refresh-token/README.md) grant: the API trusts a valid signature and
+[Refresh Token](../../authentication/oidc/refresh-token/README.md) grant: the API trusts a valid signature and
 the refresh endpoint mints new access tokens on demand. The durable defenses **sender-constrain**
-the token so it is useless off the victim's host — see [DPoP](../../oidc/dpop/README.md) and
-[Mutual TLS](../../tokenless/mutual-tls/README.md) — plus **refresh-token rotation with reuse
+the token so it is useless off the victim's host — see [DPoP](../../authentication/oidc/dpop/README.md) and
+[Mutual TLS](../../authentication/tokenless/mutual-tls/README.md) — plus **refresh-token rotation with reuse
 detection** to catch a replayed refresh token.
 
 ## When it is used
@@ -76,11 +76,11 @@ lifetimes.
 
 ### Mitigation
 
-- **Sender-constrain tokens** with [DPoP](../../oidc/dpop/README.md) (proof-of-possession JWT) or
-  [mutual TLS](../../tokenless/mutual-tls/README.md) certificate-bound tokens, so a stolen token
+- **Sender-constrain tokens** with [DPoP](../../authentication/oidc/dpop/README.md) (proof-of-possession JWT) or
+  [mutual TLS](../../authentication/tokenless/mutual-tls/README.md) certificate-bound tokens, so a stolen token
   cannot be used without the client's private key.
 - **Rotate refresh tokens on every use with reuse detection**, revoking the whole family on a
-  replay — the key control for public clients (see [Refresh Token](../../oidc/refresh-token/README.md)).
+  replay — the key control for public clients (see [Refresh Token](../../authentication/oidc/refresh-token/README.md)).
 - **Continuous access evaluation** and **short access-token lifetimes** to shrink the replay
   window and evict compromised sessions quickly.
 - **Bind sessions to device/network posture** via conditional access; restrict high-value scopes
@@ -90,14 +90,14 @@ lifetimes.
 
 ## Related diagrams
 
-- [Refresh Token](../../oidc/refresh-token/README.md) — the grant whose rotation + reuse detection contains a stolen refresh token.
-- [DPoP](../../oidc/dpop/README.md) — proof-of-possession that sender-constrains access tokens against replay.
-- [Mutual TLS](../../tokenless/mutual-tls/README.md) — certificate-bound tokens that similarly defeat replay from another host.
+- [Refresh Token](../../authentication/oidc/refresh-token/README.md) — the grant whose rotation + reuse detection contains a stolen refresh token.
+- [DPoP](../../authentication/oidc/dpop/README.md) — proof-of-possession that sender-constrains access tokens against replay.
+- [Mutual TLS](../../authentication/tokenless/mutual-tls/README.md) — certificate-bound tokens that similarly defeat replay from another host.
 - [AiTM MFA Phishing](../aitm-mfa-phishing/README.md) — a common upstream source of the stolen session tokens.
 - [OAuth Consent Phishing](../oauth-consent-phishing/README.md) — another source of durable tokens an attacker replays.
 
 ## Files
 
-- [sequence.md](sequence.md) — the replay path, then DPoP/mTLS binding, rotation + reuse detection, and CAE defenses in `alt`/`opt` blocks.
-- [swimlane.md](swimlane.md) — Attacker / Victim / IdP / Defender-controls lanes.
-- [flowchart.md](flowchart.md) — where token binding and reuse detection force a deny/detect terminal.
+- [sequence.md](./sequence.md) — the replay path, then DPoP/mTLS binding, rotation + reuse detection, and CAE defenses in `alt`/`opt` blocks.
+- [swimlane.md](./swimlane.md) — Attacker / Victim / IdP / Defender-controls lanes.
+- [flowchart.md](./flowchart.md) — where token binding and reuse detection force a deny/detect terminal.

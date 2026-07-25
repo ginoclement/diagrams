@@ -47,4 +47,4 @@ Notes
 - The `Legacy` branch is kept only to contrast: a long-lived Secret token skips the audience
   and expiry gates entirely, which is exactly why projected tokens replace it.
 
-Related: [README](README.md) | [Sequence](sequence.md) | [Swimlane](swimlane.md)
+Related: [README](./README.md) | [Sequence](./sequence.md) | [Swimlane](./swimlane.md)

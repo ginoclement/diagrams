@@ -26,7 +26,7 @@ whose `aud` names the intended service) for token-based calls.
 ## When it is used
 
 - Service-to-service mTLS in a mesh or across heterogeneous platforms (bare metal, VMs, Kubernetes, multiple clouds) where a single, portable identity is wanted.
-- As the identity substrate under [network-security/mtls-service-mesh](../../network-security/mtls-service-mesh/README.md).
+- As the identity substrate under [network-security/mtls-service-mesh](../../infrastructure/network-security/mtls-service-mesh/README.md).
 - When you want short-lived, automatically rotated credentials with no secrets on disk and no cloud-vendor lock-in for identity.
 
 ## Actors
@@ -64,13 +64,13 @@ whose `aud` names the intended service) for token-based calls.
 ## Related diagrams
 
 - [mutual-tls-bootstrap](../mutual-tls-bootstrap/README.md) — the generic CSR-plus-attestation bootstrap this specializes.
-- [network-security/mtls-service-mesh](../../network-security/mtls-service-mesh/README.md) — SVIDs consumed by sidecar proxies.
-- [tokenless/mutual-tls](../../tokenless/mutual-tls/README.md) — steady-state mTLS with the issued certificate.
+- [network-security/mtls-service-mesh](../../infrastructure/network-security/mtls-service-mesh/README.md) — SVIDs consumed by sidecar proxies.
+- [tokenless/mutual-tls](../../authentication/tokenless/mutual-tls/README.md) — steady-state mTLS with the issued certificate.
 - [kubernetes-serviceaccount-token](../kubernetes-serviceaccount-token/README.md) — the PSAT used as a SPIRE node/workload attestor.
 
 ## Files
 
-- [sequence.md](sequence.md) — node attestation, workload attestation, and SVID issuance/rotation with alt blocks.
-- [swimlane.md](swimlane.md) — lanes for Workload, Agent, Server, Attestor.
-- [flowchart.md](flowchart.md) — attestation and entry-matching decisions with error terminals.
+- [sequence.md](./sequence.md) — node attestation, workload attestation, and SVID issuance/rotation with alt blocks.
+- [swimlane.md](./swimlane.md) — lanes for Workload, Agent, Server, Attestor.
+- [flowchart.md](./flowchart.md) — attestation and entry-matching decisions with error terminals.
 </content>

@@ -60,4 +60,4 @@ Notes
 - Rotation re-runs the same CSR path; if the attestation evidence has also expired the
   workload re-attests first, otherwise it simply re-keys.
 
-Related: [README](README.md) | [Swimlane](swimlane.md) | [Flowchart](flowchart.md)
+Related: [README](./README.md) | [Swimlane](./swimlane.md) | [Flowchart](./flowchart.md)

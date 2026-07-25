@@ -20,7 +20,7 @@ IdP consent screen. When the victim clicks **Accept**, the IdP issues the attack
 attacker now holds durable, token-based access that **survives password resets and often MFA**,
 because the tokens were issued by the legitimate authorization server to a consented app.
 
-It abuses the normal [OIDC / OAuth authorization code flow](../../oidc/authorization-code/README.md):
+It abuses the normal [OIDC / OAuth authorization code flow](../../authentication/oidc/authorization-code/README.md):
 every step — the `/authorize` redirect, the login, the consent prompt, the token issuance — is
 legitimate. The only thing "wrong" is that the user was socially engineered into consenting to
 an attacker-controlled client requesting excessive scopes.
@@ -86,12 +86,12 @@ on **detecting/revoking** grants that should never have been made.
 
 ## Related diagrams
 
-- [OIDC Authorization Code (confidential)](../../oidc/authorization-code/README.md) — the legitimate delegated-authorization flow whose consent step is abused here.
-- [Refresh Token](../../oidc/refresh-token/README.md) — the durable token the malicious app keeps; revocation and rotation matter for containment.
+- [OIDC Authorization Code (confidential)](../../authentication/oidc/authorization-code/README.md) — the legitimate delegated-authorization flow whose consent step is abused here.
+- [Refresh Token](../../authentication/oidc/refresh-token/README.md) — the durable token the malicious app keeps; revocation and rotation matter for containment.
 - [Token Theft & Replay](../token-theft-replay/README.md) — what an attacker does with the tokens once obtained.
 
 ## Files
 
-- [sequence.md](sequence.md) — the consent-phishing path, then admin-consent / publisher-verification / risky-app defenses in `alt`/`opt` blocks.
-- [swimlane.md](swimlane.md) — Attacker / Victim / IdP / Defender-controls lanes.
-- [flowchart.md](flowchart.md) — where consent policy and app governance force a deny/detect terminal.
+- [sequence.md](./sequence.md) — the consent-phishing path, then admin-consent / publisher-verification / risky-app defenses in `alt`/`opt` blocks.
+- [swimlane.md](./swimlane.md) — Attacker / Victim / IdP / Defender-controls lanes.
+- [flowchart.md](./flowchart.md) — where consent policy and app governance force a deny/detect terminal.

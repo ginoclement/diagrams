@@ -89,17 +89,17 @@ may touch once it holds the token).
   works.
 - **Bind consent to a validated request.** Use PKCE and exact `redirect_uri` matching so the consent
   a user gives cannot be replayed by an attacker to obtain the code
-  (see [Authorization Code + PKCE](../../oidc/authorization-code-pkce/README.md)).
+  (see [Authorization Code + PKCE](../../authentication/oidc/authorization-code-pkce/README.md)).
 
 ## Related diagrams
 
-- [Authorization Code](../../oidc/authorization-code/README.md) — the flow the consent step sits
+- [Authorization Code](../../authentication/oidc/authorization-code/README.md) — the flow the consent step sits
   inside; consent gates code issuance.
-- [Authorization Code + PKCE](../../oidc/authorization-code-pkce/README.md) — the public-client
+- [Authorization Code + PKCE](../../authentication/oidc/authorization-code-pkce/README.md) — the public-client
   variant; PKCE protects the code obtained after consent.
 
 ## Files
 
-- [sequence.md](sequence.md) — consent screen, grant storage, and prior-grant / deny / admin / incremental / revoke alternates.
-- [swimlane.md](swimlane.md) — lanes for User, Admin, Client, IdP, Consent store, Resource.
-- [flowchart.md](flowchart.md) — consent decision logic with explicit deny/admin-required/revoked terminals.
+- [sequence.md](./sequence.md) — consent screen, grant storage, and prior-grant / deny / admin / incremental / revoke alternates.
+- [swimlane.md](./swimlane.md) — lanes for User, Admin, Client, IdP, Consent store, Resource.
+- [flowchart.md](./flowchart.md) — consent decision logic with explicit deny/admin-required/revoked terminals.

@@ -62,8 +62,8 @@ sequenceDiagram
 Notes
 
 - PtH replays the **NT hash** into NTLM; PtT injects a **Kerberos ticket** and redeems/presents
-  it — see [ap-exchange](../../kerberos/ap-exchange/README.md) and
-  [tgs-exchange](../../kerberos/tgs-exchange/README.md).
+  it — see [ap-exchange](../../authentication/kerberos/ap-exchange/README.md) and
+  [tgs-exchange](../../authentication/kerberos/tgs-exchange/README.md).
 - The first `alt` (Credential Guard / LSASS PPL) is the prevention that removes the theft
   primitive; tiering limits what reuse can reach; SIEM anomaly rules detect the movement.
 - Containment for stolen tickets ultimately means resetting the affected account (and krbtgt

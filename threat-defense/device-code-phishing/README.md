@@ -21,7 +21,7 @@ own machine**, obtains a legitimate `user_code`, and then phishes a victim to th
 verification URL to enter it. When the victim authenticates and approves, the IdP issues **tokens
 to the attacker's polling client** — the victim's browser never receives them.
 
-It abuses the normal [Device Authorization flow](../../oidc/device-authorization/README.md):
+It abuses the normal [Device Authorization flow](../../authentication/oidc/device-authorization/README.md):
 the verification page, the login, and the approval are all genuine. The attacker simply
 substitutes their own device-flow session for the "device" the victim believes they are helping.
 
@@ -88,12 +88,12 @@ unambiguous** so the victim (or a policy) refuses.
 
 ## Related diagrams
 
-- [Device Authorization](../../oidc/device-authorization/README.md) — the legitimate input-constrained flow whose verification step is abused here.
+- [Device Authorization](../../authentication/oidc/device-authorization/README.md) — the legitimate input-constrained flow whose verification step is abused here.
 - [AiTM MFA Phishing](../aitm-mfa-phishing/README.md) — a sibling MFA-bypass technique using a reverse proxy instead of the device grant.
 - [Token Theft & Replay](../token-theft-replay/README.md) — what the attacker does with the device-flow tokens once collected.
 
 ## Files
 
-- [sequence.md](sequence.md) — the device-code phishing path, then conditional-access / short-lifetime / approval-context defenses in `alt`/`opt` blocks.
-- [swimlane.md](swimlane.md) — Attacker / Victim / IdP / Defender-controls lanes.
-- [flowchart.md](flowchart.md) — where conditional access and code expiry force a deny/detect terminal.
+- [sequence.md](./sequence.md) — the device-code phishing path, then conditional-access / short-lifetime / approval-context defenses in `alt`/`opt` blocks.
+- [swimlane.md](./swimlane.md) — Attacker / Victim / IdP / Defender-controls lanes.
+- [flowchart.md](./flowchart.md) — where conditional access and code expiry force a deny/detect terminal.

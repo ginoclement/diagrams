@@ -52,6 +52,6 @@ Notes
 - The `C2` gate separates attestation from authorization — a genuinely attested node is still
   refused an identity it is not entitled to.
 - Rotation (`W6`) re-enters the CA lane at `C1`, keeping the certificate continuously fresh —
-  see [flowchart.md](flowchart.md) for the full gate set.
+  see [flowchart.md](./flowchart.md) for the full gate set.
 
-Related: [README](README.md) | [Sequence](sequence.md) | [Flowchart](flowchart.md)
+Related: [README](./README.md) | [Sequence](./sequence.md) | [Flowchart](./flowchart.md)
