@@ -77,6 +77,12 @@ over normal SOAP (authenticating directly, e.g. HTTP Basic), receives a SOAP-wra
 - [swimlane.md](./swimlane.md) — lanes for User, Client, SP, IdP
 - [flowchart.md](./flowchart.md) — client/SP/IdP decision gates and error terminals
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [SP-initiated SSO](../sp-initiated-sso/README.md) — the browser profile ECP mirrors

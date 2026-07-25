@@ -74,6 +74,12 @@ polls the token endpoint until authorization completes.
 - [Swimlane diagram](./swimlane.md)
 - [Flowchart (decision logic)](./flowchart.md)
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [Authorization Code](../authorization-code/README.md) — the browser-capable baseline.

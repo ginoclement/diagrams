@@ -72,6 +72,12 @@ presented as `Authorization: DPoP <token>` (not `Bearer`).
 - [Token Introspection](../token-introspection/README.md) — `cnf.jkt` returned so an API can bind-check opaque tokens.
 - [Pushed Authorization Requests](../pushed-authorization-requests/README.md) — companion FAPI 2.0 building block.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Files
 
 - [sequence.md](./sequence.md) — proof at token and resource endpoints, nonce challenge, and replay rejections.

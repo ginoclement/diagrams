@@ -76,6 +76,12 @@ returns a `LogoutResponse` to the initiating SP — with status `Success` or
 - [swimlane.md](./swimlane.md) — lanes for User, Browser, SP1, IdP, SP2
 - [flowchart.md](./flowchart.md) — IdP propagation loop and status decision logic
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [IdP-initiated SLO](../slo-idp-initiated/README.md) — logout starting at the IdP portal

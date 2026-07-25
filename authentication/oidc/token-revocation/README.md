@@ -73,6 +73,12 @@ validating a self-contained JWT (valid until `exp`).
 - [RP-Initiated Logout](../rp-initiated-logout/README.md) — user-driven session teardown that should revoke tokens.
 - [Back-Channel Logout](../back-channel-logout/README.md) — server-to-server teardown across RPs.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Files
 
 - [sequence.md](./sequence.md) — refresh-token revocation with cascade, plus access-token, unknown-token, and error alternates.

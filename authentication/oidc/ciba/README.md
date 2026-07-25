@@ -84,6 +84,12 @@ never types a code or visits a URL — the IdP reaches out to them.
 - [Swimlane diagram](./swimlane.md)
 - [Flowchart (decision logic)](./flowchart.md)
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [Device Authorization Grant](../device-authorization/README.md) — decoupled cousin where the user pulls up a verification URI instead of receiving a push.

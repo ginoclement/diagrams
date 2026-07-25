@@ -73,6 +73,12 @@ The SP then dereferences it over a mutually authenticated **back-channel SOAP** 
 - [swimlane.md](./swimlane.md) — lanes for User, Browser, SP, IdP (front vs back channel visible)
 - [flowchart.md](./flowchart.md) — ARS decision logic and SP-side handling of resolution failures
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [SP-initiated SSO](../sp-initiated-sso/README.md) — same profile with HTTP-POST delivery

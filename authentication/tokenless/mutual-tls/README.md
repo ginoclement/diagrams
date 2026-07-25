@@ -71,6 +71,12 @@ connection.
 - [swimlane.md](./swimlane.md) — lanes for Client, Server, CA/OCSP, App.
 - [flowchart.md](./flowchart.md) — validation pipeline: chain, expiry, EKU, revocation, identity mapping.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [http-basic-auth](../http-basic-auth/README.md) — the weaker service-to-service pattern mTLS replaces.

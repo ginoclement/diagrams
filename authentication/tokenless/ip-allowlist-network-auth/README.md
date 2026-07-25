@@ -70,6 +70,12 @@ diagrammed; it survives as a **secondary control** layered under real authentica
 - [swimlane.md](./swimlane.md) — lanes for User/Client, VPN, Gateway, App, IdP.
 - [flowchart.md](./flowchart.md) — decision logic: peer address trust, allowlist match, step-up auth.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [Zero-trust network access](../../../infrastructure/architecture/zero-trust-architecture/README.md) — the successor model; why location-based trust fails.

@@ -68,6 +68,12 @@ only widely recommended one, since it keeps access tokens off the front channel.
 - [swimlane.md](./swimlane.md) — front-channel vs back-channel lanes.
 - [flowchart.md](./flowchart.md) — dual ID-token validation decisions and error terminals.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [Authorization Code](../authorization-code/README.md) — the back-channel half of this flow.

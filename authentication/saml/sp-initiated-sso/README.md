@@ -74,6 +74,12 @@ carries the deep link the user originally requested so the SP can restore it aft
 - [swimlane.md](./swimlane.md) — lanes for User, Browser, SP, IdP
 - [flowchart.md](./flowchart.md) — SP-side validation decisions and error terminals
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [IdP-initiated SSO](../idp-initiated-sso/README.md) — unsolicited variant, no `InResponseTo`

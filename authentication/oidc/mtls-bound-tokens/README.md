@@ -85,6 +85,12 @@ TLS-client-auth handshake happens on a distinct host/port.
 - [Client Credentials](../client-credentials/README.md) — the grant most often paired with mTLS client auth for workloads.
 - [Pushed Authorization Requests](../pushed-authorization-requests/README.md) — commonly mandated together with mTLS in FAPI profiles.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Files
 
 - [sequence.md](./sequence.md) — happy path plus replay-without-cert, self-signed variant, and introspection alternates.

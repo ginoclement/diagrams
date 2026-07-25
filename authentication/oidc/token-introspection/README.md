@@ -74,6 +74,12 @@ JWT access tokens that a resource server validates locally against the JWKS.
 - [Scopes, Claims, Entitlements](../../../authorization/scopes-claims-entitlements/README.md) — enforcing what introspection returns.
 - [Policy Decision / Enforcement](../../../authorization/policy-decision-enforcement/README.md) — the PEP that consumes the verdict.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Files
 
 - [sequence.md](./sequence.md) — happy path plus inactive-token, unauthorized-caller, and caching alternates.

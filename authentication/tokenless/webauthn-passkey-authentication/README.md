@@ -78,6 +78,12 @@ concrete product implementation is in
 - [swimlane.md](./swimlane.md) — lanes for User, Browser, Authenticator, Server.
 - [flowchart.md](./flowchart.md) — server-side assertion validation pipeline with failure terminals.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [Passkey enrollment](../../../identity-lifecycle/enrollment-and-update/fido2-passkey-registration/README.md) — the registration ceremony that creates the credential.

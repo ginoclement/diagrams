@@ -84,6 +84,12 @@ pushes the (possibly JAR) request to the back channel entirely.
 - [Hybrid Flow](../hybrid/README.md) — another front-channel response shape JARM can secure.
 - [Rich Authorization Requests](../rich-authorization-requests/README.md) — `authorization_details` are best carried inside a signed request object.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Files
 
 - [sequence.md](./sequence.md) — happy path plus by-reference JAR, JARM response, and signature-failure alternates.

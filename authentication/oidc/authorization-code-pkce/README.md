@@ -67,6 +67,12 @@ the verifier, which never leaves the app.
 - [swimlane.md](./swimlane.md) — lanes for User, App, IdP, API.
 - [flowchart.md](./flowchart.md) — challenge/verifier decision logic with error terminals.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [Authorization Code (confidential)](../authorization-code/README.md) — the base flow with client secrets.

@@ -81,6 +81,12 @@ metadata field `registration_endpoint`.
 - [mTLS-Bound Tokens](../mtls-bound-tokens/README.md) — clients can register a cert-based `token_endpoint_auth_method`.
 - [Pushed Authorization Requests](../pushed-authorization-requests/README.md) — a capability the registered client may then use.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Files
 
 - [sequence.md](./sequence.md) — happy path plus protected/software-statement, management, and error alternates.

@@ -70,6 +70,12 @@ endpoints, so it's indexed here with the OIDC flows.
 - [swimlane.md](./swimlane.md) — Client, IdP, API lanes (no User lane — that's the point).
 - [flowchart.md](./flowchart.md) — token caching, error handling, and retry decisions.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [Authorization Code](../authorization-code/README.md) — when a user's delegation is needed instead.

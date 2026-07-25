@@ -82,6 +82,12 @@ deployment usually chains this flow into one of those.
 - [Swimlane diagram](./swimlane.md)
 - [Flowchart (decision logic)](./flowchart.md)
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [Front-Channel Logout](../front-channel-logout/README.md) — browser-based propagation to other RPs in the same SSO session.

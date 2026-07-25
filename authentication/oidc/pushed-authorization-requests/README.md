@@ -70,6 +70,12 @@ and [RAR](../rich-authorization-requests/README.md).
 - [DPoP](../dpop/README.md) — sender-constraining, another FAPI 2.0 building block.
 - [mTLS-Bound Tokens](../mtls-bound-tokens/README.md) — the mTLS alternative for FAPI-grade binding.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Files
 
 - [sequence.md](./sequence.md) — push, redirect, redeem; plus expiry, non-PAR-rejection, and JAR alternates.

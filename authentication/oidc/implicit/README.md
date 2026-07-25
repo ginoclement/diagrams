@@ -72,6 +72,12 @@ reference for recognizing and migrating legacy integrations.
 - [swimlane.md](./swimlane.md) — shows tokens transiting the Browser lane, the core flaw.
 - [flowchart.md](./flowchart.md) — validation branches and the leakage terminal.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [Authorization Code + PKCE](../authorization-code-pkce/README.md) — the mandated replacement.

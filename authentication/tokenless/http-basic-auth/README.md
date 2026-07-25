@@ -67,6 +67,12 @@ Rarely for interactive browser login today, but still very common for:
 - [swimlane.md](./swimlane.md) — lanes for User, Browser, Server, Directory.
 - [flowchart.md](./flowchart.md) — decision logic: TLS check, header parsing, validation, lockout.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [session-cookie](../session-cookie/README.md) — replaces per-request credentials with a server-side session.

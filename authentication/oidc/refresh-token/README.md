@@ -77,6 +77,12 @@ forces re-authentication.
 - [swimlane.md](./swimlane.md) — Client, IdP, API lanes plus the attacker branch.
 - [flowchart.md](./flowchart.md) — sliding vs absolute expiry and family-revocation decisions.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [Authorization Code](../authorization-code/README.md) — where the first refresh token comes from.

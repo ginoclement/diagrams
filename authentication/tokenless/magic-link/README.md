@@ -75,6 +75,12 @@ ordinary [session cookie](../session-cookie/README.md).
 - [swimlane.md](./swimlane.md) — lanes for User, Browser, Server, Email, Directory.
 - [flowchart.md](./flowchart.md) — token validation pipeline with explicit failure terminals.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [session-cookie](../session-cookie/README.md) — what the magic link ultimately establishes.

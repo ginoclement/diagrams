@@ -93,6 +93,12 @@ security-grade:
 - [Swimlane diagram](./swimlane.md)
 - [Flowchart (decision logic)](./flowchart.md)
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [RP-Initiated Logout](../rp-initiated-logout/README.md) — the usual trigger for this propagation.

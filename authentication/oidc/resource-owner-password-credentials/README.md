@@ -90,6 +90,12 @@ the AS supports it — an `id_token`. The client sees the raw password.
 - [Device Authorization](../device-authorization/README.md) — for input-constrained devices.
 - [Refresh Token](../refresh-token/README.md) — token renewal without re-collecting credentials.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Files
 
 - [sequence.md](./sequence.md) — happy path plus invalid-credentials, MFA-required, and locked-account alternates.

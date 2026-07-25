@@ -98,6 +98,12 @@ HTTPS and to be able to terminate sessions from outside a browser request contex
 - [Swimlane diagram](./swimlane.md)
 - [Flowchart (decision logic)](./flowchart.md)
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [RP-Initiated Logout](../rp-initiated-logout/README.md) — the browser-visible flow that typically triggers this propagation.

@@ -73,6 +73,12 @@ Two patterns:
 - [Workload Identity](../../../workload-identity/README.md) — service-to-service identity where token exchange is common.
 - [Policy Decision / Enforcement](../../../authorization/policy-decision-enforcement/README.md) — enforcing the narrowed grant downstream.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Files
 
 - [sequence.md](./sequence.md) — delegation happy path, then impersonation, cross-protocol, and denial alternates.

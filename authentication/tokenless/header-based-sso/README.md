@@ -68,6 +68,12 @@ the app, and the proxy always strips/overwrites those headers on inbound traffic
 - [swimlane.md](./swimlane.md) — lanes for User, Browser, Proxy, IdP, App with the trust boundary visible.
 - [flowchart.md](./flowchart.md) — decision logic at proxy and app, including the network-policy block.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [session-cookie](../session-cookie/README.md) — the proxy's own session with the browser is usually cookie-based.

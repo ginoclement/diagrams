@@ -85,6 +85,12 @@ and cross-site iframe access, which is the main reason it is now Legacy.
 - [RP-Initiated Logout](../rp-initiated-logout/README.md) — RP-triggered logout at the `end_session_endpoint`.
 - [Authorization Code + PKCE](../authorization-code-pkce/README.md) — the flow whose `prompt=none` re-auth this reuses.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Files
 
 - [sequence.md](./sequence.md) — happy poll plus changed/silent-reauth-success, silent-reauth-failure, and cookies-blocked alternates.

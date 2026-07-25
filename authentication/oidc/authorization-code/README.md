@@ -66,6 +66,12 @@ Tokens never transit the browser.
 - [swimlane.md](./swimlane.md) — one lane per actor showing front-channel vs back-channel handoffs.
 - [flowchart.md](./flowchart.md) — validation decisions and error terminals.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [Authorization Code + PKCE](../authorization-code-pkce/README.md) — same flow for public clients.

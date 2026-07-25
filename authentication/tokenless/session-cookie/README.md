@@ -63,6 +63,12 @@ in the server's session store; the cookie is merely a reference to it.
 - [swimlane.md](./swimlane.md) — lanes for User, Browser, Server, Directory, SessionStore.
 - [flowchart.md](./flowchart.md) — decision logic: credential check, lockout, session validation, CSRF.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [http-basic-auth](../http-basic-auth/README.md) — credentials on every request instead of a session.

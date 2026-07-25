@@ -85,6 +85,12 @@ account Y" rather than a blunt `scope=payments`.
 - [Token Introspection](../token-introspection/README.md) — how a resource server reads granted details for opaque tokens.
 - [Token Exchange](../token-exchange/README.md) — downscoping granted details when delegating.
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Files
 
 - [sequence.md](./sequence.md) — happy path plus partial-grant, scope-mixing, and invalid-details alternates.

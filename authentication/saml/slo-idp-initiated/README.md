@@ -73,6 +73,12 @@ shows the user a completion page that reports full or partial logout.
 - [swimlane.md](./swimlane.md) — lanes for User, Browser, IdP, SP1, SP2
 - [flowchart.md](./flowchart.md) — propagation loop, per-SP binding choice, partial-logout aggregation
 
+## Hands-on
+
+- [Reading it in DevTools](devtools.md)
+- [Client snippets](snippets.md)
+- [Sample capture (HAR + decoded artifacts)](samples/README.md)
+
 ## Related diagrams
 
 - [SP-initiated SLO](../slo-sp-initiated/README.md) — same propagation core, different trigger and final response
