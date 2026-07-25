@@ -3,18 +3,37 @@
 (function () {
   "use strict";
   var app = document.getElementById("app");
-  var flow = new URLSearchParams(location.search).get("flow");
 
   function esc(s){return String(s==null?"":s).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});}
   function j(u){return fetch(u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
+  // Prefer data inlined by the standalone build; otherwise fetch from models/.
+  function getIndex(){ return window.__FLOW_INDEX__ ? Promise.resolve(window.__FLOW_INDEX__) : j("models/index.json"); }
+  function getModel(id){ return (window.__FLOWS__ && window.__FLOWS__[id]) ? Promise.resolve(window.__FLOWS__[id]) : j("models/"+id+".json"); }
+  var INLINE = !!window.__FLOWS__;
   function errHtml(msg){return '<div class="panel"><div class="body"><p class="lede">'+esc(msg)+'</p>'+
-    '<p class="note"><a href="./">← Back to all flows</a></p></div></div>';}
+    '<p class="note"><a href="./" data-home="1">← Back to all flows</a></p></div></div>';}
 
-  if (flow) loadFlow(flow); else loadPicker();
+  function route(){
+    var flow = new URLSearchParams(location.search).get("flow");
+    if (flow) loadFlow(flow); else loadPicker();
+  }
+  function go(search){ // SPA navigation so it works hosted and inlined (iframe/standalone)
+    try { history.pushState({}, "", search || location.pathname); } catch (e) {}
+    route();
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener("popstate", route);
+  document.addEventListener("click", function(e){
+    var a = e.target.closest && e.target.closest("a[data-flow],a[data-home]");
+    if (!a) return;
+    e.preventDefault();
+    go(a.hasAttribute("data-home") ? "" : "?flow=" + a.getAttribute("data-flow"));
+  });
+  route();
 
   function loadPicker(){
     document.title = "Flow Explorer";
-    j("models/index.json").then(function(list){
+    getIndex().then(function(list){
       var groups = {};
       list.forEach(function(f){ (groups[f.category]=groups[f.category]||[]).push(f); });
       var html = '<header class="top"><div>'+
@@ -25,7 +44,7 @@
       Object.keys(groups).sort().forEach(function(cat){
         html += '<div class="group-title">'+esc(cat)+'</div><div class="pickgrid">';
         groups[cat].sort(function(a,b){return a.title.localeCompare(b.title);}).forEach(function(f){
-          html += '<a class="card" href="?flow='+encodeURIComponent(f.id)+'">'+
+          html += '<a class="card" href="?flow='+encodeURIComponent(f.id)+'" data-flow="'+esc(f.id)+'">'+
             '<div class="cat">'+esc(f.category)+'</div>'+
             '<div class="t">'+esc(f.title)+'</div>'+
             '<div class="n">'+esc(f.steps||"")+(f.steps?" steps":"")+'</div></a>';
@@ -37,7 +56,7 @@
   }
 
   function loadFlow(id){
-    j("models/"+id+".json").then(renderFlow).catch(function(){
+    getModel(id).then(renderFlow).catch(function(){
       app.innerHTML = errHtml("Flow not found: "+id);
     });
   }
@@ -49,7 +68,7 @@
 
     app.innerHTML =
       '<header class="top"><div>'+
-        '<div class="eyebrow"><a href="./">Flow Explorer</a> · '+esc(model.category||"")+'</div>'+
+        '<div class="eyebrow"><a href="./" data-home="1">Flow Explorer</a> · '+esc(model.category||"")+'</div>'+
         '<h1>'+esc(model.title)+'</h1>'+
         '<div class="sub">'+esc(model.subtitle||"")+'</div>'+
       '</div><div class="controls">'+
