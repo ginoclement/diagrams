@@ -7,7 +7,7 @@
 > repos, CI systems, and laptops. Where the platform supports it, use
 > [workload-identity-federation-generic](../workload-identity-federation-generic/README.md),
 > [secretless-instance-identity](../secretless-instance-identity/README.md), or
-> kubernetes-serviceaccount-token *(planned)* instead.
+> [kubernetes-serviceaccount-token](../kubernetes-serviceaccount-token/README.md) instead.
 > This diagram documents the static-key lifecycle because it is still widely deployed and
 > must be operated safely where it cannot yet be removed.
 

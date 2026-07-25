@@ -20,7 +20,7 @@ value that was checked out can never be reused.
 - Meeting "no standing shared passwords" and "rotate after every use" control
   requirements (PCI DSS, SOX, ISO 27001, cyber-insurance attestations).
 - As the enforcement point in front of accounts that also feed
-  session recording *(planned)*.
+  [session recording](../session-recording-monitoring/README.md).
 
 ## Actors
 
@@ -61,10 +61,10 @@ value that was checked out can never be reused.
 
 ## Related diagrams
 
-- session-recording-monitoring *(planned)* — the brokered session opened here is usually also recorded.
+- [session-recording-monitoring](../session-recording-monitoring/README.md) — the brokered session opened here is usually also recorded.
 - [jit-privilege-elevation](../jit-privilege-elevation/README.md) — the account-role alternative to vaulting a shared secret.
 - [break-glass-emergency-access](../break-glass-emergency-access/README.md) — a special sealed check-out with multi-person control.
-- secrets-broker-dynamic-credentials *(planned)* — instead of rotating one shared secret, mint a fresh short-lived one per use.
+- [secrets-broker-dynamic-credentials](../secrets-broker-dynamic-credentials/README.md) — instead of rotating one shared secret, mint a fresh short-lived one per use.
 
 ## Files
 

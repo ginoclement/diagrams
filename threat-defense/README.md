@@ -30,10 +30,10 @@ Every entry links back to the **legitimate flow it abuses** (in `saml/`, `oidc/`
 | [Kerberoasting](kerberoasting/README.md) | [Kerberos TGS](../kerberos/tgs-exchange/README.md) | Cracking SPN service-account passwords offline from service tickets |
 | [Golden & Silver Ticket](golden-silver-ticket/README.md) | [Kerberos AS](../kerberos/as-exchange/README.md) / [AP](../kerberos/ap-exchange/README.md) | Forged TGT from the krbtgt key, forged service ticket from a service key |
 | [Pass-the-Hash / Pass-the-Ticket](pass-the-hash-ticket/README.md) | [Kerberos AP](../kerberos/ap-exchange/README.md) | Reusing stolen NTLM hashes or Kerberos tickets for lateral movement |
-| OAuth Consent Phishing *(planned)* | OAuth consent *(planned)* | Illicit consent grant to a malicious app to harvest tokens |
-| Device Code Phishing *(planned)* | [Device Authorization](../oidc/device-authorization/README.md) | Abusing the device-code grant to phish a victim's approval |
-| AiTM MFA Phishing *(planned)* | [Passkey / WebAuthn](../tokenless/webauthn-passkey-authentication/README.md) | Reverse-proxy relay that steals the session cookie despite MFA |
-| Token Theft & Replay *(planned)* | [Refresh Token](../oidc/refresh-token/README.md) | Replaying stolen bearer access/refresh tokens from another device |
+| [OAuth Consent Phishing](oauth-consent-phishing/README.md) | [OAuth consent](../authorization/oauth-consent-authorization/README.md) | Illicit consent grant to a malicious app to harvest tokens |
+| [Device Code Phishing](device-code-phishing/README.md) | [Device Authorization](../oidc/device-authorization/README.md) | Abusing the device-code grant to phish a victim's approval |
+| [AiTM MFA Phishing](aitm-mfa-phishing/README.md) | [Passkey / WebAuthn](../tokenless/webauthn-passkey-authentication/README.md) | Reverse-proxy relay that steals the session cookie despite MFA |
+| [Token Theft & Replay](token-theft-replay/README.md) | [Refresh Token](../oidc/refresh-token/README.md) | Replaying stolen bearer access/refresh tokens from another device |
 
 ## Cross-cutting defenses
 
@@ -47,3 +47,10 @@ Several controls appear across multiple diagrams and are worth internalizing as 
 - **Continuous evaluation** (CAE, conditional access, risk signals) shortens the window a
   stolen credential or token is useful.
 - **Least privilege and tiering** limit how far any single compromise travels.
+
+## More diagrams
+
+- [Adversary-in-the-Middle (AiTM) MFA Phishing](./aitm-mfa-phishing/README.md)
+- [Device Code Phishing](./device-code-phishing/README.md)
+- [OAuth Consent Phishing (Illicit Consent Grant)](./oauth-consent-phishing/README.md)
+- [Token Theft & Replay](./token-theft-replay/README.md)

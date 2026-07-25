@@ -78,7 +78,7 @@ sets and multi-account assignment on top of the same STS primitives.
 - [AssumeRoleWithWebIdentity (OIDC)](../assumerole-web-identity-oidc/README.md) — the OIDC federation sibling.
 - [STS AssumeRole](../sts-assumerole/README.md) — the base temporary-credential API.
 - [SAML SP-initiated SSO](../../../saml/sp-initiated-sso/README.md) — the generic browser SSO AWS relies on as SP.
-- SigV4 request signing *(planned)* — how the returned credentials sign CLI calls.
+- [SigV4 request signing](../sigv4-request-signing/README.md) — how the returned credentials sign CLI calls.
 
 ## Files
 

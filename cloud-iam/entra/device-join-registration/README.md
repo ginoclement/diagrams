@@ -65,8 +65,8 @@ so Entra can trust the key is hardware-bound.
 - [Primary Refresh Token](../primary-refresh-token/README.md) — issued to Entra-joined/hybrid-joined devices
 - [Windows Hello for Business](../windows-hello-for-business/README.md) — provisioned after join, per-user key on the device
 - [Conditional Access Evaluation](../conditional-access-evaluation/README.md) — consumes join type + compliance as signals
-- Hybrid Identity Sync *(planned)* — Entra Connect, which also syncs the hybrid device object
-- Kerberos authentication *(planned)* — the on-prem auth Hybrid Join preserves
+- [Hybrid Identity Sync](../hybrid-identity-sync/README.md) — Entra Connect, which also syncs the hybrid device object
+- [Kerberos authentication](../../../kerberos/as-exchange/README.md) — the on-prem auth Hybrid Join preserves
 
 ## Files
 

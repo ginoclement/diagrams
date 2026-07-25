@@ -70,7 +70,7 @@ accounts, each of which must grant Token Creator to the previous hop.
 - [Workload Identity Federation](../workload-identity-federation/README.md) — keyless external-identity path to impersonation
 - [Application Default Credentials](../application-default-credentials/README.md) — how libraries pick up an impersonation config
 - [IAM Policy Evaluation](../iam-policy-evaluation/README.md) — how the Token Creator grant is resolved
-- Entra Managed Identity (IMDS) *(planned)* — the Azure analogue of keyless workload creds
+- [Entra Managed Identity (IMDS)](../../entra/managed-identity-imds/README.md) — the Azure analogue of keyless workload creds
 
 ## Files
 

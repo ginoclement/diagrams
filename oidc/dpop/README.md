@@ -23,7 +23,7 @@ presented as `Authorization: DPoP <token>` (not `Bearer`).
   sender-constrained tokens.
 - Any deployment wanting stolen-token resistance without PKI plumbing.
 - A FAPI 2.0 sender-constraining option alongside
-  mTLS-bound tokens *(planned)*.
+  [mTLS-bound tokens](../mtls-bound-tokens/README.md).
 
 ## Actors
 
@@ -57,7 +57,7 @@ presented as `Authorization: DPoP <token>` (not `Bearer`).
 
 ## Related diagrams
 
-- mTLS-Bound Tokens *(planned)* — the PKI-based alternative for sender-constraining.
+- [mTLS-Bound Tokens](../mtls-bound-tokens/README.md) — the PKI-based alternative for sender-constraining.
 - [Authorization Code + PKCE](../authorization-code-pkce/README.md) — the base public-client flow DPoP hardens.
 - [Refresh Token](../refresh-token/README.md) — binding refresh tokens to the DPoP key.
 - [Token Introspection](../token-introspection/README.md) — `cnf.jkt` returned so an API can bind-check opaque tokens.

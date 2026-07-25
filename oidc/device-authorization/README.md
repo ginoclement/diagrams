@@ -1,5 +1,7 @@
 # Device Authorization Grant (RFC 8628)
 
+**Status:** ✅ Current
+
 ## Purpose
 
 The Device Authorization Grant (often called the "device flow") lets input-constrained

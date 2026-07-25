@@ -60,7 +60,7 @@ native apps) and Entra returns app tokens.
 - [Conditional Access Evaluation](../conditional-access-evaluation/README.md) — consumes the PRT device + MFA claims as signals
 - [Continuous Access Evaluation](../continuous-access-evaluation/README.md) — revokes PRT-derived tokens near real time
 - [OIDC Authorization Code + PKCE](../../../oidc/authorization-code-pkce/README.md) — the token protocol underneath brokered auth
-- Kerberos SSO *(planned)* — the on-prem SSO analogue (Cloud Kerberos ties them)
+- [Kerberos SSO](../../../kerberos/README.md) — the on-prem SSO analogue (Cloud Kerberos ties them)
 
 ## Files
 

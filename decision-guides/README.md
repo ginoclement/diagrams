@@ -30,9 +30,9 @@ These guides do not re-draw the underlying flows — they route you to the right
   managed identity vs workload identity federation.
 - [Choosing session vs token](choosing-session-vs-token/README.md) — server session cookie
   vs stateless JWT vs reference token.
-- Choosing an authorization model *(planned)* — RBAC vs
+- [Choosing an authorization model](choosing-an-authorization-model/README.md) — RBAC vs
   ABAC vs ReBAC vs PBAC.
-- SAML to OIDC migration *(planned)* — when, why, and how to
+- [SAML to OIDC migration](saml-to-oidc-migration/README.md) — when, why, and how to
   coexist.
 
 ## Conventions
@@ -40,3 +40,8 @@ These guides do not re-draw the underlying flows — they route you to the right
 See [`../CONVENTIONS.md`](../CONVENTIONS.md), "Decision-guide diagrams" and "Status and
 deprecation callouts". Status emojis used below: ✅ Current, 🟡 Legacy, ⛔ Deprecated,
 🔵 Emerging.
+
+## More diagrams
+
+- [Choosing an Authorization Model](./choosing-an-authorization-model/README.md)
+- [SAML-to-OIDC Migration](./saml-to-oidc-migration/README.md)

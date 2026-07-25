@@ -1,5 +1,7 @@
 # Back-Channel Logout
 
+**Status:** ✅ Current
+
 ## Purpose
 
 OpenID Connect Back-Channel Logout 1.0 propagates a logout from the OpenID Provider to

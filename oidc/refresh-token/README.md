@@ -1,5 +1,7 @@
 # OAuth 2.0 / OIDC Refresh Token Grant
 
+**Status:** ✅ Current
+
 Renewing access tokens without user interaction. A client that received a `refresh_token`
 (for OIDC, by requesting the `offline_access` scope, subject to consent) presents it at
 `/token` with `grant_type=refresh_token` and gets a fresh access token — and, with

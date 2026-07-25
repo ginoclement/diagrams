@@ -53,7 +53,7 @@ challenged or stopped — the same credentials, a context-dependent gate.
 - **Fail closed on missing signals.** An unreachable risk engine or signal feed must not
   silently downgrade to "allow"; default to step-up or deny per policy.
 - **Prefer phishing-resistant step-up.** A step-up to SMS OTP can be defeated by AiTM
-  relay — see AiTM MFA Phishing *(planned)*. Prefer
+  relay — see [AiTM MFA Phishing](../../threat-defense/aitm-mfa-phishing/README.md). Prefer
   FIDO2 / passkeys as the step-up factor
   ([Passkey Authentication](../../tokenless/webauthn-passkey-authentication/README.md)).
 - **Signals are attacker-influenced.** Device fingerprints, `X-Forwarded-For`, and
@@ -62,15 +62,15 @@ challenged or stopped — the same credentials, a context-dependent gate.
 - **Record the decision.** Log the risk level, the contributing signals, and the outcome
   for audit and detection tuning; emit the achieved assurance (`acr`/`amr`) in the token.
 - **Avoid prompt fatigue.** Over-aggressive step-up trains users to approve blindly —
-  the failure mode exploited in MFA fatigue *(planned)*.
+  the failure mode exploited in [MFA fatigue](../mfa-fatigue-number-matching/README.md).
 
 ## Related diagrams
 
 - [Step-up Authentication](../step-up-authentication/README.md) — the mid-session variant of the step-up branch here.
 - [Continuous Access Evaluation](../continuous-access-evaluation/README.md) — re-scoring *after* the session is issued.
-- Device Posture Conditional Access *(planned)* — the device-signal half of the score, as a hard gate.
-- Impossible Travel Anomaly *(planned)* — the velocity signal that most often forces the deny branch.
-- Policy Decision / Enforcement *(planned)* — the PDP/PEP pattern this decision implements.
+- [Device Posture Conditional Access](../device-posture-conditional-access/README.md) — the device-signal half of the score, as a hard gate.
+- [Impossible Travel Anomaly](../impossible-travel-anomaly/README.md) — the velocity signal that most often forces the deny branch.
+- [Policy Decision / Enforcement](../../authorization/policy-decision-enforcement/README.md) — the PDP/PEP pattern this decision implements.
 - [Conditional Access Evaluation (Entra)](../../cloud-iam/entra/conditional-access-evaluation/README.md) — a vendor realisation of this flow.
 
 ## Files

@@ -82,7 +82,7 @@ second bind **as that DN** with the user-supplied password to verify it.
 - [Kerberos AS Exchange](../../kerberos/as-exchange/README.md) — what SASL `GSSAPI` binds rely on
 - [Mutual TLS](../../tokenless/mutual-tls/README.md) — the transport behind SASL `EXTERNAL`
 - [HTTP Basic Authentication](../../tokenless/http-basic-auth/README.md) — the app-tier equivalent of simple bind
-- Pass-through Authentication *(planned)* — a cloud agent that validates the same way
+- [Pass-through Authentication](../pass-through-authentication/README.md) — a cloud agent that validates the same way
 
 ## Files
 

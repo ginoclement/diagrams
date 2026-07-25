@@ -24,3 +24,17 @@ actors, alternates, and security notes.
   [SP-initiated SSO](../saml/sp-initiated-sso/README.md) with [authorization-code](authorization-code/README.md).
 - [Tokenless patterns](../tokenless/README.md) — session cookies, mTLS, and other non-token schemes.
 - [Reference architecture](../architecture/identity-provider-reference-architecture/README.md) — where the OIDC IdP sits in a full IAM estate.
+
+## More diagrams
+
+- [DPoP — Demonstrating Proof of Possession (RFC 9449)](./dpop/README.md)
+- [OAuth 2.0 Dynamic Client Registration (RFC 7591 / RFC 7592)](./dynamic-client-registration/README.md)
+- [JWT-Secured Authorization Request (JAR, RFC 9101) and Response Mode (JARM)](./jar-jarm/README.md)
+- [OAuth 2.0 Mutual-TLS Client Authentication and Certificate-Bound Access Tokens (RFC 8705)](./mtls-bound-tokens/README.md)
+- [Pushed Authorization Requests (PAR, RFC 9126)](./pushed-authorization-requests/README.md)
+- [Resource Owner Password Credentials (ROPC) Grant](./resource-owner-password-credentials/README.md)
+- [Rich Authorization Requests (RAR, RFC 9396)](./rich-authorization-requests/README.md)
+- [OpenID Connect Session Management 1.0](./session-management/README.md)
+- [OAuth 2.0 Token Exchange (RFC 8693)](./token-exchange/README.md)
+- [OAuth 2.0 Token Introspection (RFC 7662)](./token-introspection/README.md)
+- [OAuth 2.0 Token Revocation (RFC 7009)](./token-revocation/README.md)

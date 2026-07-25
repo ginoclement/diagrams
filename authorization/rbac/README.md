@@ -60,9 +60,9 @@ activate a subset of a user's roles at a time (least privilege).
 
 - [ABAC](../abac/README.md) — attributes replace/augment roles when context matters.
 - [ReBAC / Zanzibar](../rebac-zanzibar/README.md) — per-object relationships instead of global roles.
-- Scopes, claims, entitlements *(planned)* — roles often ride in a
+- [Scopes, claims, entitlements](../scopes-claims-entitlements/README.md) — roles often ride in a
   token claim as the coarse layer.
-- Policy decision and enforcement *(planned)* — where the role
+- [Policy decision and enforcement](../policy-decision-enforcement/README.md) — where the role
   check runs at a gateway/sidecar.
 - [User lifecycle](../../user-lifecycle/README.md) — how role assignments are provisioned and revoked.
 

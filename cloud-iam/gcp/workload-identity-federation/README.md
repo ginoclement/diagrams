@@ -66,7 +66,7 @@ via `generateAccessToken` to get the final Google credential.
 - [Service Account Impersonation](../service-account-impersonation/README.md) — the second leg that mints the final SA token
 - [GKE Workload Identity](../gke-workload-identity/README.md) — the in-cluster keyless equivalent
 - [IAM Policy Evaluation](../iam-policy-evaluation/README.md) — how `principalSet://` members resolve
-- Entra Workload Identity Federation *(planned)* — the Microsoft counterpart
+- [Entra Workload Identity Federation](../../entra/workload-identity-federation/README.md) — the Microsoft counterpart
 
 ## Files
 

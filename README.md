@@ -12,7 +12,7 @@ Decision guides instead pair a **decision-tree flowchart** with a **comparison t
 
 - [`CONVENTIONS.md`](CONVENTIONS.md) — folder layout, diagram rules, Status/deprecation standard, mermaid safety
 - [`DEPRECATED.md`](DEPRECATED.md) — deprecated & legacy mechanisms, with "use instead" pointers
-- [`BACKLOG.md`](BACKLOG.md) — planned diagrams not yet built (an expansion pass was interrupted by an account spend limit)
+- [`BACKLOG.md`](BACKLOG.md) — build log (currently: complete)
 
 Each diagram README carries a **Status**: ✅ Current · 🟡 Legacy · ⛔ Deprecated · 🔵 Emerging.
 
@@ -21,26 +21,26 @@ Each diagram README carries a **Status**: ✅ Current · 🟡 Legacy · ⛔ Depr
 | Category | Focus | Diagrams |
 |---|---|---|
 | [saml](./saml/README.md) | SAML 2.0 web SSO, logout, profiles | 6 |
-| [oidc](./oidc/README.md) | OAuth 2.0 / OpenID Connect grants, logout, protocol extensions | 16 |
+| [oidc](./oidc/README.md) | OAuth 2.0 / OpenID Connect grants, logout, protocol extensions | 22 |
 | [tokenless](./tokenless/README.md) | Auth patterns without bearer tokens | 7 |
 | [kerberos](./kerberos/README.md) | Kerberos exchanges and delegation | 9 |
-| [authorization](./authorization/README.md) | Authorization models (RBAC/ABAC/ReBAC/PBAC/XACML) | 5 |
-| [adaptive-access](./adaptive-access/README.md) | Risk-based, step-up, continuous access | 3 |
+| [authorization](./authorization/README.md) | Authorization models (RBAC/ABAC/ReBAC/PBAC/XACML) | 8 |
+| [adaptive-access](./adaptive-access/README.md) | Risk-based, step-up, continuous access | 6 |
 | [user-lifecycle](./user-lifecycle/README.md) | Joiner/mover/leaver and governance | 6 |
 | [enrollment-and-update](./enrollment-and-update/README.md) | Registering authenticators, devices, certs | 6 |
 | [password-management](./password-management/README.md) | Reset, change, rotation, breach checks | 6 |
-| [privileged-access](./privileged-access/README.md) | PAM/PIM, JIT, break-glass, bastion | 3 |
-| [directory-and-sync](./directory-and-sync/README.md) | LDAP/AD auth and directory synchronization | 3 |
-| [cloud-iam](./cloud-iam/README.md) | Entra ID, AWS, and GCP identity flows | 19 |
+| [privileged-access](./privileged-access/README.md) | PAM/PIM, JIT, break-glass, bastion | 6 |
+| [directory-and-sync](./directory-and-sync/README.md) | LDAP/AD auth and directory synchronization | 7 |
+| [cloud-iam](./cloud-iam/README.md) | Entra ID, AWS, and GCP identity flows | 27 |
 | [platform-specific](./platform-specific/README.md) | Vendor-unique flows (Okta/Auth0/ForgeRock/PocketID) | 8 |
-| [workload-identity](./workload-identity/README.md) | Non-human / workload identity | 4 |
+| [workload-identity](./workload-identity/README.md) | Non-human / workload identity | 6 |
 | [cicd](./cicd/README.md) | CI/CD access control, pipelines, code promotion | 10 |
-| [threat-defense](./threat-defense/README.md) | Attack-and-defense pairs | 4 |
-| [personas](./personas/README.md) | Persona archetypes and per-persona flow forks | 3 |
-| [decision-guides](./decision-guides/README.md) | Which mechanism to choose, and why | 6 |
+| [threat-defense](./threat-defense/README.md) | Attack-and-defense pairs | 8 |
+| [personas](./personas/README.md) | Persona archetypes and per-persona flow forks | 5 |
+| [decision-guides](./decision-guides/README.md) | Which mechanism to choose, and why | 8 |
 | [architecture](./architecture/README.md) | System topology and trust boundaries | 6 |
 | [network-security](./network-security/README.md) | Transport, segmentation, perimeter | 6 |
-| | **Total** | **136** |
+| | **Total** | **173** |
 
 ## Diagram index
 
@@ -62,12 +62,18 @@ Each diagram README carries a **Status**: ✅ Current · 🟡 Legacy · ⛔ Depr
 - [OAuth 2.0 Client Credentials Grant (Machine-to-Machine)](./oidc/client-credentials/README.md)
 - [Device Authorization Grant (RFC 8628)](./oidc/device-authorization/README.md)
 - [DPoP — Demonstrating Proof of Possession (RFC 9449)](./oidc/dpop/README.md)
+- [OAuth 2.0 Dynamic Client Registration (RFC 7591 / RFC 7592)](./oidc/dynamic-client-registration/README.md)
 - [Front-Channel Logout](./oidc/front-channel-logout/README.md)
 - [OIDC Hybrid Flow (response_type=code id_token)](./oidc/hybrid/README.md)
 - [OIDC Implicit Flow (Legacy — Deprecated)](./oidc/implicit/README.md)
+- [JWT-Secured Authorization Request (JAR, RFC 9101) and Response Mode (JARM)](./oidc/jar-jarm/README.md)
+- [OAuth 2.0 Mutual-TLS Client Authentication and Certificate-Bound Access Tokens (RFC 8705)](./oidc/mtls-bound-tokens/README.md)
 - [Pushed Authorization Requests (PAR, RFC 9126)](./oidc/pushed-authorization-requests/README.md)
 - [OAuth 2.0 / OIDC Refresh Token Grant](./oidc/refresh-token/README.md)
+- [Resource Owner Password Credentials (ROPC) Grant](./oidc/resource-owner-password-credentials/README.md)
+- [Rich Authorization Requests (RAR, RFC 9396)](./oidc/rich-authorization-requests/README.md)
 - [RP-Initiated Logout](./oidc/rp-initiated-logout/README.md)
+- [OpenID Connect Session Management 1.0](./oidc/session-management/README.md)
 - [OAuth 2.0 Token Exchange (RFC 8693)](./oidc/token-exchange/README.md)
 - [OAuth 2.0 Token Introspection (RFC 7662)](./oidc/token-introspection/README.md)
 - [OAuth 2.0 Token Revocation (RFC 7009)](./oidc/token-revocation/README.md)
@@ -97,14 +103,20 @@ Each diagram README carries a **Status**: ✅ Current · 🟡 Legacy · ⛔ Depr
 ### [authorization](./authorization/README.md) — Authorization models (RBAC/ABAC/ReBAC/PBAC/XACML)
 
 - [Attribute-Based Access Control (ABAC)](./authorization/abac/README.md)
+- [OAuth Consent as an Authorization Mechanism](./authorization/oauth-consent-authorization/README.md)
 - [Policy-Based Access Control with an External Policy Engine (OPA / Cedar)](./authorization/pbac-policy-engine/README.md)
+- [Policy Decision and Enforcement (PEP / PDP / PIP / PAP)](./authorization/policy-decision-enforcement/README.md)
 - [Role-Based Access Control (RBAC)](./authorization/rbac/README.md)
 - [Relationship-Based Access Control (ReBAC) — Google Zanzibar Model](./authorization/rebac-zanzibar/README.md)
+- [Scopes, Claims, and Entitlements](./authorization/scopes-claims-entitlements/README.md)
 - [XACML — PDP / PEP Reference Architecture](./authorization/xacml-pdp-pep/README.md)
 
 ### [adaptive-access](./adaptive-access/README.md) — Risk-based, step-up, continuous access
 
 - [Continuous Access Evaluation (CAE)](./adaptive-access/continuous-access-evaluation/README.md)
+- [Device Posture Conditional Access](./adaptive-access/device-posture-conditional-access/README.md)
+- [Impossible Travel / Anomalous Session Detection](./adaptive-access/impossible-travel-anomaly/README.md)
+- [MFA Fatigue (Push Bombing) and Number Matching](./adaptive-access/mfa-fatigue-number-matching/README.md)
 - [Risk-Based Adaptive Authentication](./adaptive-access/risk-based-adaptive-authentication/README.md)
 - [Step-Up Authentication](./adaptive-access/step-up-authentication/README.md)
 
@@ -140,11 +152,18 @@ Each diagram README carries a **Status**: ✅ Current · 🟡 Legacy · ⛔ Depr
 - [Break-Glass Emergency Access](./privileged-access/break-glass-emergency-access/README.md)
 - [Credential Vault Check-Out / Check-In](./privileged-access/credential-vault-checkout/README.md)
 - [Just-In-Time Privilege Elevation](./privileged-access/jit-privilege-elevation/README.md)
+- [Secrets Broker with Dynamic Credentials](./privileged-access/secrets-broker-dynamic-credentials/README.md)
+- [Privileged Session Recording and Monitoring](./privileged-access/session-recording-monitoring/README.md)
+- [SSH Bastion / Jump Host with Short-Lived Certificates](./privileged-access/ssh-bastion-jump-host/README.md)
 
 ### [directory-and-sync](./directory-and-sync/README.md) — LDAP/AD auth and directory synchronization
 
 - [Active Directory Interactive Logon](./directory-and-sync/active-directory-logon/README.md)
+- [Federated vs Managed Authentication](./directory-and-sync/federated-vs-managed-auth/README.md)
+- [Group Membership Sync](./directory-and-sync/group-membership-sync/README.md)
+- [HR-Driven Inbound Provisioning](./directory-and-sync/hr-driven-inbound-provisioning/README.md)
 - [LDAP Bind Authentication](./directory-and-sync/ldap-bind-authentication/README.md)
+- [Pass-Through Authentication (PTA)](./directory-and-sync/pass-through-authentication/README.md)
 - [Password Hash Synchronization (PHS)](./directory-and-sync/password-hash-sync/README.md)
 
 ### [cloud-iam](./cloud-iam/README.md) — Entra ID, AWS, and GCP identity flows
@@ -153,19 +172,27 @@ Each diagram README carries a **Status**: ✅ Current · 🟡 Legacy · ⛔ Depr
 - [AssumeRoleWithWebIdentity (OIDC Federation)](./cloud-iam/aws/assumerole-web-identity-oidc/README.md)
 - [Amazon Cognito Identity Pool (AWS Credentials Exchange)](./cloud-iam/aws/cognito-identity-pool/README.md)
 - [Amazon Cognito User Pool Sign-In](./cloud-iam/aws/cognito-user-pool/README.md)
+- [AWS Cross-Account Role Assumption](./cloud-iam/aws/cross-account-role-assumption/README.md)
 - [AWS IAM Identity Center SSO (formerly AWS SSO)](./cloud-iam/aws/iam-identity-center-sso/README.md)
+- [EC2 Instance Credentials via IMDSv2](./cloud-iam/aws/imdsv2-instance-credentials/README.md)
+- [IRSA — IAM Roles for Service Accounts (EKS)](./cloud-iam/aws/irsa-eks/README.md)
+- [AWS Signature Version 4 (SigV4) Request Signing](./cloud-iam/aws/sigv4-request-signing/README.md)
 - [AWS STS AssumeRole](./cloud-iam/aws/sts-assumerole/README.md)
 - [B2B Guest Invitation and Redemption (Entra External ID)](./cloud-iam/entra/b2b-external-id-invitation/README.md)
 - [Conditional Access Policy Evaluation](./cloud-iam/entra/conditional-access-evaluation/README.md)
 - [Continuous Access Evaluation (CAE)](./cloud-iam/entra/continuous-access-evaluation/README.md)
 - [Device Join and Registration (Entra Join / Hybrid Join / Registered)](./cloud-iam/entra/device-join-registration/README.md)
+- [Entra Hybrid Identity Sync (PHS vs PTA vs Federation)](./cloud-iam/entra/hybrid-identity-sync/README.md)
+- [Azure Managed Identity via IMDS](./cloud-iam/entra/managed-identity-imds/README.md)
 - [PIM Just-in-Time Role Elevation](./cloud-iam/entra/pim-jit-elevation/README.md)
 - [Primary Refresh Token (PRT)](./cloud-iam/entra/primary-refresh-token/README.md)
 - [Windows Hello for Business (WHfB)](./cloud-iam/entra/windows-hello-for-business/README.md)
+- [Entra Workload Identity Federation](./cloud-iam/entra/workload-identity-federation/README.md)
 - [Application Default Credentials (ADC)](./cloud-iam/gcp/application-default-credentials/README.md)
 - [GKE Workload Identity](./cloud-iam/gcp/gke-workload-identity/README.md)
 - [GCP IAM Allow-Policy Evaluation](./cloud-iam/gcp/iam-policy-evaluation/README.md)
 - [Identity-Aware Proxy (IAP)](./cloud-iam/gcp/identity-aware-proxy/README.md)
+- [3-Legged OAuth to Google APIs](./cloud-iam/gcp/oauth-google-apis/README.md)
 - [Service Account Impersonation](./cloud-iam/gcp/service-account-impersonation/README.md)
 - [Workload Identity Federation](./cloud-iam/gcp/workload-identity-federation/README.md)
 
@@ -182,6 +209,8 @@ Each diagram README carries a **Status**: ✅ Current · 🟡 Legacy · ⛔ Depr
 
 ### [workload-identity](./workload-identity/README.md) — Non-human / workload identity
 
+- [Kubernetes Projected ServiceAccount Token](./workload-identity/kubernetes-serviceaccount-token/README.md)
+- [Mutual TLS Identity Bootstrap](./workload-identity/mutual-tls-bootstrap/README.md)
 - [Secretless Instance Identity (IMDS / Metadata Server)](./workload-identity/secretless-instance-identity/README.md)
 - [Service-Account Key Lifecycle](./workload-identity/service-account-key-lifecycle/README.md)
 - [SPIFFE Identity Issuance with SPIRE](./workload-identity/spiffe-spire-issuance/README.md)
@@ -202,14 +231,20 @@ Each diagram README carries a **Status**: ✅ Current · 🟡 Legacy · ⛔ Depr
 
 ### [threat-defense](./threat-defense/README.md) — Attack-and-defense pairs
 
+- [Adversary-in-the-Middle (AiTM) MFA Phishing](./threat-defense/aitm-mfa-phishing/README.md)
+- [Device Code Phishing](./threat-defense/device-code-phishing/README.md)
 - [Golden SAML](./threat-defense/golden-saml/README.md)
 - [Golden & Silver Ticket](./threat-defense/golden-silver-ticket/README.md)
 - [Kerberoasting](./threat-defense/kerberoasting/README.md)
+- [OAuth Consent Phishing (Illicit Consent Grant)](./threat-defense/oauth-consent-phishing/README.md)
 - [Pass-the-Hash / Pass-the-Ticket](./threat-defense/pass-the-hash-ticket/README.md)
+- [Token Theft & Replay](./threat-defense/token-theft-replay/README.md)
 
 ### [personas](./personas/README.md) — Persona archetypes and per-persona flow forks
 
+- [Access Review by Persona](./personas/access-review-by-persona/README.md)
 - [Authentication by Persona](./personas/authentication-by-persona/README.md)
+- [Credential Recovery by Persona](./personas/credential-recovery-by-persona/README.md)
 - [Enrollment by Persona](./personas/enrollment-by-persona/README.md)
 - [JML Lifecycle by Persona](./personas/jml-lifecycle-by-persona/README.md)
 
@@ -217,10 +252,12 @@ Each diagram README carries a **Status**: ✅ Current · 🟡 Legacy · ⛔ Depr
 
 - [Choosing a Kerberos Delegation Model](./decision-guides/choosing-a-kerberos-delegation-model/README.md)
 - [Choosing an Authentication Protocol](./decision-guides/choosing-an-authentication-protocol/README.md)
+- [Choosing an Authorization Model](./decision-guides/choosing-an-authorization-model/README.md)
 - [Choosing an MFA Factor](./decision-guides/choosing-an-mfa-factor/README.md)
 - [Choosing an OAuth 2.0 Grant](./decision-guides/choosing-an-oauth-grant/README.md)
 - [Choosing Session vs Token](./decision-guides/choosing-session-vs-token/README.md)
 - [Choosing Workload Cloud Authentication](./decision-guides/choosing-workload-cloud-auth/README.md)
+- [SAML-to-OIDC Migration](./decision-guides/saml-to-oidc-migration/README.md)
 
 ### [architecture](./architecture/README.md) — System topology and trust boundaries
 
@@ -240,6 +277,3 @@ Each diagram README carries a **Status**: ✅ Current · 🟡 Legacy · ⛔ Depr
 - [TLS 1.3 Handshake](./network-security/tls-handshake/README.md)
 - [Remote Access VPN](./network-security/vpn-remote-access/README.md)
 
----
-
-_Some planned diagrams are not yet built — see [BACKLOG.md](BACKLOG.md)._

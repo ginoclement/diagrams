@@ -66,7 +66,7 @@ entire control set is compensating detection and accountability rather than prev
 
 - [jit-privilege-elevation](../jit-privilege-elevation/README.md) — the everyday path this is the fallback for when PIM/approval is itself unavailable.
 - [credential-vault-checkout](../credential-vault-checkout/README.md) — the vault mechanics; break-glass is a hardened, multi-person, alarmed variant of a check-out.
-- session-recording-monitoring *(planned)* — an invoked emergency session should still be fully recorded.
+- [session-recording-monitoring](../session-recording-monitoring/README.md) — an invoked emergency session should still be fully recorded.
 
 ## Files
 

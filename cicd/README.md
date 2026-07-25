@@ -46,7 +46,7 @@ generic patterns) because the controls differ in name but rhyme in shape across 
 - [Cloud IAM](../cloud-iam/README.md) — the cloud side of OIDC federation:
   [AWS AssumeRoleWithWebIdentity](../cloud-iam/aws/assumerole-web-identity-oidc/README.md),
   [GCP Workload Identity Federation](../cloud-iam/gcp/workload-identity-federation/README.md),
-  Entra workload identity federation *(planned)*.
+  [Entra workload identity federation](../cloud-iam/entra/workload-identity-federation/README.md).
 - [Authorization models](../authorization/README.md) — [RBAC](../authorization/rbac/README.md)
   underlies who can view, run, and approve pipelines.
 - [OIDC flows](../oidc/README.md) — the token format and validation reused by CI-to-cloud

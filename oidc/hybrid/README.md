@@ -1,5 +1,7 @@
 # OIDC Hybrid Flow (response_type=code id_token)
 
+**Status:** ✅ Current
+
 A combination flow: the `/authorize` response returns **both** an authorization code and an
 ID token in the front channel (fragment), while the access token still comes from the
 back-channel `/token` exchange. The front-channel ID token lets the client establish who the

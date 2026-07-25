@@ -1,5 +1,7 @@
 # OAuth 2.0 Client Credentials Grant (Machine-to-Machine)
 
+**Status:** ✅ Current
+
 A machine-to-machine grant with **no user involved**. The client authenticates as *itself*
 to the `/token` endpoint (`grant_type=client_credentials`) and receives an access token
 representing the client's own authorization — typically for a batch job, microservice,

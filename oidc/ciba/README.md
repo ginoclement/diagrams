@@ -1,5 +1,7 @@
 # CIBA — Client-Initiated Backchannel Authentication
 
+**Status:** ✅ Current
+
 ## Purpose
 
 CIBA (OpenID Connect Client-Initiated Backchannel Authentication) is a **decoupled**

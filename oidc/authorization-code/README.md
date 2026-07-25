@@ -1,5 +1,7 @@
 # OIDC Authorization Code Flow (Confidential Client)
 
+**Status:** ✅ Current
+
 The baseline OpenID Connect flow. A confidential client (server-side web app that can keep a
 secret) redirects the browser to the IdP's `/authorize` endpoint with
 `response_type=code&scope=openid`, the user authenticates and consents, and the IdP returns a

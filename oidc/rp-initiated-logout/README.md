@@ -1,5 +1,7 @@
 # RP-Initiated Logout
 
+**Status:** ✅ Current
+
 ## Purpose
 
 OpenID Connect RP-Initiated Logout 1.0 lets a Relying Party (Client) that wants to log

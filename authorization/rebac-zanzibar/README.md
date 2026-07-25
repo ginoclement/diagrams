@@ -72,7 +72,7 @@ SpiceDB, OpenFGA, Ory Keto, and Auth0 FGA. Its building blocks:
 - [ABAC](../abac/README.md) — attribute conditions; some FGA systems combine ReBAC + ABAC.
 - [Policy engine (OPA/Cedar)](../pbac-policy-engine/README.md) — Cedar supports relationship-style
   policies; an alternative mechanism.
-- Policy decision and enforcement *(planned)* — Check is the PDP
+- [Policy decision and enforcement](../policy-decision-enforcement/README.md) — Check is the PDP
   call in the generic pattern.
 
 ## Files

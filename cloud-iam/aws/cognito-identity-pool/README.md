@@ -75,7 +75,7 @@ either an **authenticated role** (a recognized login provider token was supplied
 - [Cognito user pool](../cognito-user-pool/README.md) — the sign-in that produces the token exchanged here.
 - [AssumeRoleWithWebIdentity (OIDC)](../assumerole-web-identity-oidc/README.md) — the STS call the classic flow uses.
 - [STS AssumeRole](../sts-assumerole/README.md) — the underlying temporary-credential primitive.
-- SigV4 request signing *(planned)* — how the returned credentials sign AWS calls.
+- [SigV4 request signing](../sigv4-request-signing/README.md) — how the returned credentials sign AWS calls.
 
 ## Files
 

@@ -44,10 +44,10 @@ standard cloud credential check, fully independent of on-prem availability.
   to the password and **not** the NT hash itself, so it cannot be replayed on-prem.
 - Authentication is **cloud-only**: the on-prem directory can be completely offline and cloud
   sign-in still succeeds. Contrast with
-  Pass-through Authentication *(planned)*, which validates live
+  [Pass-through Authentication](../pass-through-authentication/README.md), which validates live
   against AD.
 - PHS is a facet of the broader
-  Entra hybrid identity sync *(planned)* that also
+  [Entra hybrid identity sync](../../cloud-iam/entra/hybrid-identity-sync/README.md) that also
   provisions users, groups, and attributes.
 
 ## Alternate scenarios covered
@@ -73,10 +73,10 @@ standard cloud credential check, fully independent of on-prem availability.
 
 ## Related diagrams
 
-- Pass-through Authentication *(planned)* — same-password sign-in validated live on-prem instead
-- Federated vs Managed Authentication *(planned)* — where PHS sits as the managed option
-- Entra Hybrid Identity Sync *(planned)* — the full directory sync PHS is part of
-- HR-Driven Inbound Provisioning *(planned)* — how the accounts being synced are created
+- [Pass-through Authentication](../pass-through-authentication/README.md) — same-password sign-in validated live on-prem instead
+- [Federated vs Managed Authentication](../federated-vs-managed-auth/README.md) — where PHS sits as the managed option
+- [Entra Hybrid Identity Sync](../../cloud-iam/entra/hybrid-identity-sync/README.md) — the full directory sync PHS is part of
+- [HR-Driven Inbound Provisioning](../hr-driven-inbound-provisioning/README.md) — how the accounts being synced are created
 - [Conditional Access Evaluation](../../cloud-iam/entra/conditional-access-evaluation/README.md) — policy applied at the cloud sign-in
 
 ## Files

@@ -1,5 +1,7 @@
 # OIDC Authorization Code Flow with PKCE (Public Client)
 
+**Status:** ✅ Current
+
 The authorization code flow hardened with Proof Key for Code Exchange (RFC 7636) for public
 clients — SPAs and native/mobile apps that cannot keep a client secret. Before redirecting to
 `/authorize`, the app generates a random `code_verifier`, derives

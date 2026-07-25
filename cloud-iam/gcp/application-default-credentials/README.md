@@ -68,7 +68,7 @@ The first source that yields a credential wins; the search stops there.
 - [Workload Identity Federation](../workload-identity-federation/README.md) — external_account configs ADC can load
 - [GKE Workload Identity](../gke-workload-identity/README.md) — the metadata-server source inside GKE pods
 - [Service Account Impersonation](../service-account-impersonation/README.md) — impersonated_service_account configs
-- OAuth to Google APIs *(planned)* — where gcloud user credentials come from
+- [OAuth to Google APIs](../oauth-google-apis/README.md) — where gcloud user credentials come from
 
 ## Files
 

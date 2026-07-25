@@ -1,5 +1,7 @@
 # OIDC Implicit Flow (Legacy — Deprecated)
 
+**Status:** ⛔ Deprecated
+
 The original browser-app flow: the client requests `response_type=id_token token` (or just
 `id_token`) and the IdP returns the tokens **directly in the URL fragment** of the redirect —
 no code, no back-channel, no client authentication. It existed because pre-CORS browsers
@@ -69,3 +71,13 @@ reference for recognizing and migrating legacy integrations.
 - [Authorization Code](../authorization-code/README.md) — the confidential-client baseline.
 - [SAML IdP-Initiated SSO](../../saml/idp-initiated-sso/README.md) — a SAML pattern with a
   comparable unsolicited-response weakness.
+
+## Why deprecated
+
+The Implicit flow returns tokens directly in the redirect URI fragment, exposing them to
+browser history, referrer leakage, and script access, with no client authentication and no
+way to use refresh-token rotation. The OAuth 2.0 Security BCP and OAuth 2.1 remove it.
+
+## Use instead
+
+[Authorization Code + PKCE](../authorization-code-pkce/README.md).

@@ -59,10 +59,10 @@ Two patterns:
 
 - [Client Credentials](../client-credentials/README.md) — the simpler M2M grant when no user subject is involved.
 - [Refresh Token](../refresh-token/README.md) — the other way to obtain a fresh, possibly narrowed token.
-- Rich Authorization Requests *(planned)* — fine-grained authorization_details the exchanged token can carry.
+- [Rich Authorization Requests](../rich-authorization-requests/README.md) — fine-grained authorization_details the exchanged token can carry.
 - [Token Introspection](../token-introspection/README.md) — how a downstream API validates the exchanged token.
 - [Workload Identity](../../workload-identity/README.md) — service-to-service identity where token exchange is common.
-- Policy Decision / Enforcement *(planned)* — enforcing the narrowed grant downstream.
+- [Policy Decision / Enforcement](../../authorization/policy-decision-enforcement/README.md) — enforcing the narrowed grant downstream.
 
 ## Files
 

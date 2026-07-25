@@ -18,7 +18,7 @@ one-time trust configuration registered at the target.
 
 - CI/CD pipelines (GitHub Actions, GitLab, etc.) deploying to a cloud without stored keys.
 - Cross-cloud access: a workload in cloud A calling cloud B.
-- Kubernetes workloads exchanging a projected ServiceAccount token for cloud credentials — see kubernetes-serviceaccount-token *(planned)*.
+- Kubernetes workloads exchanging a projected ServiceAccount token for cloud credentials — see [kubernetes-serviceaccount-token](../kubernetes-serviceaccount-token/README.md).
 - The recommended replacement for [service-account-key-lifecycle](../service-account-key-lifecycle/README.md).
 
 ## Actors
@@ -56,9 +56,9 @@ one-time trust configuration registered at the target.
 ## Related diagrams
 
 - [service-account-key-lifecycle](../service-account-key-lifecycle/README.md) — the legacy static-key approach this replaces.
-- kubernetes-serviceaccount-token *(planned)* — the projected token most often exchanged this way.
+- [kubernetes-serviceaccount-token](../kubernetes-serviceaccount-token/README.md) — the projected token most often exchanged this way.
 - [secretless-instance-identity](../secretless-instance-identity/README.md) — the on-VM equivalent when the workload already runs on the target cloud.
-- [cloud-iam/aws/sts-assumerole](../../cloud-iam/aws/sts-assumerole/README.md), [cloud-iam/gcp/workload-identity-federation](../../cloud-iam/gcp/workload-identity-federation/README.md), cloud-iam/entra/workload-identity-federation *(planned)* — vendor specifics.
+- [cloud-iam/aws/sts-assumerole](../../cloud-iam/aws/sts-assumerole/README.md), [cloud-iam/gcp/workload-identity-federation](../../cloud-iam/gcp/workload-identity-federation/README.md), [cloud-iam/entra/workload-identity-federation](../../cloud-iam/entra/workload-identity-federation/README.md) — vendor specifics.
 - [oidc/authorization-code-pkce](../../oidc/authorization-code-pkce/README.md) — OIDC token validation fundamentals.
 
 ## Files
