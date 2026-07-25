@@ -1,0 +1,8 @@
+# Docusaurus / Node
+node_modules
+build
+.docusaurus
+.cache-loader
+
+# Synced content (generated from the repo root by scripts/sync-docs.mjs)
+docs
