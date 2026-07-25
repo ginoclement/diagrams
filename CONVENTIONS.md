@@ -58,3 +58,38 @@ To keep diagrams rendering on GitHub and in mermaid-cli:
 | Resource/API server | `API` |
 | Directory / user store | `Directory` |
 | Kerberos KDC components | `AS`, `TGS`, `KDC` |
+
+## Status and deprecation callouts
+
+This repository is meant to be a catalog of **every option**, including obsolete ones —
+so each diagram's status must be explicit. Every diagram folder's `README.md` starts with
+a **Status line** immediately under the H1 title, using one of:
+
+- `**Status:** ✅ Current` — recommended / in active use
+- `**Status:** 🟡 Legacy` — still deployed and valid, but newer options are preferred
+- `**Status:** ⛔ Deprecated` — actively discouraged; MUST include a **"Why deprecated"**
+  note and a **"Use instead"** link to the recommended alternative
+- `**Status:** 🔵 Emerging` — newer standard, not yet ubiquitous
+
+Deprecated diagrams are kept (not deleted) for reference, and are listed in the root
+[`DEPRECATED.md`](DEPRECATED.md) index. Examples already in the repo that should carry
+`⛔ Deprecated`: OIDC Implicit flow, ROPC, SAML (vs OIDC for new greenfield), NTLM,
+unconstrained Kerberos delegation, SMS/voice OTP as a primary factor.
+
+## Decision-guide diagrams
+
+The `decision-guides/` category answers "**which mechanism should I choose?**" Its
+diagrams are `flowchart` decision trees whose leaves are rounded nodes linking to the
+chosen flow's folder (e.g. a leaf `["Use Authorization Code + PKCE"]` sits next to a
+Markdown link to that diagram). Selection criteria (client type, trust boundary,
+interactivity, compliance) are the decision `{diamonds}`. Deprecated options appear as
+leaves too, marked `⛔` with the recommended replacement.
+
+## Persona variants
+
+Personas are defined once in [`personas/README.md`](personas/README.md) with a
+persona × flow variance matrix. A flow gets its own persona-specific diagram folder
+**only when the flow materially forks** by persona; otherwise the variance is captured
+as a note in the base diagram and a row in the matrix. Persona names are consistent:
+`Workforce`, `Contractor`, `Partner/B2B`, `Consumer`, `Privileged`, `Guest`,
+`Workload`, `Device`, `Break-glass`, `Developer`.
