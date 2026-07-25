@@ -1,0 +1,53 @@
+{
+  "title": "OIDC Dynamic Client Registration (RFC 7591 / 7592)",
+  "subtitle": "A client registers itself with the authorization server over a JSON API, receiving a client_id, optional secret, and management handles — then reads and updates its own record.",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "Client", "to": "Client", "label": "Build client_metadata", "hop": "Client (local)",
+      "lede": "The AS advertises a registration_endpoint in its metadata. The client assembles the client_metadata document it wants: redirect URIs, grant types, response types, and how it will authenticate at the token endpoint.",
+      "codeTitle": "client_metadata to register",
+      "code": "{\n  \"client_name\": \"Synthetic Sample App\",\n  \"redirect_uris\": [\"https://client.example.com/cb\"],\n  \"grant_types\": [\"authorization_code\", \"refresh_token\"],\n  \"response_types\": [\"code\"],\n  \"token_endpoint_auth_method\": \"client_secret_basic\",\n  \"scope\": \"openid profile\"\n}",
+      "devtools": "DCR is a plain back-channel JSON API — every request and response is directly readable. The interesting part is what metadata you ask for here versus what credentials the AS hands back."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "POST /register", "hop": "Client → IdP",
+      "lede": "The client posts the metadata document as JSON. For protected registration it would also send an Authorization: Bearer <initial access token> and/or a signed software_statement JWT in the body.",
+      "req": { "method": "POST", "url": "https://as.example.com/register",
+        "headers": [["host", "as.example.com"], ["content-type", "application/json"]],
+        "json": "{\n  \"client_name\": \"Synthetic Sample App\",\n  \"redirect_uris\": [\"https://client.example.com/cb\"],\n  \"grant_types\": [\"authorization_code\", \"refresh_token\"],\n  \"response_types\": [\"code\"],\n  \"token_endpoint_auth_method\": \"client_secret_basic\",\n  \"scope\": \"openid profile\"\n}" },
+      "devtools": "Content-Type is <code>application/json</code>. Inspect the body's <b>redirect_uris</b>, <b>grant_types</b>, <b>response_types</b>, and <b>token_endpoint_auth_method</b>. For protected registration, note the <code>Authorization: Bearer</code> header and/or a <code>software_statement</code> JWT inside the JSON."
+    },
+    {
+      "from": "IdP", "to": "IdP", "label": "Validate metadata", "hop": "IdP (local)",
+      "lede": "The AS validates the requested redirect_uris (must be https), grant_types, and scope. For protected registration it also verifies the software_statement's signature against the trusted directory's keys — its claims then override the plain JSON.",
+      "devtools": "If a <code>software_statement</code> was sent, split it on <code>.</code> and base64url-decode the payload. Its asserted claims (<code>redirect_uris</code>, <code>software_id</code>, <code>token_endpoint_auth_method</code>) override the client-supplied JSON — but only after the AS verifies the signature."
+    },
+    {
+      "from": "IdP", "to": "Client", "label": "201 Created — credentials + handles", "hop": "IdP → Client",
+      "lede": "The AS assigns a client_id (and a client_secret for confidential auth methods), plus two management handles: a high-value registration_access_token and the per-client registration_client_uri.",
+      "resp": { "status": 201, "statusText": "Created", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"client_id\": \"s6bhdrkqt3\",\n  \"client_secret\": \"SYNTH_cGE5c2VjcmV0X2RvX25vdF91c2U\",\n  \"client_id_issued_at\": 1774000000,\n  \"client_secret_expires_at\": 1805536000,\n  \"registration_access_token\": \"SYNTH_reg_at_2Yotnf9Xz_do_not_use\",\n  \"registration_client_uri\": \"https://as.example.com/register/s6bhdrkqt3\",\n  \"redirect_uris\": [\"https://client.example.com/cb\"],\n  \"grant_types\": [\"authorization_code\", \"refresh_token\"],\n  \"token_endpoint_auth_method\": \"client_secret_basic\"\n}" },
+      "devtools": "The response is the most important thing to read. <b>client_secret</b> appears only for confidential auth methods — treat it as a secret. The <b>registration_access_token</b> is a long-lived, high-value bearer credential that can later rewrite <code>redirect_uris</code> — guard it. <b>registration_client_uri</b> is the per-client RFC 7592 management URL."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "GET registration_client_uri (RFC 7592)", "hop": "Client → IdP",
+      "lede": "The client reads its own record back, authenticating with the registration_access_token. The AS returns the current metadata.",
+      "req": { "method": "GET", "url": "https://as.example.com/register/s6bhdrkqt3",
+        "headers": [["host", "as.example.com"], ["authorization", "Bearer SYNTH_reg_at_2Yotnf9Xz_do_not_use"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{\n  \"client_id\": \"s6bhdrkqt3\",\n  \"client_name\": \"Synthetic Sample App\",\n  \"redirect_uris\": [\"https://client.example.com/cb\"],\n  \"grant_types\": [\"authorization_code\", \"refresh_token\"],\n  \"token_endpoint_auth_method\": \"client_secret_basic\"\n}" },
+      "devtools": "The GET carries <code>Authorization: Bearer &lt;registration_access_token&gt;</code>. A <b>PUT</b> to the same URI updates the record (full metadata in the body) and the 200 may return a <b>rotated</b> registration_access_token — if so, the old one is now dead. A <b>DELETE</b> deregisters and returns <b>204 No Content</b>."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "Invalid metadata → 400", "hop": "Client → IdP",
+      "lede": "A registration whose redirect_uri fails policy — here a non-https URI — is rejected. The AS never issues a client for metadata it will not honor.",
+      "req": { "method": "POST", "url": "https://as.example.com/register",
+        "headers": [["host", "as.example.com"], ["content-type", "application/json"]],
+        "json": "{ \"redirect_uris\": [\"http://evil.example/inject\"] }" },
+      "resp": { "status": 400, "statusText": "Bad Request", "headers": [["content-type", "application/json"]],
+        "json": "{\n  \"error\": \"invalid_redirect_uri\",\n  \"error_description\": \"redirect_uri must be https\"\n}" },
+      "devtools": "A <b>400</b> with <code>{\"error\":\"invalid_redirect_uri\"}</code> (or <code>invalid_client_metadata</code>) means the AS rejected the requested metadata. On a 7592 management call, a missing / stale / stolen <b>registration_access_token</b> instead returns <b>401 Unauthorized</b>."
+    }
+  ]
+}

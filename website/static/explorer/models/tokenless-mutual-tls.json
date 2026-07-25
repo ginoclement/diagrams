@@ -1,0 +1,73 @@
+{
+  "title": "Mutual TLS (mTLS) Client-Certificate Auth",
+  "subtitle": "The client authenticates with a certificate inside the TLS handshake — one layer below HTTP, so it never appears in the Network tab. Step through it and learn where the credential actually lives.",
+  "category": "Tokenless",
+  "steps": [
+    {
+      "from": "Client", "to": "Server", "label": "ClientHello",
+      "hop": "Client → Server (TLS handshake)",
+      "lede": "The client opens the TLS connection. Everything about client authentication happens in this handshake, below HTTP — there is no request row, header, or cookie carrying the certificate.",
+      "devtools": "This is <b>not</b> in the Network tab — it is the TLS handshake, one layer under HTTP. To watch it, use the browser <b>Security</b> panel or capture a NetLog via <code>chrome://net-export</code> (inspect <code>SSL_HANDSHAKE</code> / <code>CERT_VERIFIER</code> events)."
+    },
+    {
+      "from": "Server", "to": "Client", "label": "CertificateRequest",
+      "hop": "Server → Client (TLS handshake)",
+      "lede": "The server sends its own certificate and a CertificateRequest naming acceptable CAs and signature algorithms — this is what asks the client to authenticate with a cert.",
+      "devtools": "Still handshake-level, invisible to the Network tab. The <b>server</b> cert is viewable under DevTools → <b>Security</b> → <i>View certificate</i>. The <b>client</b> cert choice is surfaced by the OS/browser cert-selection prompt, not an HTTP row."
+    },
+    {
+      "from": "Client", "to": "Server", "label": "Client Certificate + CertificateVerify",
+      "hop": "Client → Server (TLS handshake)",
+      "lede": "The client sends its certificate chain and a CertificateVerify — a signature over the handshake transcript proving possession of the private key. In TLS 1.3 this is sent after encryption is established, so even a packet sniffer cannot see it.",
+      "codeTitle": "See the handshake with openssl (terminal, not DevTools)",
+      "code": "openssl s_client -connect api.internal.example.com:443 \\\n  -cert client.crt -key client.key -CAfile ca.crt -tls1_3 </dev/null \\\n  | openssl x509 -noout -subject -issuer -dates -ext subjectAltName\n\n# subject= CN=svc-orders,O=Example,OU=payments\n# issuer=  CN=Synthetic Test CA\n# notBefore=Jul 25 00:00:00 2026 GMT\n# notAfter= Oct 23 00:00:00 2026 GMT\n# X509v3 Subject Alternative Name:\n#     URI:spiffe://example.com/ns/pay/sa/orders",
+      "devtools": "Not observable in the Network tab — the signature proves key possession and cannot be replayed on another connection. Use <code>openssl s_client</code> to actually inspect the client cert's <b>subject</b>, <b>issuer</b>, <b>validity</b>, and <b>SAN</b> — the fields the server maps to an identity."
+    },
+    {
+      "from": "Server", "to": "Server", "label": "Validate cert · chain · EKU · revocation",
+      "hop": "Server (local)",
+      "lede": "The server verifies the CertificateVerify signature, validates the chain to a trusted CA, checks notBefore/notAfter and that EKU contains clientAuth, then checks revocation via OCSP or CRL.",
+      "jwt": { "title": "Client certificate fields the server checks", "header": "",
+        "payload": [
+          ["Subject", "CN=svc-orders, O=Example, OU=payments", "Mapped to an application identity — never trust CN display alone"],
+          ["Issuer", "CN=Synthetic Test CA", "Must chain to a pinned/trusted CA to prevent cross-CA impersonation"],
+          ["Not Before", "2026-07-25T00:00:00Z", "Validity window start"],
+          ["Not After", "2026-10-23T00:00:00Z", "Short-lived (90 days) — prefer automated rotation (e.g. SPIFFE SVIDs)"],
+          ["SAN (URI)", "spiffe://example.com/ns/pay/sa/orders", "The SPIFFE ID — the deliberate identity mapping"],
+          ["Extended Key Usage", "clientAuth", "Must be present for a client certificate"],
+          ["Revocation", "OCSP / CRL: good", "Checked separately — decide soft-fail vs hard-fail explicitly"]] },
+      "devtools": "None of this is an HTTP artifact. Revocation is a policy decision: on an OCSP responder outage, hard-fail vs soft-fail must be chosen deliberately."
+    },
+    {
+      "from": "Client", "to": "Server", "label": "GET /orders (over the mTLS connection)", "hop": "Client → Server", "vis": "browser",
+      "lede": "Only now does HTTP flow — and the application request carries NO credential header. Authentication already happened in the handshake, so the identity is the connection itself.",
+      "req": { "method": "GET", "url": "https://api.internal.example.com/orders",
+        "headers": [["host", "api.internal.example.com"], ["accept", "application/json"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"orders\": [], \"client\": \"svc-orders\" }" },
+      "devtools": "This <b>is</b> in the Network tab — but look closely: there is <b>no</b> <code>Authorization</code> header and no auth cookie on it. By the time you see <code>GET /orders</code>, the client-cert authentication is already finished in the handshake."
+    },
+    {
+      "from": "Server", "to": "Server", "label": "Proxy forwards verified-cert headers", "hop": "Proxy → App", "vis": "browser",
+      "lede": "When a reverse proxy terminates mTLS, it forwards the verified certificate details to the backend as HTTP headers. THESE are visible — on the proxy→app hop — and inherit the header-based-SSO trust boundary.",
+      "req": { "method": "GET", "url": "http://orders-app.internal.svc/orders",
+        "headers": [
+          ["host", "orders-app.internal.svc"],
+          ["x-ssl-client-verify", "SUCCESS"],
+          ["x-ssl-client-s-dn", "CN=svc-orders,O=Example,OU=payments"],
+          ["x-ssl-client-san-uri", "spiffe://example.com/ns/pay/sa/orders"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"orders\": [], \"client\": \"svc-orders\" }" },
+      "devtools": "On the <b>proxy→app</b> hop the verified cert is re-expressed as <b>X-SSL-Client-Verify</b>, <b>X-SSL-Client-S-DN</b>, and <b>X-SSL-Client-SAN-URI</b>. The app must accept these <i>only</i> from the proxy over a spoof-proof channel — the same trust boundary as <i>header-based SSO</i>."
+    },
+    {
+      "from": "Client", "to": "Server", "label": "No client cert → denied", "hop": "Client → Server", "vis": "browser",
+      "lede": "With optional client auth, a request lacking a cert reaches the app and is denied 403. With required client auth the TLS handshake itself aborts and no HTTP response is produced at all.",
+      "req": { "method": "GET", "url": "https://api.internal.example.com/orders",
+        "headers": [["host", "api.internal.example.com"]] },
+      "resp": { "status": 403, "statusText": "Forbidden", "headers": [["content-type", "application/json"]],
+        "json": "{ \"error\": \"client certificate required\" }" },
+      "devtools": "With <b>optional</b> client auth you see this <b>403</b> at the app layer. With <b>required</b> client auth there is no HTTP response to inspect — the connection fails during the handshake with a TLS alert like <code>certificate_required</code>."
+    }
+  ]
+}

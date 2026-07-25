@@ -1,0 +1,59 @@
+{
+  "title": "IP Allowlist / Network-Location Auth",
+  "subtitle": "The 'credential' is where you are, not who you are — the same credential-free request succeeds on-net and fails off-net. Step through it and see why an IP address is not an identity.",
+  "category": "Tokenless",
+  "steps": [
+    {
+      "from": "User", "to": "Client", "label": "Access internal admin panel", "hop": "User → Client",
+      "lede": "The user opens an internal tool. Access will be decided entirely by the request's source IP — evaluated at the gateway, below the application.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b>. The striking thing here is what you will <b>not</b> see: any credential. The deciding factor — source IP — is not an HTTP artifact visible in the request."
+    },
+    {
+      "from": "Client", "to": "Server", "label": "On-network GET /panel → 200", "hop": "Client → Gateway", "vis": "browser",
+      "lede": "From an allowlisted source IP the request succeeds. Inspect it: no Authorization header, no auth cookie, no token. Nothing in the request says who is calling.",
+      "req": { "method": "GET", "url": "https://admin.example.com/panel",
+        "headers": [["host", "admin.example.com"], ["accept", "text/html"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html; charset=utf-8"]],
+        "json": "<h1>Admin Panel</h1>" },
+      "jwt": { "title": "Gateway network context (NOT an HTTP artifact)", "header": "",
+        "payload": [
+          ["clientSourceIp", "203.0.113.7", "The transport peer address the gateway actually evaluates (RFC 5737 doc range)"],
+          ["allowlist", "203.0.113.0/24", "Configured allowed CIDR range"],
+          ["decision", "ALLOW", "Peer is inside the range — request forwarded to the app"]] },
+      "devtools": "In <b>Request Headers</b> confirm there is <b>no</b> <code>Authorization</code>, <b>no</b> auth <code>Cookie</code>, and no token. It succeeded solely because the source IP is allowlisted — a decision made at the gateway, invisible in the request contents."
+    },
+    {
+      "from": "Client", "to": "Server", "label": "Off-network GET /panel → 403", "hop": "Client → Gateway", "vis": "browser",
+      "lede": "The exact same request — byte-for-byte identical headers — now fails from an off-network IP. The only thing that changed is the network path, which you cannot see in the request.",
+      "req": { "method": "GET", "url": "https://admin.example.com/panel",
+        "headers": [["host", "admin.example.com"], ["accept", "text/html"]] },
+      "resp": { "status": 403, "statusText": "Forbidden", "headers": [["content-type", "application/json"]],
+        "json": "{ \"error\": \"not on an allowed network\" }" },
+      "jwt": { "title": "Gateway network context", "header": "",
+        "payload": [
+          ["clientSourceIp", "198.51.100.23", "Off-network peer (RFC 5737 doc range)"],
+          ["allowlist", "203.0.113.0/24", "Configured allowed CIDR range"],
+          ["decision", "DENY", "Peer outside the range — rejected at the gateway"]] },
+      "devtools": "Compare this row to the previous one: identical request, different <b>status</b> (<b>403</b> vs <b>200</b>). Ideally the service is not even discoverable off-net — a silent connection reset / <code>net::ERR_CONNECTION_TIMED_OUT</code> gives scanners no signal that it exists."
+    },
+    {
+      "from": "Client", "to": "Server", "label": "Spoofed X-Forwarded-For → still 403", "hop": "Client → Gateway", "vis": "browser",
+      "lede": "An attacker off-net adds X-Forwarded-For claiming an allowed IP. A correctly configured gateway ignores it and decides on the real transport peer — so the outcome is unchanged.",
+      "req": { "method": "GET", "url": "https://admin.example.com/panel",
+        "headers": [["host", "admin.example.com"], ["x-forwarded-for", "203.0.113.5"]] },
+      "resp": { "status": 403, "statusText": "Forbidden", "headers": [["content-type", "application/json"]],
+        "json": "{ \"error\": \"not on an allowed network\" }" },
+      "jwt": { "title": "Gateway network context", "header": "",
+        "payload": [
+          ["clientSourceIp", "198.51.100.23", "The REAL transport peer the gateway uses"],
+          ["spoofedHeader", "X-Forwarded-For: 203.0.113.5", "Client-controlled and untrusted — ignored"],
+          ["decision", "DENY", "Header ignored; real peer is outside the allowlist"]] },
+      "devtools": "Add <code>X-Forwarded-For: 203.0.113.5</code> and confirm the outcome does <b>not</b> change. A correct gateway decides on the <b>transport peer</b> (or a header set by infrastructure it owns), not a client-supplied one. If the outcome <i>does</i> change, the gateway is dangerously trusting a forgeable header."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "Layer real authentication on top", "hop": "App → IdP",
+      "lede": "Because network location is not identity, the allowlist should be defense-in-depth under real authentication: allowlist as filter, IdP as authentication, network as a conditional-access signal.",
+      "devtools": "An <b>authenticated</b> variant would additionally carry a <code>Cookie</code>, <code>Authorization</code>, or token you <i>would</i> see in the Network tab. Everything behind a shared NAT/VPN/office egress looks identical, so a <b>200</b> here proves only <i>network location</i>, never <i>who</i> — treat the allowlist as one layer, not the whole story."
+    }
+  ]
+}

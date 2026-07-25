@@ -1,0 +1,54 @@
+{
+  "title": "OIDC Pushed Authorization Requests (PAR)",
+  "subtitle": "Push the whole authorization request over a secure back channel first, then redirect with just a short-lived request_uri — so the parameters never touch the browser URL (RFC 9126).",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "User", "to": "Client", "label": "Start sign-in", "hop": "User → Client",
+      "lede": "The user begins sign-in. The client builds the full authorization request locally: a PKCE code_verifier and S256 challenge, state, nonce, and scope.",
+      "codeTitle": "Computed locally",
+      "code": "code_verifier  = \"dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk\"\ncode_challenge = base64url(SHA-256(code_verifier))\n             = \"E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM\"\nstate = \"af0ifjsldkj\"   nonce = \"n-0S6_WzA2Mj\"",
+      "devtools": "Nothing on the wire yet. Everything the browser would normally carry on the <code>/authorize</code> URL is about to be sent on the back channel instead."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "POST /par", "hop": "Client → IdP (back-channel)",
+      "lede": "The client pushes the COMPLETE authorization request to the PAR endpoint, authenticating with its client credentials. Every parameter travels here, server-to-server — none of it will touch the browser.",
+      "req": { "method": "POST", "url": "https://as.example.com/par",
+        "headers": [["authorization", "Basic czZCaGRSa3F0MzpjbGktczNjcjN0LXNoaGg="], ["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["response_type", "code"], ["client_id", "s6BhdRkqt3"], ["redirect_uri", "https://app.example.com/cb"], ["scope", "openid read:orders"], ["code_challenge", "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"], ["code_challenge_method", "S256"], ["state", "af0ifjsldkj"], ["nonce", "n-0S6_WzA2Mj"]] },
+      "devtools": "Not in the browser — read client server logs or AS logs on the <code>/par</code> path. The <b>Basic</b> value decodes to <code>s6BhdRkqt3:cli-s3cr3t-shhh</code>. Every authorization parameter is in this body; client-auth failure returns <code>401 invalid_client</code>."
+    },
+    {
+      "from": "IdP", "to": "Client", "label": "201 request_uri", "hop": "IdP → Client (back-channel)",
+      "lede": "The AS validates and stores the request, then returns an opaque, single-use request_uri handle with a short TTL. The client must redirect before it lapses.",
+      "resp": { "status": 201, "statusText": "Created", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"request_uri\": \"urn:ietf:params:oauth:request_uri:6esc_11ACC5bwc014ltc14eY22c\",\n  \"expires_in\": 60\n}" },
+      "devtools": "<b>request_uri</b> is a one-time reference to the stored request — the only authorization detail that will appear in the browser. <b>expires_in</b> (60s) is short; a stale or reused handle gets <code>invalid_request_uri</code> at <code>/authorize</code>."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "Redirect to /authorize (request_uri only)", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "The browser is redirected to the authorization endpoint carrying ONLY client_id and request_uri. The long parameters are absent from the URL — that is PAR working.",
+      "req": { "method": "GET", "url": "https://as.example.com/authorize", "q": [
+        ["client_id", "s6BhdRkqt3"], ["request_uri", "urn:ietf:params:oauth:request_uri:6esc_11ACC5bwc014ltc14eY22c"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html; charset=utf-8"]] },
+      "devtools": "This is the request to inspect in DevTools. Confirm the query string holds <b>only</b> <code>client_id</code> and <code>request_uri</code> — no <code>scope</code>, <code>redirect_uri</code>, <code>code_challenge</code>, <code>state</code>, or <code>nonce</code>. The AS resolves <code>request_uri</code> to the stored request and <b>ignores</b> any extra query params. A plain <code>/authorize</code> with no <code>request_uri</code>, when the AS requires PAR, is rejected with <code>invalid_request</code>."
+    },
+    {
+      "from": "IdP", "to": "Client", "label": "Redirect back with code", "hop": "IdP → Browser", "vis": "browser",
+      "lede": "After the user logs in and consents, the AS 302-redirects back to redirect_uri with a single-use authorization code and the echoed state.",
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://app.example.com/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=af0ifjsldkj"]] },
+      "devtools": "Find the <b>302</b> whose <b>Location</b> points at your <code>redirect_uri</code>. Verify the returned <b>state</b> equals the <code>af0ifjsldkj</code> you pushed in step 2 — a mismatch means CSRF; abort."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "POST /token (redeem code)", "hop": "Client → IdP (back-channel)",
+      "lede": "The client exchanges the code plus the original PKCE code_verifier for tokens. The AS recomputes S256(code_verifier) and matches it to the challenge that was pushed in step 2.",
+      "req": { "method": "POST", "url": "https://as.example.com/token",
+        "headers": [["authorization", "Basic czZCaGRSa3F0MzpjbGktczNjcjN0LXNoaGg="], ["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["grant_type", "authorization_code"], ["code", "SplxlOBeZQQYbYS6WxSbIA"], ["redirect_uri", "https://app.example.com/cb"], ["code_verifier", "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"access_token\": \"mF_9.B5f-4.1JqM\",\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 3600,\n  \"scope\": \"openid read:orders\",\n  \"id_token\": \"eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIyNDgyODk3NjEwMDEifQ.SIG-synthetic\"\n}" },
+      "devtools": "Back-channel, not in the browser. The <b>code_verifier</b> <code>dBjftJeZ…</code> proves the same client that pushed the request is redeeming the code: its S256 hash must equal the <code>code_challenge</code> pushed in step 2, binding the whole flow together."
+    }
+  ]
+}

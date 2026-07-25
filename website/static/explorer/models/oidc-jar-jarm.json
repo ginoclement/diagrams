@@ -1,0 +1,78 @@
+{
+  "title": "OIDC JAR / JARM — Signed Requests & Responses",
+  "subtitle": "The authorization request is a signed JWT (JAR) and the authorization response comes back as a signed JWT (JARM) — integrity-protecting both legs against tampering and mix-up.",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "Client", "to": "Client", "label": "Build & sign the request object", "hop": "Client (local)",
+      "lede": "The client packs the authorization parameters — response_type, redirect_uri, scope, state, nonce, PKCE challenge, response_mode:jwt — into a JWT and signs it with its own key. This is the JAR request object.",
+      "codeTitle": "Request object payload (before signing)",
+      "code": "{\n  \"iss\": \"s6bhdrkqt3\",\n  \"aud\": \"https://as.example.com\",\n  \"response_type\": \"code\",\n  \"client_id\": \"s6bhdrkqt3\",\n  \"redirect_uri\": \"https://client.example.com/cb\",\n  \"scope\": \"openid profile\",\n  \"state\": \"af0ifjsldkj\",\n  \"nonce\": \"n-0S6_WzA2Mj\",\n  \"code_challenge\": \"K2-ltc83acc4h0c9w6ESC_rEMTJ3bwc-uCHaoeK1t8U\",\n  \"code_challenge_method\": \"S256\",\n  \"response_mode\": \"jwt\",\n  \"exp\": 1774000300,\n  \"iat\": 1774000000\n}",
+      "devtools": "The header marks the JWT with <code>typ: \"oauth-authz-req+jwt\"</code>. <b>response_mode: \"jwt\"</b> is what asks the AS to answer with a JARM response. The PKCE <code>code_challenge</code> travels inside the signed object, so it too is tamper-proof."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "GET /authorize?request=eyJ… (JAR by value)", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "The browser is sent to the authorization endpoint. Most parameters are gone from the query string — only client_id, response_type, and the big request JWT remain. (By reference, this would be a request_uri= instead.)",
+      "req": { "method": "GET", "url": "https://as.example.com/authorize", "q": [
+        ["client_id", "s6bhdrkqt3"], ["response_type", "code"],
+        ["request", "eyJhbGciOiJSUzI1NiIsInR5cCI6Im9hdXRoLWF1dGh6LXJlcStqd3QiLCJraWQiOiJjbGllbnQtc2lnLTEifQ.eyJpc3Mi…payload….c0ffee_SYNTHETIC_SIGNATURE_NOT_REAL"]] },
+      "devtools": "In the Query String most params are <b>missing</b> — you see only <code>client_id</code>, <code>response_type</code>, and <code>request=eyJ…</code> (JAR by value) or <code>request_uri=https://…</code> (JAR by reference). Copy the <b>request</b> JWT, split on <code>.</code>, base64url-decode the payload to reveal the real <code>redirect_uri</code>, <code>scope</code>, <code>state</code>, <code>nonce</code>, and <code>code_challenge</code>."
+    },
+    {
+      "from": "IdP", "to": "IdP", "label": "Verify request-object signature", "hop": "IdP (local)",
+      "lede": "The AS fetches the client's registered JWKS, verifies the request object's signature, and uses its claims as the authorization parameters. A tampered object is rejected with error=invalid_request_object.",
+      "devtools": "For JAR <b>by reference</b> the AS makes a server-to-server GET to the <code>request_uri</code> (e.g. <code>https://client.example.com/req/abc123</code>) to fetch the signed object — that fetch is <i>not</i> visible in the browser, only in a proxy capture. A bad signature surfaces later as a <code>302 …?error=invalid_request_object</code>."
+    },
+    {
+      "from": "IdP", "to": "User", "label": "Login + consent", "hop": "IdP → User", "vis": "browser",
+      "lede": "The IdP authenticates the user (with MFA if required) and gathers consent. Credentials are entered against the IdP, never the client.",
+      "resp": { "status": 200, "statusText": "OK", "headers": [
+        ["content-type", "text/html; charset=utf-8"], ["set-cookie", "idp_session=…; HttpOnly; Secure; SameSite=Lax"]] },
+      "devtools": "You will see the IdP's own login HTML and an <b>idp_session</b> cookie set with <code>HttpOnly; Secure</code>. Verify the origin is the real IdP before entering credentials."
+    },
+    {
+      "from": "IdP", "to": "Client", "label": "302 redirect with response=eyJ… (JARM)", "hop": "IdP → Browser", "vis": "browser",
+      "lede": "Instead of a bare ?code=…&state=…, the IdP returns a single signed response JWT. Its claims — iss, aud, exp, code, state — are integrity-protected end to end.",
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://client.example.com/cb?response=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFzLXNpZy0yMDI2LTAxIn0.eyJpc3Mi…payload….c0ffee_SYNTHETIC_SIGNATURE_NOT_REAL"]] },
+      "jwt": { "title": "Decoded JARM response JWT",
+        "header": "{ \"alg\": \"RS256\", \"typ\": \"JWT\", \"kid\": \"as-sig-2026-01\" }",
+        "payload": [
+          ["iss", "https://as.example.com", "The AS that answered — MUST match the AS you sent to (mix-up defense)"],
+          ["aud", "s6bhdrkqt3", "Must equal your client_id"],
+          ["exp", "1774000120", "Short expiry (epoch)"],
+          ["code", "SplxlOBeZQQYbYS6WxSbIA", "Authorization code — trustworthy only after sig + iss/aud checks"],
+          ["state", "af0ifjsldkj", "Echoed CSRF token — must match what you sent"]] },
+      "devtools": "In the <b>Location</b> header, instead of <code>?code=…&state=…</code> you see one <code>?response=eyJ…</code> JWT (or <code>#response=</code> for fragment.jwt, or a form POST for form_post.jwt). Decode the payload and check <b>iss</b> equals the AS you sent to and <b>aud</b> equals your client_id — then, and only then, trust the <code>code</code>."
+    },
+    {
+      "from": "Client", "to": "Client", "label": "Verify JARM, extract code", "hop": "Client (local)",
+      "lede": "The client verifies the response JWT's signature and checks iss and aud before touching the code. On an iss mismatch (a mix-up attempt) it discards the response and does NOT redeem the code.",
+      "devtools": "This is the mix-up defense in action: a response whose <b>iss</b> is not the expected AS — or whose signature fails — must be <b>discarded</b>. Never redeem a <code>code</code> from an unverified JARM response."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "POST /token — redeem the code", "hop": "Client → IdP",
+      "lede": "With the code verified, the client exchanges it at the token endpoint, sending the PKCE code_verifier. The AS returns an ID token and access token.",
+      "req": { "method": "POST", "url": "https://as.example.com/token",
+        "headers": [["host", "as.example.com"], ["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["grant_type", "authorization_code"], ["code", "SplxlOBeZQQYbYS6WxSbIA"],
+          ["redirect_uri", "https://client.example.com/cb"], ["client_id", "s6bhdrkqt3"],
+          ["code_verifier", "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"access_token\": \"SYNTH-opaque-at-2Yotnf9Xz\",\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 3600,\n  \"id_token\": \"eyJhbGciOiJSUzI1Ni….eyJpc3Mi….SIG\"\n}" },
+      "jwt": { "title": "Decoded id_token",
+        "header": "{ \"alg\": \"RS256\", \"typ\": \"JWT\", \"kid\": \"as-sig-2026-01\" }",
+        "payload": [
+          ["iss", "https://as.example.com", "Issuer — must equal your AS"],
+          ["sub", "248289761001", "Stable user identifier"],
+          ["aud", "s6bhdrkqt3", "Audience — must equal your client_id"],
+          ["nonce", "n-0S6_WzA2Mj", "Must equal the nonce in your request object — binds the id_token to this request"],
+          ["auth_time", "1774000000", "When the user authenticated (epoch)"],
+          ["name", "Alex Synthetic", "Profile claim"],
+          ["preferred_username", "alex", "Profile claim"],
+          ["iat", "1774000000", "Issued-at (epoch)"],
+          ["exp", "1774003600", "Expiry (epoch)"]] },
+      "devtools": "Standard <code>grant_type=authorization_code</code> body with <code>code_verifier</code>. In the <b>200</b> response, decode the <code>id_token</code> and confirm its <b>nonce</b> matches the <code>nonce</code> you put in the request object — that ties the id_token back to this exact JAR request."
+    }
+  ]
+}

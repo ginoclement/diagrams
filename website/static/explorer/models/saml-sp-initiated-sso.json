@@ -1,0 +1,86 @@
+{
+  "title": "SAML SP-Initiated Web Browser SSO",
+  "subtitle": "The user starts at the SP, gets bounced to the IdP with an AuthnRequest, and comes back with a signed assertion — step through each hop and learn to read it in the Network tab.",
+  "category": "SAML",
+  "steps": [
+    {
+      "from": "User", "to": "Browser", "label": "Open a protected SP page", "hop": "User → Browser",
+      "lede": "The user navigates to a resource the SP protects. Nothing SAML has happened yet — the SP just needs to know who this is.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b> tab, enable <b>Preserve log</b> (this flow crosses several redirects and domains and the ACS step navigates away), and keep <b>Disable cache</b> on. Filter on <b>Doc</b>."
+    },
+    {
+      "from": "Browser", "to": "SP", "label": "Request hits the SP with no session", "hop": "Browser → SP", "vis": "browser",
+      "lede": "The SP finds no local session, builds an AuthnRequest, and stores the request ID plus a RelayState pointing at where the user was headed.",
+      "req": { "method": "GET", "url": "https://sp.example.com/protected/resource",
+        "headers": [["accept", "text/html"]] },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://idp.example.net/sso/redirect?SAMLRequest=U1lOVEhFVElDX1NBTUxSZXF1ZXN0…&RelayState=cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ"]] },
+      "devtools": "Find this <b>302</b> to the SP resource. Its <b>Location</b> header points at the IdP and already carries the <b>SAMLRequest</b> and <b>RelayState</b> query params — that is the AuthnRequest leaving the SP."
+    },
+    {
+      "from": "Browser", "to": "IdP", "label": "AuthnRequest redirect to the IdP", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "The browser follows the redirect to the IdP SSO endpoint. On the Redirect binding the AuthnRequest is DEFLATE-compressed, base64-encoded, then URL-encoded into the SAMLRequest parameter.",
+      "req": { "method": "GET", "url": "https://idp.example.net/sso/redirect", "q": [
+        ["SAMLRequest", "U1lOVEhFVElDX1NBTUxSZXF1ZXN0X0RFRkxBVEVfYmFzZTY0X3BsYWNlaG9sZGVyX0FBQUFBQUFBQUFBQUFBQUFRVUZCUVVGQg"],
+        ["RelayState", "cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ"]] },
+      "codeTitle": "Redirect binding — decode the SAMLRequest",
+      "code": "URL-decode → base64-decode → INFLATE (raw DEFLATE, no zlib header)\n\n<samlp:AuthnRequest\n    ID=\"_synthetic-req-0000000000000000000000001\"\n    Version=\"2.0\"\n    IssueInstant=\"2026-07-25T15:04:05Z\"\n    Destination=\"https://idp.example.net/sso/redirect\"\n    ProtocolBinding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\"\n    AssertionConsumerServiceURL=\"https://sp.example.com/saml/acs\">\n  <saml:Issuer>https://sp.example.com/saml/metadata</saml:Issuer>\n  <samlp:NameIDPolicy\n      Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent\" AllowCreate=\"true\"/>\n</samlp:AuthnRequest>",
+      "devtools": "Select the request to <b>/sso/redirect</b> → <b>Headers → Query String Parameters</b>. To read <b>SAMLRequest</b>: <b>URL-decode → base64-decode → INFLATE</b>. Copy the AuthnRequest <code>ID</code> — it comes back as <b>InResponseTo</b>. Recommended: the <b>SAML Tracer</b> or <b>Auth Inspector</b> extension auto-decodes and pretty-prints this for you."
+    },
+    {
+      "from": "IdP", "to": "User", "label": "IdP login (and MFA)", "hop": "IdP → User", "vis": "browser",
+      "lede": "With no live IdP session the IdP serves its own login page. Credentials go to the IdP's domain, never the SP. With an existing IdP session this step is skipped (seamless SSO).",
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html; charset=utf-8"]] },
+      "devtools": "You will see the IdP's own HTML on <b>idp.example.net</b>. Under a live IdP session there is no login page at all — the flow jumps straight to the ACS POST."
+    },
+    {
+      "from": "User", "to": "IdP", "label": "Submit credentials", "hop": "User → IdP", "vis": "browser",
+      "lede": "The user posts username, password, and any MFA to the IdP. The IdP authenticates and establishes its own session cookie.",
+      "req": { "method": "POST", "url": "https://idp.example.net/sso/login",
+        "headers": [["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["username", "jordan.doe"], ["password", "SYNTHETIC-REDACTED"],
+          ["RelayState", "cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ"]] },
+      "devtools": "This <b>POST</b> is on the IdP domain. RelayState rides along untouched. The response is an HTML page with a self-submitting form — that is the POST-binding delivery of the assertion."
+    },
+    {
+      "from": "IdP", "to": "Browser", "label": "Auto-POST the SAMLResponse to the ACS", "hop": "IdP → Browser", "vis": "browser",
+      "lede": "On success the IdP returns an HTML page whose form auto-submits to the SP's Assertion Consumer Service. On the POST binding the SAMLResponse is base64-only — no DEFLATE.",
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html"]],
+        "json": "<html><body onload='document.forms[0].submit()'>\n  <form method='POST' action='https://sp.example.com/saml/acs'>\n    <input type='hidden' name='SAMLResponse'\n      value='U1lOVEhFVElDX1NBTUxSZXNwb25zZV9iYXNlNjRfcGxhY2Vob2xkZXJfQkJC…'/>\n    <input type='hidden' name='RelayState'\n      value='cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ'/>\n  </form>\n</body></html>" },
+      "devtools": "The response body is the auto-submit form. Note the <b>action</b> is the SP ACS URL and the hidden <b>SAMLResponse</b> field is base64 (POST binding, <i>no inflate</i>)."
+    },
+    {
+      "from": "Browser", "to": "SP", "label": "ACS receives the assertion", "hop": "Browser → SP", "vis": "browser",
+      "lede": "The browser POSTs the SAMLResponse to the ACS. The SP verifies the signature, then checks Issuer, Destination, Audience, Conditions, and InResponseTo before trusting a single claim.",
+      "req": { "method": "POST", "url": "https://sp.example.com/saml/acs",
+        "headers": [["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["SAMLResponse", "U1lOVEhFVElDX1NBTUxSZXNwb25zZV9iYXNlNjRfcGxhY2Vob2xkZXJfQkJCQkJCQkJCQkJCQkJCQkJDQ0NDQ0NDQ0NDQ0NEREREREREREQ"],
+          ["RelayState", "cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ"]] },
+      "jwt": { "title": "Decoded SAML Assertion (XML)", "header": "",
+        "payload": [
+          ["Response/Issuer", "https://idp.example.net/saml/metadata", "IdP entityID — validate against IdP metadata before trusting anything"],
+          ["Destination", "https://sp.example.com/saml/acs", "The ACS URL this Response is bound to"],
+          ["InResponseTo", "_synthetic-req-0000000000000000000000001", "Must equal the AuthnRequest ID from step 3 — rejects injected/unsolicited responses"],
+          ["Status", "urn:oasis:names:tc:SAML:2.0:status:Success", "Gates acceptance; Responder / AuthnFailed mean reject"],
+          ["Subject/NameID", "S-1-5-21-SYNTHETIC-USER-abc123", "The federated user identifier (persistent format)"],
+          ["SubjectConfirmationData", "Recipient=…/saml/acs, NotOnOrAfter=2026-07-25T15:09:10Z", "Short bearer window; Recipient must equal the ACS URL"],
+          ["Conditions", "NotBefore=2026-07-25T15:04:05Z … NotOnOrAfter=2026-07-25T15:09:10Z", "Validity bounds — allow small clock skew"],
+          ["Audience", "https://sp.example.com/saml/metadata", "Must name this SP's entityID"],
+          ["AuthnStatement/SessionIndex", "_synthetic-session-0000000000001", "Ties to the SSO session — needed later for Single Logout"]] },
+      "devtools": "Select the <b>POST</b> to <b>/saml/acs</b> → <b>Payload / Form Data</b>. Base64-decode <b>SAMLResponse</b> straight to XML (<i>do NOT inflate</i> — POST binding). Verify <b>InResponseTo</b> equals the step-3 request <code>ID</code> and that <b>Signature</b> checks out against the IdP metadata cert <i>before</i> reading claims (guard against XML Signature Wrapping)."
+    },
+    {
+      "from": "SP", "to": "Browser", "label": "SP session created, land on RelayState", "hop": "SP → Browser", "vis": "browser",
+      "lede": "The assertion is valid, so the SP maps the NameID to a local user, sets its own session cookie, and redirects the browser to the RelayState target.",
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://sp.example.com/app/dashboard"],
+        ["set-cookie", "sp_session=SYNTHETIC-SESSION-COOKIE; HttpOnly; Secure"]] },
+      "devtools": "The ACS answers <b>302</b> to the RelayState deep link and sets <b>sp_session</b> with <b>HttpOnly; Secure</b>. RelayState is untrusted input — the SP must allow-list it to prevent open redirects."
+    },
+    {
+      "from": "SP", "to": "User", "label": "Signed in", "hop": "SP → User",
+      "lede": "The browser follows the redirect with the new SP cookie and the protected page renders. From here on the SP session cookie carries the login; the assertion is spent.",
+      "devtools": "Nothing further on the wire for sign-in — subsequent requests just carry <b>sp_session</b>. The one-time assertion cannot be replayed: the SP cached its ID until <b>NotOnOrAfter</b>."
+    }
+  ]
+}

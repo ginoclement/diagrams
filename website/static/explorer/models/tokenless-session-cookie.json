@@ -1,0 +1,61 @@
+{
+  "title": "Session Cookie Authentication",
+  "subtitle": "The classic form login: a POST establishes a server-side session, and an opaque HttpOnly cookie is replayed on every later request. Step through it and read each hop in the Network tab.",
+  "category": "Tokenless",
+  "steps": [
+    {
+      "from": "User", "to": "Browser", "label": "Navigate to /login", "hop": "User → Browser",
+      "lede": "The user opens the login page. Nothing proves who they are yet — the goal of this flow is to establish a server-side session.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b>, enable <b>Preserve log</b> so the login redirect isn't cleared, and filter on <b>Doc</b> / <b>Fetch</b>."
+    },
+    {
+      "from": "Browser", "to": "Server", "label": "GET /login → anonymous session", "hop": "Browser → Server", "vis": "browser",
+      "lede": "The server returns the login form and plants a pre-auth (anonymous) session cookie plus a CSRF token embedded in the form.",
+      "req": { "method": "GET", "url": "https://app.example.com/login",
+        "headers": [["host", "app.example.com"], ["accept", "text/html"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [
+        ["content-type", "text/html; charset=utf-8"],
+        ["set-cookie", "sid=PRE_AUTH_0000aaaa1111bbbb2222cccc; Path=/; HttpOnly; Secure; SameSite=Lax"]],
+        "json": "<form>...csrf_token=csrf-SYNTHETIC-3f9a...</form>" },
+      "devtools": "In the <b>Response Headers</b> note <b>Set-Cookie: sid=PRE_AUTH_…</b>. Because it is <b>HttpOnly</b> you will <i>not</i> see it via <code>document.cookie</code> — only here and in <b>Application → Cookies</b>. Remember this pre-auth value; it should change at login."
+    },
+    {
+      "from": "User", "to": "Browser", "label": "Enter username + password", "hop": "User → Browser",
+      "lede": "The user types their credentials into the form. These are posted to the app itself — there is no external IdP in this pattern.",
+      "devtools": "Not a network event yet. The form also carries the hidden <code>csrf_token</code> the server planted on the previous response."
+    },
+    {
+      "from": "Browser", "to": "Server", "label": "POST /login (credentials + CSRF)", "hop": "Browser → Server", "vis": "browser",
+      "lede": "The browser submits the credentials and CSRF token. On success the server destroys the anonymous session and issues a rotated session ID — the session-fixation defense.",
+      "req": { "method": "POST", "url": "https://app.example.com/login",
+        "headers": [["content-type", "application/x-www-form-urlencoded"], ["cookie", "sid=PRE_AUTH_0000aaaa1111bbbb2222cccc"]],
+        "form": [["username", "alice"], ["password", "correct-horse-battery-staple"], ["csrf_token", "csrf-SYNTHETIC-3f9a"]] },
+      "resp": { "status": 303, "statusText": "See Other", "headers": [
+        ["location", "/dashboard"],
+        ["set-cookie", "sid=s%3AsynthSESSION9f8e7d6c5b4a3210; Path=/; Max-Age=1800; HttpOnly; Secure; SameSite=Lax"]] },
+      "jwt": { "title": "Set-Cookie attributes (post-login sid)", "header": "",
+        "payload": [
+          ["sid", "s%3AsynthSESSION9f8e7d6c5b4a3210", "Opaque reference into the server's session store — NOT a token with claims. %3A decodes to ':' (signed-cookie prefix)"],
+          ["Path", "/", "Cookie sent for the whole site"],
+          ["Max-Age", "1800", "30-minute idle/absolute lifetime"],
+          ["HttpOnly", "set", "Not readable from JavaScript — blunts XSS theft"],
+          ["Secure", "set", "Sent only over HTTPS"],
+          ["SameSite", "Lax", "Not sent on most cross-site requests — first-line CSRF defense"]] },
+      "devtools": "Open the <b>Payload</b> tab to see <code>username</code>, <code>password</code>, <code>csrf_token</code>. Then compare the new <b>Set-Cookie: sid=</b> against the pre-auth value: it <b>changes</b>. That rotation kills any <code>sid</code> an attacker planted (session fixation)."
+    },
+    {
+      "from": "Browser", "to": "Server", "label": "GET /api/me (Cookie replayed)", "hop": "Browser → Server", "vis": "browser",
+      "lede": "On every following request the browser automatically replays the session cookie. The opaque sid is the sole proof of identity; the server looks it up in its session store.",
+      "req": { "method": "GET", "url": "https://app.example.com/api/me",
+        "headers": [["cookie", "sid=s%3AsynthSESSION9f8e7d6c5b4a3210"], ["accept", "application/json"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"user\": \"alice\", \"roles\": [\"member\"] }" },
+      "devtools": "In <b>Request Headers</b> read <b>Cookie: sid=…</b> — the browser attached it for you. There is no <code>Authorization</code> header and no token; identity is entirely the server-side lookup of this opaque id. Deleting the store record revokes access instantly."
+    },
+    {
+      "from": "Server", "to": "Browser", "label": "Session established", "hop": "Server → Browser",
+      "lede": "The authenticated UI renders. State-changing POSTs from here carry the CSRF token (form field or X-CSRF-Token header) in addition to the cookie.",
+      "devtools": "Nothing more on the wire for sign-in. Inspect the live cookie and its flags under <b>Application → Storage → Cookies</b>. A <code>POST /logout</code> would return <code>Set-Cookie: sid=; Max-Age=0</code> and delete the store record, so replaying the old <code>sid</code> afterward fails."
+    }
+  ]
+}

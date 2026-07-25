@@ -1,0 +1,63 @@
+{
+  "title": "OIDC RP-Initiated Logout",
+  "subtitle": "The app kills its own session, then redirects to the IdP’s end_session_endpoint with an id_token_hint — a fully browser-visible chain of redirects.",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "User", "to": "Browser", "label": "User clicks “Log out”", "hop": "User → Browser",
+      "lede": "The user starts logout in the app (the RP). What follows is a short chain of redirects: RP → IdP → back to RP.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b>, enable <b>Preserve log</b> — without it the early hops vanish as the browser navigates. This whole flow is browser-visible."
+    },
+    {
+      "from": "Browser", "to": "App", "label": "RP local logout", "hop": "Browser → App", "vis": "browser",
+      "lede": "The RP destroys its own session first — clearing its cookie before handing off — so logout holds even if the user never finishes the IdP leg. It then redirects to end_session.",
+      "req": { "method": "GET", "url": "https://rp1.example.com/logout",
+        "headers": [["cookie", "rp1_session=SYNTHETIC-rp1-session"]] },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["set-cookie", "rp1_session=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Lax"],
+        ["location", "https://idp.example.com/end_session?id_token_hint=eyJhbGciOiJSUzI1NiI…SIG_synthetic&post_logout_redirect_uri=https%3A%2F%2Frp1.example.com%2Floggedout&state=af0ifjsldkj"]] },
+      "devtools": "Filter on <b>logout</b>. Confirm the <b>Set-Cookie</b> actually clears <b>rp1_session</b> (<code>Max-Age=0</code>) — the RP kills its session <i>before</i> the redirect. Read the <b>Location</b> header: it points at the IdP <b>end_session_endpoint</b> and carries <b>id_token_hint</b>, <b>post_logout_redirect_uri</b>, and <b>state</b>."
+    },
+    {
+      "from": "Browser", "to": "IdP", "label": "GET /end_session at the IdP", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "The browser hits end_session with the IdP session cookie attached. The id_token_hint identifies which session to end and lets the IdP skip the “Are you sure?” prompt.",
+      "req": { "method": "GET", "url": "https://idp.example.com/end_session", "q": [
+        ["id_token_hint", "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImlkcC1rZXktMjAyNiJ9.eyJpc3Mi…synthetic…fQ.SIG_synthetic_not_a_real_signature_do_not_verify"],
+        ["post_logout_redirect_uri", "https://rp1.example.com/loggedout"],
+        ["state", "af0ifjsldkj"]],
+        "headers": [["cookie", "idp_session=SYNTHETIC-idp-session-cookie"]] },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["set-cookie", "idp_session=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=None"],
+        ["location", "https://rp1.example.com/loggedout?state=af0ifjsldkj"]] },
+      "jwt": { "title": "Decoded id_token_hint",
+        "header": "{ \"alg\": \"RS256\", \"typ\": \"JWT\", \"kid\": \"idp-key-2026\" }",
+        "payload": [
+          ["iss", "https://idp.example.com", "Issuer — the IdP validates this"],
+          ["sub", "248289761001", "Subject — whose session to end"],
+          ["aud", "s6BhdRkqt3", "This RP’s client_id — the IdP validates aud"],
+          ["exp", "1774003600", "May be EXPIRED and still accepted as a hint"],
+          ["sid", "abc123session", "Session id — the exact SSO session to terminate"],
+          ["nonce", "n-0S6_WzA2Mj", "From the original login"]] },
+      "devtools": "Filter on <b>end_session</b>. Decode the <b>id_token_hint</b> for <b>sub</b>/<b>sid</b>. The IdP validates the hint’s <i>signature and aud, not its exp</i> — an expired hint still identifies the session fine. Confirm the response clears <b>idp_session</b> and that <b>post_logout_redirect_uri</b> exactly matches one registered for the client."
+    },
+    {
+      "from": "IdP", "to": "IdP", "label": "Terminate SSO session", "hop": "IdP (local)",
+      "lede": "The IdP validates the hint, matches it to the current session, verifies the redirect URI is registered (exact match), and terminates the SSO session — clearing its own cookie.",
+      "devtools": "Not a separate network row. If this deployment chains into <i>front-channel logout</i> you’ll ALSO see hidden <code>frontchannel-logout</code> iframe requests on the IdP page; if it chains into <i>back-channel logout</i>, those <code>logout_token</code> POSTs are server-to-server and will <b>not</b> appear in DevTools."
+    },
+    {
+      "from": "Browser", "to": "App", "label": "Post-logout redirect back to the RP", "hop": "Browser → App", "vis": "browser",
+      "lede": "The IdP 302s the browser to the registered post_logout_redirect_uri, echoing state. The RP shows its “logged out” page after confirming state matches.",
+      "req": { "method": "GET", "url": "https://rp1.example.com/loggedout",
+        "q": [["state", "af0ifjsldkj"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html"]],
+        "json": "<!doctype html><title>Logged out</title>Goodbye." },
+      "devtools": "Filter on <b>loggedout</b>. Read the <b>state</b> query param — the RP compares it to what it stored. If the URI had <b>not</b> been registered, this hop would not happen: you’d land on the IdP’s own logged-out page instead. An unregistered <b>post_logout_redirect_uri</b> must never become an open redirect."
+    },
+    {
+      "from": "App", "to": "User", "label": "“You have been logged out”", "hop": "App → User",
+      "lede": "Sign-out is complete at both the RP and the IdP. Because the RP cleared its session in step one, the logout held regardless of how the IdP leg resolved.",
+      "devtools": "Alternate to recognize: with <b>no id_token_hint</b>, the <code>end_session</code> response is a <code>200</code> HTML “Do you want to log out?” prompt rather than a <code>302</code> — you’ll see the GET return a document, then a <code>POST</code> when the user confirms."
+    }
+  ]
+}

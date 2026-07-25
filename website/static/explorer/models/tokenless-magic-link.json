@@ -1,0 +1,63 @@
+{
+  "title": "Magic Link (Passwordless Email Login)",
+  "subtitle": "Request a link by email, click a single-use time-limited token, and a POST consumes it to establish a normal session cookie. Step through it and watch the token move from URL to session.",
+  "category": "Tokenless",
+  "steps": [
+    {
+      "from": "User", "to": "Browser", "label": "Enter email on login page", "hop": "User → Browser",
+      "lede": "The user provides only an email address — no password. The app will email a link that proves control of the mailbox.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b>, enable <b>Preserve log</b> so the redirect chain survives navigation. Filter on <b>Fetch/XHR</b> + <b>Doc</b>."
+    },
+    {
+      "from": "Browser", "to": "Server", "label": "POST /auth/magic-link (email only)", "hop": "Browser → Server", "vis": "browser",
+      "lede": "The browser posts the email. The server generates a high-entropy token, stores only its hash with a short TTL and single-use flag, and emails the link.",
+      "req": { "method": "POST", "url": "https://app.example.com/auth/magic-link",
+        "headers": [["host", "app.example.com"], ["content-type", "application/json"]],
+        "json": "{ \"email\": \"alice@example.com\" }" },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"message\": \"If an account exists, check your email.\" }" },
+      "devtools": "In <b>Payload</b> confirm only an email is sent — no password. The <b>200</b> response is a generic \"check your email\" that is <b>identical</b> whether or not the account exists: that is enumeration protection. Nothing sensitive is returned here."
+    },
+    {
+      "from": "User", "to": "Browser", "label": "Click link in email", "hop": "User → Browser",
+      "lede": "The user opens the emailed link, possibly on a different device than the one that requested it. The token lives in the URL query string.",
+      "devtools": "The session lands on whichever device clicks the link, not necessarily the one that made the request. Because the token is in a <b>URL</b>, it can leak via history, <code>Referer</code>, and logs — hence single-use + short TTL."
+    },
+    {
+      "from": "Browser", "to": "Server", "label": "GET /auth/verify?token=… (does NOT consume)", "hop": "Browser → Server", "vis": "browser",
+      "lede": "The link opens a confirmation page. By design this GET does not consume the token, so mail scanners and link-preview bots that pre-fetch the URL cannot burn it.",
+      "req": { "method": "GET", "url": "https://app.example.com/auth/verify",
+        "q": [["token", "ml_SYNTHETIC_9f8e7d6c5b4a3210fedcba98"]],
+        "headers": [["host", "app.example.com"], ["accept", "text/html"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html; charset=utf-8"]],
+        "json": "<form method=\"POST\" action=\"/auth/verify\"><button>Confirm sign-in</button></form>" },
+      "devtools": "Open the row's <b>Query String Parameters</b> to read <code>token=ml_SYNTHETIC_…</code>. This GET only renders the confirm page — the token is consumed by the follow-up <b>POST</b>, which defeats prefetching bots."
+    },
+    {
+      "from": "Browser", "to": "Server", "label": "POST /auth/verify (consume token)", "hop": "Browser → Server", "vis": "browser",
+      "lede": "Clicking Confirm posts the token. The server hashes it, atomically looks-up-and-consumes it (checking expiry and single-use), then issues a rotated session cookie. From here it is an ordinary session.",
+      "req": { "method": "POST", "url": "https://app.example.com/auth/verify",
+        "headers": [["host", "app.example.com"], ["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["token", "ml_SYNTHETIC_9f8e7d6c5b4a3210fedcba98"]] },
+      "resp": { "status": 303, "statusText": "See Other", "headers": [
+        ["location", "/dashboard"],
+        ["set-cookie", "sid=s%3AsynthSESSION0a1b2c3d4e5f6071; Path=/; Max-Age=1800; HttpOnly; Secure; SameSite=Lax"]] },
+      "jwt": { "title": "Set-Cookie attributes", "header": "",
+        "payload": [
+          ["sid", "s%3AsynthSESSION0a1b2c3d4e5f6071", "Opaque server-side session reference — the magic link is now spent"],
+          ["Max-Age", "1800", "30-minute session lifetime"],
+          ["HttpOnly", "set", "Not readable from JavaScript"],
+          ["Secure", "set", "HTTPS only"],
+          ["SameSite", "Lax", "First-line CSRF defense"]] },
+      "devtools": "In <b>Response Headers</b> see <b>Set-Cookie: sid=…; HttpOnly; Secure; SameSite=Lax</b> and the <b>303</b> to <code>/dashboard</code>. Replaying this POST should <b>fail</b> (a <code>4xx</code> with no new Set-Cookie) — the token is single-use."
+    },
+    {
+      "from": "Browser", "to": "Server", "label": "Subsequent requests replay Cookie", "hop": "Browser → Server", "vis": "browser",
+      "lede": "The magic link is gone; from here the browser replays Cookie: sid=… on every request, exactly like classic session-cookie auth.",
+      "req": { "method": "GET", "url": "https://app.example.com/dashboard",
+        "headers": [["cookie", "sid=s%3AsynthSESSION0a1b2c3d4e5f6071"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html; charset=utf-8"]] },
+      "devtools": "In <b>Request Headers</b> the browser now attaches <b>Cookie: sid=…</b> automatically. The one-time token has been exchanged for a durable server-side session — see the <i>session-cookie</i> flow for how that cookie behaves from here."
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "title": "SAML SP-Initiated Single Logout",
+  "subtitle": "Logout starts at one SP, travels to the IdP as a signed LogoutRequest, and the IdP propagates it to every other session participant before answering the initiating SP.",
+  "category": "SAML",
+  "steps": [
+    {
+      "from": "User", "to": "Browser", "label": "Click Logout in the SP app", "hop": "User → Browser",
+      "lede": "The user signs out of one application. The SP will start Single Logout so the session is torn down everywhere it was federated, not just here.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b>, enable <b>Preserve log</b> (SLO chains across several domains) and <b>Disable cache</b>. Watch for a mix of <b>SAMLRequest</b> (LogoutRequest) and <b>SAMLResponse</b> (LogoutResponse) params."
+    },
+    {
+      "from": "Browser", "to": "SP", "label": "SP destroys its session, redirects to the IdP", "hop": "Browser → SP", "vis": "browser",
+      "lede": "The SP kills its own local session and builds a signed LogoutRequest naming the NameID and the exact SessionIndex issued during SSO, then redirects the browser to the IdP SLO endpoint.",
+      "req": { "method": "GET", "url": "https://sp.example.com/app/logout" },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://idp.example.net/slo/redirect?SAMLRequest=U1lOVEhFVElDX0xvZ291dFJlcXVlc3Q…&RelayState=cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ"]] },
+      "codeTitle": "Redirect binding — decode the SAMLRequest (a LogoutRequest)",
+      "code": "URL-decode → base64-decode → INFLATE (raw DEFLATE)\n\n<samlp:LogoutRequest\n    ID=\"_synthetic-lor-00000000000000000000000001\"\n    Version=\"2.0\"\n    IssueInstant=\"2026-07-25T16:00:00Z\"\n    Destination=\"https://idp.example.net/slo/redirect\">\n  <saml:Issuer>https://sp.example.com/saml/metadata</saml:Issuer>\n  <saml:NameID Format=\"…:persistent\">S-1-5-21-SYNTHETIC-USER-abc123</saml:NameID>\n  <samlp:SessionIndex>_synthetic-session-0000000000001</samlp:SessionIndex>\n</samlp:LogoutRequest>",
+      "devtools": "Find the <b>302</b> whose <b>Location</b> targets the IdP <b>/slo/redirect</b>. The <b>SAMLRequest</b> is a <b>LogoutRequest</b> — <b>URL-decode → base64-decode → INFLATE</b>. The <code>NameID</code> + <code>SessionIndex</code> identify exactly which session to kill."
+    },
+    {
+      "from": "Browser", "to": "IdP", "label": "IdP verifies and terminates its session", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "On the Redirect binding the signature travels as separate SigAlg and Signature query params. The IdP verifies it, matches the session, kills its own session first, and lists the other participants (here, SP2).",
+      "req": { "method": "GET", "url": "https://idp.example.net/slo/redirect", "q": [
+        ["SAMLRequest", "U1lOVEhFVElDX0xvZ291dFJlcXVlc3RfREVGTEFURV9iYXNlNjRfcGxhY2Vob2xkZXJfRUVFRUVFRUVFRUVFRUVFRg"],
+        ["RelayState", "cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ"],
+        ["SigAlg", "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"],
+        ["Signature", "U1lOVEhFVElDX1NJR05BVFVSRQ=="]] },
+      "devtools": "On <b>Query String Parameters</b> note the detached <b>SigAlg</b> and <b>Signature</b> params — on the Redirect binding the signature is over the raw query string, not inside the XML. An <i>unsigned</i> LogoutRequest is a forced-logout / CSRF primitive, so this signature is mandatory."
+    },
+    {
+      "from": "Browser", "to": "SP2", "label": "IdP propagates logout to SP2", "hop": "Browser → SP2 (front-channel)", "vis": "browser",
+      "lede": "The IdP front-channels the browser to each other participant's SLO endpoint with its own signed LogoutRequest. SP2 verifies it, destroys its session, and clears its cookie.",
+      "req": { "method": "GET", "url": "https://sp2.example.com/saml/slo", "q": [
+        ["SAMLRequest", "U1lOVEhFVElDX0xvZ291dFJlcXVlc3RfREVGTEFURV9iYXNlNjRfcGxhY2Vob2xkZXJfRUVFRUVFRUVFRUVFRUVFRg"]] },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://idp.example.net/slo/response?SAMLResponse=U1lOVEhFVElDX0xvZ291dFJlc3BvbnNl…"]] },
+      "devtools": "This <b>GET</b> to <b>sp2.example.com/saml/slo</b> carries the IdP's LogoutRequest; SP2 answers a <b>302</b> back to the IdP with a <b>SAMLResponse</b> (LogoutResponse). With N participants this leg repeats once per SP. <i>Back-channel SOAP</i> propagation, by contrast, is server-to-server and never appears here."
+    },
+    {
+      "from": "Browser", "to": "IdP", "label": "SP2's LogoutResponse reaches the IdP", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "The browser carries SP2's LogoutResponse back to the IdP. The IdP records that SP2 is done and, with all participants handled, prepares the final response to the initiating SP.",
+      "req": { "method": "GET", "url": "https://idp.example.net/slo/response", "q": [
+        ["SAMLResponse", "U1lOVEhFVElDX0xvZ291dFJlc3BvbnNlX2Jhc2U2NF9wbGFjZWhvbGRlcl9GRkZGRkZGRkZGRkZGRkZG"]] },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://sp.example.com/saml/slo?SAMLResponse=U1lOVEhFVElDX0xvZ291dFJlc3BvbnNl…&RelayState=cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ"]] },
+      "devtools": "Base64-decode this <b>SAMLResponse</b> (or inflate if delivered by Redirect binding) and read its <b>Status</b>. If any participant failed, the IdP will fold that into the <i>final</i> response as a second-level <b>PartialLogout</b> status."
+    },
+    {
+      "from": "Browser", "to": "SP", "label": "Final LogoutResponse to the initiating SP", "hop": "Browser → SP", "vis": "browser",
+      "lede": "The IdP redirects the browser back to the SP that started it, carrying a LogoutResponse. The SP confirms InResponseTo matches its original LogoutRequest ID before showing the result.",
+      "req": { "method": "GET", "url": "https://sp.example.com/saml/slo", "q": [
+        ["SAMLResponse", "U1lOVEhFVElDX0xvZ291dFJlc3BvbnNlX2Jhc2U2NF9wbGFjZWhvbGRlcl9GRkZGRkZGRkZGRkZGRkZG"],
+        ["RelayState", "cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html"]] },
+      "codeTitle": "Decoded LogoutResponse",
+      "code": "<samlp:LogoutResponse\n    ID=\"_synthetic-lores-0000000000000000000001\"\n    Version=\"2.0\"\n    IssueInstant=\"2026-07-25T16:00:05Z\"\n    Destination=\"https://sp.example.com/saml/slo\"\n    InResponseTo=\"_synthetic-lor-00000000000000000000000001\">\n  <saml:Issuer>https://idp.example.net/saml/metadata</saml:Issuer>\n  <samlp:Status>\n    <samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"/>\n  </samlp:Status>\n</samlp:LogoutResponse>",
+      "devtools": "Read the <b>SAMLResponse</b> at <b>sp.example.com/saml/slo</b>. Confirm <b>InResponseTo</b> equals the LogoutRequest <code>ID</code> from step 2. A top-level <b>Success</b> with a second-level <code>…:status:PartialLogout</code> means at least one participant could not be logged out."
+    },
+    {
+      "from": "SP", "to": "User", "label": "Signed out everywhere", "hop": "SP → User",
+      "lede": "The initiating SP renders the confirmation. Because the IdP killed its own session before propagating, a broken chain can never leave the IdP session alive.",
+      "devtools": "Nothing further on the wire. If any leg failed you would see the initiating SP show a partial-logout warning instead — some applications may still have active sessions."
+    }
+  ]
+}

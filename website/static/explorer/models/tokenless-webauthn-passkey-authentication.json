@@ -1,0 +1,66 @@
+{
+  "title": "WebAuthn / Passkey Authentication",
+  "subtitle": "A server challenge, a signature made inside the authenticator, and a POST the server verifies against a stored public key. Step through it and see what the browser can — and cannot — show you.",
+  "category": "Tokenless",
+  "steps": [
+    {
+      "from": "User", "to": "Browser", "label": "Click \"Sign in with passkey\"", "hop": "User → Browser",
+      "lede": "The user starts the passkey ceremony. No password is involved; the proof will be a signature over a fresh server challenge scoped to this site.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b>, enable <b>Preserve log</b>, filter on <b>Fetch/XHR</b>. You will see two requests bracketing an invisible signing step."
+    },
+    {
+      "from": "Browser", "to": "Server", "label": "POST /assertion/options (fetch challenge)", "hop": "Browser → Server", "vis": "browser",
+      "lede": "The browser asks for authentication options. The server returns a random single-use challenge bound to a pending login, the RP ID the credential is scoped to, and which credentials it will accept.",
+      "req": { "method": "POST", "url": "https://app.example.com/webauthn/assertion/options",
+        "headers": [["host", "app.example.com"], ["content-type", "application/json"]],
+        "json": "{ \"username\": \"alice\" }" },
+      "resp": { "status": 200, "statusText": "OK", "headers": [
+        ["content-type", "application/json"],
+        ["set-cookie", "webauthn_session=pending-SYNTHETIC-8899; Path=/; HttpOnly; Secure; SameSite=Lax"]],
+        "json": "{\n  \"challenge\": \"Y2hhbGxlbmdlLVNZTlRIRVRJQy0xMjM0NTY3ODkw\",\n  \"rpId\": \"app.example.com\",\n  \"allowCredentials\": [{ \"type\": \"public-key\", \"id\": \"Y3JlZC1TWU5USEVUSUMtaWQtOTk5OA\" }],\n  \"userVerification\": \"required\",\n  \"timeout\": 60000\n}" },
+      "jwt": { "title": "PublicKeyCredentialRequestOptions", "header": "",
+        "payload": [
+          ["challenge", "Y2hhbGxlbmdlLVNZTlRIRVRJQy0xMjM0NTY3ODkw", "Random, single-use (base64url); bound server-side to the pending webauthn_session cookie"],
+          ["rpId", "app.example.com", "Relying Party ID the credential is scoped to — the phishing boundary"],
+          ["allowCredentials", "[public-key id Y3JlZC1…OTk5OA]", "Credential IDs the server accepts (username-first flow); empty for discoverable credentials"],
+          ["userVerification", "required", "Authenticator must verify the user (biometric / PIN)"],
+          ["timeout", "60000", "Ceremony must complete within 60s"]] },
+      "devtools": "Read the response under <b>Preview</b>: note <b>challenge</b>, <b>rpId</b>, and <b>allowCredentials</b>. A <code>webauthn_session</code> cookie ties the challenge to this attempt. Copy the challenge — you'll match it inside the assertion."
+    },
+    {
+      "from": "Browser", "to": "User", "label": "Authenticator signs the challenge",
+      "hop": "Browser → Authenticator (local)",
+      "lede": "navigator.credentials.get() hands off to the platform. The authenticator prompts for user verification, then signs authenticatorData plus a hash of clientDataJSON with the private key — all inside the device.",
+      "codeTitle": "In the page (not a network request)",
+      "code": "const assertion = await navigator.credentials.get({\n  publicKey: {\n    challenge: base64urlToBuffer(\"Y2hhbGxlbmdlLVNZTlRIRVRJQy0xMjM0NTY3ODkw\"),\n    rpId: \"app.example.com\",\n    allowCredentials: [{ type: \"public-key\", id: base64urlToBuffer(\"Y3JlZC1TWU5USEVUSUMtaWQtOTk5OA\") }],\n    userVerification: \"required\"\n  }\n});\n// The private key and the signing operation live INSIDE the authenticator\n// (Touch ID / Windows Hello / security key). They are NEVER exposed to the\n// page or the network — you only ever see the resulting signature bytes.",
+      "devtools": "This is <b>not</b> a network request, which is why it has no Network row — you'll just see a pause. The browser scopes the credential lookup to <b>rpId</b>, so a phishing look-alike domain finds no passkey. The private key never leaves the authenticator."
+    },
+    {
+      "from": "Browser", "to": "Server", "label": "POST /assertion/verify (assertion)", "hop": "Browser → Server", "vis": "browser",
+      "lede": "The browser posts the assertion. The server looks up the public key by credentialId and verifies the signature, the echoed challenge, the origin, the rpIdHash, and the UP/UV flags and counter.",
+      "req": { "method": "POST", "url": "https://app.example.com/webauthn/assertion/verify",
+        "headers": [["host", "app.example.com"], ["content-type", "application/json"], ["cookie", "webauthn_session=pending-SYNTHETIC-8899"]],
+        "json": "{\n  \"id\": \"Y3JlZC1TWU5USEVUSUMtaWQtOTk5OA\",\n  \"rawId\": \"Y3JlZC1TWU5USEVUSUMtaWQtOTk5OA\",\n  \"type\": \"public-key\",\n  \"response\": {\n    \"clientDataJSON\": \"eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiWTJoaGJHeGxibWRsTFZOWlRsUklSVlJKUXkweE1qTTBOVFkzT0RrdyIsIm9yaWdpbiI6Imh0dHBzOi8vYXBwLmV4YW1wbGUuY29tIiwiY3Jvc3NPcmlnaW4iOmZhbHNlfQ\",\n    \"authenticatorData\": \"authDataSYNTHETIC-rpIdHash-flags-counter\",\n    \"signature\": \"MEUCIQD-SYNTHETIC-signature-bytes\",\n    \"userHandle\": \"dXNlci1oYW5kbGUtU1lOVEhFVElD\"\n  }\n}" },
+      "resp": { "status": 200, "statusText": "OK", "headers": [
+        ["content-type", "application/json"],
+        ["set-cookie", "sid=s%3AsynthSESSIONwebauthn0011; Path=/; Max-Age=1800; HttpOnly; Secure; SameSite=Lax"]],
+        "json": "{ \"verified\": true, \"user\": \"alice\" }" },
+      "codeTitle": "Decode clientDataJSON (base64url → JSON)",
+      "code": "const b64url = \"eyJ0eXBlIjoid2ViYXV0aG4uZ2V0Ii...SYNTHETIC...\";\nconst json = atob(b64url.replace(/-/g, \"+\").replace(/_/g, \"/\"));\nconsole.log(JSON.parse(json));\n// {\n//   \"type\": \"webauthn.get\",\n//   \"challenge\": \"Y2hhbGxlbmdlLVNZTlRIRVRJQy0xMjM0NTY3ODkw\",\n//   \"origin\": \"https://app.example.com\",\n//   \"crossOrigin\": false\n// }",
+      "jwt": { "title": "What the server verifies in the assertion", "header": "",
+        "payload": [
+          ["clientDataJSON.type", "webauthn.get", "Must equal \"webauthn.get\""],
+          ["clientDataJSON.challenge", "Y2hhbGxlbmdlL…Njc4OTA", "Must equal the issued single-use challenge"],
+          ["clientDataJSON.origin", "https://app.example.com", "Must be an expected origin — this is the phishing check"],
+          ["authenticatorData", "rpIdHash · flags · counter", "rpIdHash must equal SHA-256(rpId); UP/UV flags set; counter checked"],
+          ["signature", "MEUCIQD-SYNTHETIC-…", "Verified over authenticatorData ‖ SHA-256(clientDataJSON) with the stored PUBLIC key"],
+          ["userHandle", "dXNlci1oYW5kbGUtU1lOVEhFVElD", "Maps to the account (discoverable-credential / usernameless flows)"]] },
+      "devtools": "Open <b>Payload</b> and inspect the assertion fields. Decode <b>clientDataJSON</b> with the snippet and confirm <code>type</code>, <code>challenge</code>, and <code>origin</code>. You see the <b>signature</b> bytes but never the key that produced them. On success, <b>Set-Cookie: sid=…</b> begins an ordinary session."
+    },
+    {
+      "from": "Server", "to": "User", "label": "Signed in — nothing phishable", "hop": "Server → User",
+      "lede": "The server established a normal session cookie. No password crossed the wire and nothing reusable was exposed — a stolen assertion is bound to one challenge and origin.",
+      "devtools": "From here it is an ordinary <i>session cookie</i>: the browser replays <b>Cookie: sid=…</b>. Because the challenge is single-use and the origin is signed into <code>clientDataJSON</code>, a captured assertion cannot be replayed against another site or a later login."
+    }
+  ]
+}

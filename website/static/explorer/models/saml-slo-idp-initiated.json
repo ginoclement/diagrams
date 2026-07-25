@@ -1,0 +1,58 @@
+{
+  "title": "SAML IdP-Initiated Single Logout",
+  "subtitle": "The user signs out at the IdP portal; the IdP kills its own session first, then fans a signed LogoutRequest out to every participant SP and reports the aggregate result.",
+  "category": "SAML",
+  "steps": [
+    {
+      "from": "User", "to": "Browser", "label": "Click Sign out on the IdP portal", "hop": "User → Browser",
+      "lede": "The user ends their session from the IdP itself. There is no initiating SP LogoutRequest here — the IdP is the origin of the logout.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b>, enable <b>Preserve log</b> and <b>Disable cache</b>. Hidden-iframe fan-out is easy to miss — Preserve log is what keeps those iframe requests visible."
+    },
+    {
+      "from": "Browser", "to": "IdP", "label": "IdP ends its session and fans out", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "The IdP terminates its own session first, identifies the participants (here SP and SP2) with their per-SP NameID + SessionIndex, and returns a page embedding one hidden iframe per SP SLO endpoint.",
+      "req": { "method": "GET", "url": "https://idp.example.net/slo/start" },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html"]],
+        "json": "<html><body>IdP session ended; fanning out LogoutRequests via hidden iframes</body></html>" },
+      "devtools": "The IdP kills its session <i>before</i> propagation so a broken chain can never leave the IdP session alive. The response embeds one hidden iframe per participant SP — each will issue its own <b>SAMLRequest</b>."
+    },
+    {
+      "from": "Browser", "to": "SP", "label": "LogoutRequest to SP (hidden iframe)", "hop": "Browser → SP (iframe)", "vis": "browser",
+      "lede": "One iframe loads the SP's SLO endpoint with a signed LogoutRequest. The SP verifies it, destroys the session, and expires its cookie, then redirects the iframe back to the IdP with a LogoutResponse.",
+      "req": { "method": "GET", "url": "https://sp.example.com/saml/slo", "q": [
+        ["SAMLRequest", "U1lOVEhFVElDX0xvZ291dFJlcXVlc3RfREVGTEFURV9iYXNlNjRfcGxhY2Vob2xkZXJfRUVFRUVFRUVFRUVFRUVFRg"],
+        ["RelayState", "cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ"]], "headers": [["sec-fetch-dest", "iframe"]] },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://idp.example.net/slo/response?SAMLResponse=U1lOVEhFVElDX0xvZ291dFJlc3BvbnNl…"],
+        ["set-cookie", "sp_session=deleted; Max-Age=0; HttpOnly; Secure"]] },
+      "codeTitle": "Redirect binding — decode the SAMLRequest (a LogoutRequest)",
+      "code": "URL-decode → base64-decode → INFLATE (raw DEFLATE)\n\n<samlp:LogoutRequest\n    ID=\"_synthetic-lor-00000000000000000000000001\"\n    Version=\"2.0\"\n    IssueInstant=\"2026-07-25T16:00:00Z\"\n    Destination=\"https://idp.example.net/slo/redirect\">\n  <saml:Issuer>https://idp.example.net/saml/metadata</saml:Issuer>\n  <saml:NameID Format=\"…:persistent\">S-1-5-21-SYNTHETIC-USER-abc123</saml:NameID>\n  <samlp:SessionIndex>_synthetic-session-0000000000001</samlp:SessionIndex>\n</samlp:LogoutRequest>",
+      "devtools": "The iframe request shows <b>Sec-Fetch-Dest: iframe</b>. <b>URL-decode → base64-decode → INFLATE</b> the <b>SAMLRequest</b> to read the LogoutRequest; note the SP clears its cookie with <b>Max-Age=0</b>. Use <b>SAML Tracer</b> / <b>Auth Inspector</b> to auto-decode."
+    },
+    {
+      "from": "Browser", "to": "SP2", "label": "LogoutRequest to SP2 (parallel iframe)", "hop": "Browser → SP2 (iframe)", "vis": "browser",
+      "lede": "A second hidden iframe hits SP2's SLO endpoint at the same time. Parallel iframes are faster than a redirect chain but lose confirmations whenever browsers block third-party frames or cookies.",
+      "req": { "method": "GET", "url": "https://sp2.example.com/saml/slo", "q": [
+        ["SAMLRequest", "U1lOVEhFVElDX0xvZ291dFJlcXVlc3RfREVGTEFURV9iYXNlNjRfcGxhY2Vob2xkZXJfRUVFRUVFRUVFRUVFRUVFRg"],
+        ["RelayState", "cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ"]], "headers": [["sec-fetch-dest", "iframe"]] },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://idp.example.net/slo/response?SAMLResponse=U1lOVEhFVElDX0xvZ291dFJlc3BvbnNl…"]] },
+      "devtools": "Treat a <i>missing</i> LogoutResponse as a failure: a blocked third-party frame or cookie means the request may start but the session is never cleared — a silent partial logout. Back-channel SOAP fan-out, when used instead, is server-to-server and invisible here."
+    },
+    {
+      "from": "Browser", "to": "IdP", "label": "LogoutResponses return to the IdP", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "Each iframe redirects back to the IdP carrying that SP's LogoutResponse. The IdP correlates them by InResponseTo and aggregates the Status values.",
+      "req": { "method": "GET", "url": "https://idp.example.net/slo/response", "q": [
+        ["SAMLResponse", "U1lOVEhFVElDX0xvZ291dFJlc3BvbnNlX2Jhc2U2NF9wbGFjZWhvbGRlcl9GRkZGRkZGRkZGRkZGRkZG"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html"]] },
+      "codeTitle": "Decoded LogoutResponse",
+      "code": "<samlp:LogoutResponse\n    ID=\"_synthetic-lores-0000000000000000000001\"\n    Version=\"2.0\"\n    IssueInstant=\"2026-07-25T16:00:05Z\"\n    Destination=\"https://idp.example.net/slo/response\"\n    InResponseTo=\"_synthetic-lor-00000000000000000000000001\">\n  <saml:Issuer>https://sp.example.com/saml/metadata</saml:Issuer>\n  <samlp:Status>\n    <samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"/>\n  </samlp:Status>\n</samlp:LogoutResponse>",
+      "devtools": "Base64-decode (or inflate, for the Redirect binding) each <b>SAMLResponse</b> and read <b>Status</b>. The <b>Issuer</b> is now the responding SP, and <b>InResponseTo</b> echoes the IdP's per-SP LogoutRequest ID."
+    },
+    {
+      "from": "IdP", "to": "User", "label": "Aggregate result page", "hop": "IdP → User",
+      "lede": "The IdP renders its own result — unlike SP-initiated SLO there is no final LogoutResponse to an SP. If every participant confirmed, the user is signed out of all applications.",
+      "devtools": "Nothing further on the wire. If any SP timed out or its LogoutResponse was lost, the IdP reports <b>PartialLogout</b> and advises closing the browser to be safe."
+    }
+  ]
+}

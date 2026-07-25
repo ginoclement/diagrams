@@ -1,0 +1,55 @@
+{
+  "title": "OAuth 2.0 Token Introspection",
+  "subtitle": "How a resource server turns an opaque access token into a yes/no verdict — a back-channel call you won't see in the browser (RFC 7662).",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "Client", "to": "API", "label": "Call the API with an opaque token", "hop": "Client → API", "vis": "browser",
+      "lede": "The client presents its access token as a Bearer credential. Note the token is opaque — not a JWT — so there is nothing to base64url-decode; its meaning is resolved only by introspection.",
+      "req": { "method": "GET", "url": "https://api.example.com/resource",
+        "headers": [["authorization", "Bearer mF_9.B5f-4.1JqM"], ["accept", "application/json"]] },
+      "devtools": "In the <b>Network</b> tab, filter on your API host (<code>api.example.com</code>). Read the <b>Authorization: Bearer</b> header. Try to decode it — you can't: an opaque token has no <code>.</code>-delimited parts. Only this hop is browser-visible; the introspection call is next and happens server-side."
+    },
+    {
+      "from": "API", "to": "IdP", "label": "POST /introspect", "hop": "API → IdP (back-channel)",
+      "lede": "The resource server asks the authorization server what the token means. It authenticates with its OWN client credentials (HTTP Basic) — this is machine-to-machine and never appears in a browser Network tab.",
+      "req": { "method": "POST", "url": "https://as.example.com/introspect",
+        "headers": [["authorization", "Basic cnMtb3JkZXJzOnJzLXMzY3IzdC1zaGho"], ["content-type", "application/x-www-form-urlencoded"], ["accept", "application/json"]],
+        "form": [["token", "mF_9.B5f-4.1JqM"], ["token_type_hint", "access_token"]] },
+      "devtools": "Not in the browser — reproduce it from the resource server or read AS access logs filtered on <code>/introspect</code>. The <b>Basic</b> value decodes to <code>rs-orders:rs-s3cr3t-shhh</code>, the resource server's own identity. <b>Never</b> log the secret in production."
+    },
+    {
+      "from": "IdP", "to": "API", "label": "200 active:true + claims", "hop": "IdP → API (back-channel)",
+      "lede": "The AS looks up the token, confirms it is neither expired nor revoked, and returns its metadata: scope, subject, audience, expiry, and a cnf confirmation because this token is sender-constrained (DPoP-bound).",
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"active\": true,\n  \"scope\": \"read:orders\",\n  \"client_id\": \"s6BhdRkqt3\",\n  \"username\": \"avery.diaz\",\n  \"token_type\": \"Bearer\",\n  \"sub\": \"248289761001\",\n  \"aud\": \"https://api.example.com\",\n  \"iss\": \"https://as.example.com\",\n  \"exp\": 1774000000,\n  \"iat\": 1773996400,\n  \"jti\": \"atk-7c1f9a2b\",\n  \"cnf\": { \"jkt\": \"0ZcOCORZNYy-DWpqq30jZyJGHTN0d2HglBV3uiguA4I\" }\n}" },
+      "devtools": "<b>active</b> is the canonical verdict — everything downstream hinges on it. Convert <code>exp</code> with <code>date -u -d @1774000000</code>. A <b>cnf.jkt</b> means the token is bound to a DPoP key: the API must ALSO verify the presented proof's thumbprint matches. See the DPoP flow."
+    },
+    {
+      "from": "API", "to": "API", "label": "Enforce the verdict", "hop": "API (local)",
+      "lede": "The resource server runs its checklist against the response before returning any data. This is where the token is actually authorized for this specific call.",
+      "codeTitle": "Enforcement checklist",
+      "code": "active === true                       → else 401 invalid_token\naud === \"https://api.example.com\"     → reject a token for another API\n\"read:orders\" in scope                → required scope present\nexp (1774000000) in the future       → token still live\ncnf.jkt present                       → also verify DPoP proof thumbprint",
+      "devtools": "No network event. A resource server MUST NOT fail open: if any check fails, reject. If <b>cnf.jkt</b> is present but no matching DPoP proof accompanied the request, that is a rejection too."
+    },
+    {
+      "from": "API", "to": "Client", "label": "200 data", "hop": "API → Client", "vis": "browser",
+      "lede": "All checks passed, so the resource server returns the protected payload.",
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"orderId\": \"ord-1001\", \"status\": \"shipped\" }" },
+      "devtools": "Back in the browser Network tab, the <code>/resource</code> request now shows a <b>200</b> with the payload. The whole introspection round-trip that authorized it was invisible from here."
+    },
+    {
+      "from": "API", "to": "IdP", "label": "Inactive token → 401", "hop": "API → IdP (back-channel)",
+      "lede": "When the token is expired, revoked, or unknown, introspection returns exactly {\"active\":false} — no other claims. The API turns that into a 401.",
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"active\": false }" },
+      "devtools": "RFC 7662 §2.2: an inactive token echoes <b>only</b> <code>active:false</code> — never scope, sub, or exp — so it can't be used as an information-leak oracle. The API responds <code>401</code> with <code>WWW-Authenticate: Bearer error=\"invalid_token\"</code>."
+    },
+    {
+      "from": "API", "to": "API", "label": "Cache the positive result", "hop": "API (local)",
+      "lede": "A resource server may cache active:true metadata up to exp and skip /introspect on later calls. In logs this shows as a resource call with no matching introspection round-trip.",
+      "devtools": "The trade-off: caching trades a <b>revocation-detection delay</b> for latency. TTL is bounded by <code>exp</code>. Until the cache expires, a token revoked at the AS may still be honored here."
+    }
+  ]
+}

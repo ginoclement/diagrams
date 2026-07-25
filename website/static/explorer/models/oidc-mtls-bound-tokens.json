@@ -1,0 +1,73 @@
+{
+  "title": "OIDC mTLS Client Auth + Certificate-Bound Tokens",
+  "subtitle": "The client authenticates with an X.509 certificate and the token is bound to that cert — a stolen bearer token is useless without the matching key.",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "Client", "to": "Client", "label": "Client holds an X.509 cert + private key", "hop": "Client (local)",
+      "lede": "A confidential client is registered at the AS with an expected certificate subject/SAN (tls_client_auth) or JWKS thumbprint (self_signed_tls_client_auth). The private key never leaves the client.",
+      "devtools": "TLS client certificates live in the <b>handshake</b>, so ordinary browser DevTools cannot show them. To observe this flow you need a capturing proxy or a CLI trace like <code>curl -v --cert client.crt --key client.key</code>."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "POST /token over mTLS", "hop": "Client → IdP",
+      "lede": "The client opens a mutually-authenticated TLS connection to the mTLS endpoint alias and posts the grant. There is no client_secret and no Authorization header — the certificate is the credential.",
+      "req": { "method": "POST", "url": "https://as.mtls.example.com/token",
+        "headers": [["host", "as.mtls.example.com"], ["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["grant_type", "client_credentials"], ["client_id", "s6bhdrkqt3"], ["scope", "accounts"]] },
+      "devtools": "Note this hits the <b>mTLS alias host</b> (<code>mtls_endpoint_aliases</code>), not the main issuer. In the request body there is <b>no client_secret</b> and no <code>Authorization</code> header. In the TLS details of a proxy view, confirm a <b>Certificate</b> message was sent by the client during the handshake."
+    },
+    {
+      "from": "IdP", "to": "IdP", "label": "Validate cert, compute x5t#S256", "hop": "IdP (local)",
+      "lede": "The IdP validates the certificate chain (or matches SHA-256 against a registered JWKS key for the self-signed variant), matches the registered DN/SAN, then computes the cert thumbprint that will bind the token.",
+      "codeTitle": "Computed at the AS",
+      "code": "x5t#S256 = base64url( SHA-256( DER( client leaf cert ) ) )\n         = \"bwcK0esc3ACC3DB2Y5_lESsXE8u9ie-mkDs5CdrEIYY\"",
+      "devtools": "You can reproduce this thumbprint over your own cert:\n<code>openssl x509 -in client.crt -outform DER | openssl dgst -sha256 -binary | openssl base64 -A | tr '+/' '-_' | tr -d '='</code>. It must equal the token's <code>cnf.x5t#S256</code>."
+    },
+    {
+      "from": "IdP", "to": "Client", "label": "200 — certificate-bound access token", "hop": "IdP → Client",
+      "lede": "The AS returns an access token whose cnf claim carries the certificate thumbprint. This is what turns a bearer token into a sender-constrained token.",
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"access_token\": \"eyJhbGciOiJSUzI1Ni…at+jwt….SIG\",\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 3600,\n  \"scope\": \"accounts\"\n}" },
+      "jwt": { "title": "Decoded access_token (RFC 9068 at+jwt)",
+        "header": "{ \"alg\": \"RS256\", \"typ\": \"at+jwt\", \"kid\": \"as-sig-2026-01\" }",
+        "payload": [
+          ["iss", "https://as.example.com", "Issuer"],
+          ["aud", "https://api.example.com", "Resource server that must bind-check the token"],
+          ["sub", "s6bhdrkqt3-client", "Client acting as the subject"],
+          ["client_id", "s6bhdrkqt3", "Confidential client that presented the cert"],
+          ["scope", "accounts", "Granted scope"],
+          ["cnf", "{ \"x5t#S256\": \"bwcK0esc3ACC3DB2Y5_lESsXE8u9ie-mkDs5CdrEIYY\" }", "Confirmation claim — binds the token to the client cert"],
+          ["iat", "1774000000", "Issued-at (epoch)"],
+          ["exp", "1774003600", "Expiry (epoch)"]] },
+      "devtools": "Split the <code>access_token</code> on <code>.</code> and base64url-decode the payload. The binding lives in <b>cnf</b>: <code>\"cnf\": { \"x5t#S256\": \"…\" }</code>. That value is <code>base64url(SHA-256(DER(leaf cert)))</code> — it must equal the thumbprint of the cert you presented."
+    },
+    {
+      "from": "Client", "to": "API", "label": "GET /accounts with the SAME cert", "hop": "Client → API",
+      "lede": "The client calls the resource server over a fresh mTLS connection presenting the same client certificate, with the bound token as a Bearer credential.",
+      "req": { "method": "GET", "url": "https://api.example.com/accounts",
+        "headers": [["host", "api.example.com"], ["authorization", "Bearer eyJhbGciOiJSUzI1Ni…at+jwt….SIG"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"accounts\": [ { \"id\": \"acc-001\", \"balance\": \"0.00\" } ] }" },
+      "devtools": "The resource server recomputes the thumbprint over the cert on <i>this</i> TLS connection and requires it to equal <code>cnf.x5t#S256</code>. If a TLS-terminating proxy fronts the API, look for the forwarded verified-cert header (e.g. <code>X-Client-Cert</code>) the proxy injects — that is what the API bind-checks against."
+    },
+    {
+      "from": "Client", "to": "API", "label": "Replay without the bound cert → 401", "hop": "Attacker → API",
+      "lede": "The same token is replayed over a TLS connection with no client cert (or a different one). The thumbprint no longer matches, so the API rejects it. This is the whole point: a stolen token alone is useless.",
+      "req": { "method": "GET", "url": "https://api.example.com/accounts",
+        "headers": [["host", "api.example.com"], ["authorization", "Bearer eyJhbGciOiJSUzI1Ni…SAME.TOKEN"]] },
+      "resp": { "status": 401, "statusText": "Unauthorized", "headers": [
+        ["www-authenticate", "Bearer error=\"invalid_token\", error_description=\"certificate thumbprint mismatch\""]] },
+      "devtools": "This is the key observation: the <b>same token</b> that returned 200 on the bound connection now returns <b>401</b> with <code>WWW-Authenticate: Bearer error=\"invalid_token\"</code>. Bearer theft alone gains the attacker nothing without the matching private key."
+    },
+    {
+      "from": "API", "to": "IdP", "label": "Introspect an opaque bound token (optional)", "hop": "API → IdP",
+      "lede": "For opaque (non-JWT) bound tokens, the resource server calls introspection. The response returns the same cnf.x5t#S256 so the API can compare it to the cert on the current connection.",
+      "req": { "method": "POST", "url": "https://as.mtls.example.com/introspect",
+        "headers": [["host", "as.mtls.example.com"], ["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["token", "opaque-2Yotnf-synthetic"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{\n  \"active\": true,\n  \"client_id\": \"s6bhdrkqt3\",\n  \"scope\": \"accounts\",\n  \"cnf\": { \"x5t#S256\": \"bwcK0esc3ACC3DB2Y5_lESsXE8u9ie-mkDs5CdrEIYY\" }\n}" },
+      "devtools": "The introspection <b>200</b> body carries <code>cnf.x5t#S256</code>, exactly as the JWT did. The resource server compares it to the thumbprint of the cert on the current connection — same bind-check, different token format."
+    }
+  ]
+}

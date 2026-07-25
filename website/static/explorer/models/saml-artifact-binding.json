@@ -1,0 +1,77 @@
+{
+  "title": "SAML HTTP-Artifact Binding",
+  "subtitle": "SP-initiated SSO where the browser only ever carries a small artifact reference — the SP fetches the real assertion over a back-channel SOAP call the Network tab never sees.",
+  "category": "SAML",
+  "steps": [
+    {
+      "from": "User", "to": "Browser", "label": "Open a protected SP page", "hop": "User → Browser",
+      "lede": "The user navigates to a protected resource. As with any SP-initiated flow the SP needs a fresh assertion — but here it will collect it by reference, not by value.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b>, enable <b>Preserve log</b> and <b>Disable cache</b>. The key thing you will <i>not</i> see later is the assertion itself — only a short <b>SAMLart</b>."
+    },
+    {
+      "from": "Browser", "to": "SP", "label": "SP redirects with an AuthnRequest", "hop": "Browser → SP", "vis": "browser",
+      "lede": "No local session, so the SP builds an AuthnRequest asking the IdP to reply over the HTTP-Artifact binding, and redirects the browser with the DEFLATE+base64 SAMLRequest.",
+      "req": { "method": "GET", "url": "https://sp.example.com/protected/resource",
+        "headers": [["accept", "text/html"]] },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://idp.example.net/sso/redirect?SAMLRequest=U1lOVEhFVElDX1NBTUxSZXF1ZXN0…&RelayState=cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ"]] },
+      "codeTitle": "Redirect binding — decode the SAMLRequest",
+      "code": "URL-decode → base64-decode → INFLATE (raw DEFLATE)\n\n<samlp:AuthnRequest\n    ID=\"_synthetic-req-0000000000000000000000001\"\n    Version=\"2.0\"\n    IssueInstant=\"2026-07-25T15:04:05Z\"\n    Destination=\"https://idp.example.net/sso/redirect\"\n    ProtocolBinding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact\"\n    AssertionConsumerServiceURL=\"https://sp.example.com/saml/acs\">\n  <saml:Issuer>https://sp.example.com/saml/metadata</saml:Issuer>\n</samlp:AuthnRequest>",
+      "devtools": "Find the <b>302</b> to the IdP. <b>URL-decode → base64-decode → INFLATE</b> the <b>SAMLRequest</b>; note <b>ProtocolBinding = …:HTTP-Artifact</b> — that is what makes the IdP reply with a reference instead of the assertion."
+    },
+    {
+      "from": "Browser", "to": "IdP", "label": "IdP authenticates and mints an artifact", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "The IdP authenticates the user (or reuses an existing session), builds the Response + signed Assertion, stores it, and mints a one-time artifact (SourceID + MessageHandle) to hand back.",
+      "req": { "method": "GET", "url": "https://idp.example.net/sso/redirect", "q": [
+        ["SAMLRequest", "U1lOVEhFVElDX1NBTUxSZXF1ZXN0X0RFRkxBVEVfYmFzZTY0X3BsYWNlaG9sZGVyX0FBQUFBQUFBQUFBQUFBQUFRVUZCUVVGQg"],
+        ["RelayState", "cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ"]] },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://sp.example.com/saml/acs?SAMLart=AAQAAJ2Fm/RSYNTHETICartifactPLACEHOLDERaGVsbG89PT0&RelayState=cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ"]] },
+      "devtools": "The IdP may show its login page first (absent under a live session). The important response is the <b>302</b> back to the SP ACS — its <b>Location</b> carries a <b>SAMLart</b>, not a SAMLResponse."
+    },
+    {
+      "from": "Browser", "to": "SP", "label": "ACS receives only the artifact", "hop": "Browser → SP", "vis": "browser",
+      "lede": "The browser is redirected to the ACS carrying just the 44-byte artifact reference in SAMLart, alongside RelayState. The assertion itself never transits the front channel.",
+      "req": { "method": "GET", "url": "https://sp.example.com/saml/acs", "q": [
+        ["SAMLart", "AAQAAJ2Fm/RSYNTHETICartifactPLACEHOLDERaGVsbG89PT0"],
+        ["RelayState", "cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ"]] },
+      "devtools": "Select the <b>GET</b> to <b>/saml/acs</b> → <b>Query String Parameters</b>. You will see an opaque <b>SAMLart</b> and <b>RelayState</b> — and crucially <i>no</i> <b>SAMLResponse</b> and no assertion. This is the whole point of the artifact binding."
+    },
+    {
+      "from": "SP", "to": "IdP", "label": "Back-channel ArtifactResolve (SOAP)", "hop": "SP → IdP ARS (back-channel)",
+      "lede": "The SP dereferences the artifact over a signed SOAP ArtifactResolve to the IdP's Artifact Resolution Service, on a mutually authenticated TLS channel. This call is server-to-server.",
+      "codeTitle": "Signed SOAP ArtifactResolve (not in the browser)",
+      "code": "<samlp:ArtifactResolve\n    ID=\"_synthetic-ar-000000000000000000000001\"\n    Version=\"2.0\"\n    IssueInstant=\"2026-07-25T15:04:12Z\"\n    Destination=\"https://idp.example.net/saml/ars\">\n  <saml:Issuer>https://sp.example.com/saml/metadata</saml:Issuer>\n  <samlp:Artifact>AAQAAJ2Fm/RSYNTHETICartifactPLACEHOLDERaGVsbG89PT0</samlp:Artifact>\n</samlp:ArtifactResolve>",
+      "devtools": "<b>Not visible in DevTools.</b> This SOAP POST goes SP → IdP directly, so capture it with server logs or an <b>mTLS-aware proxy</b>, not the browser Network tab. The ARS checks the artifact was issued for <i>this</i> calling SP."
+    },
+    {
+      "from": "IdP", "to": "SP", "label": "Back-channel ArtifactResponse (SOAP)", "hop": "IdP ARS → SP (back-channel)",
+      "lede": "The ARS finds the artifact, deletes it (one-time use), and returns an ArtifactResponse wrapping the original Response + signed Assertion. The SP now validates it exactly as in POST-binding SSO.",
+      "jwt": { "title": "Decoded SAML Assertion (XML)", "header": "",
+        "payload": [
+          ["Response/Issuer", "https://idp.example.net/saml/metadata", "IdP entityID — validate against IdP metadata before trusting anything"],
+          ["Destination", "https://sp.example.com/saml/acs", "The ACS URL this Response is bound to"],
+          ["InResponseTo", "_synthetic-req-0000000000000000000000001", "Must equal the AuthnRequest ID from step 2"],
+          ["Status", "urn:oasis:names:tc:SAML:2.0:status:Success", "Gates acceptance; Responder / AuthnFailed mean reject"],
+          ["Subject/NameID", "S-1-5-21-SYNTHETIC-USER-abc123", "The federated user identifier (persistent format)"],
+          ["Conditions", "NotBefore=2026-07-25T15:04:05Z … NotOnOrAfter=2026-07-25T15:09:10Z", "Validity bounds — allow small clock skew"],
+          ["Audience", "https://sp.example.com/saml/metadata", "Must name this SP's entityID"],
+          ["AuthnStatement/SessionIndex", "_synthetic-session-0000000000001", "Ties to the SSO session — needed later for Single Logout"]] },
+      "devtools": "<b>Not visible in DevTools.</b> A valid, unused artifact yields the assertion; an expired or already-dereferenced artifact returns an <i>empty</i> ArtifactResponse by design, so a caller learns nothing about a handle it should not hold. Verify the <b>Signature</b> before reading claims."
+    },
+    {
+      "from": "SP", "to": "Browser", "label": "SP session created, land on RelayState", "hop": "SP → Browser", "vis": "browser",
+      "lede": "With the resolved assertion validated, the SP creates its session, sets a cookie, and redirects the browser to the RelayState target.",
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://sp.example.com/app/dashboard"],
+        ["set-cookie", "sp_session=SYNTHETIC-SESSION-COOKIE; HttpOnly; Secure"],
+        ["x-note", "assertion resolved via back-channel SOAP ArtifactResolve, not shown in browser"]] },
+      "devtools": "Back in the browser: the ACS answers <b>302</b> to the RelayState deep link and sets <b>sp_session</b>. The assertion that authorised this never appeared on the wire you can see."
+    },
+    {
+      "from": "SP", "to": "User", "label": "Signed in", "hop": "SP → User",
+      "lede": "The browser follows the redirect with the new cookie and the protected page renders. The artifact is already consumed and cannot be resolved again.",
+      "devtools": "Nothing further on the wire. Because the browser only ever held a reference, a stolen SAMLart URL is useless once the SP has resolved it — the ARS returns empty on any replay."
+    }
+  ]
+}

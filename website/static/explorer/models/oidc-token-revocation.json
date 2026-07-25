@@ -1,0 +1,47 @@
+{
+  "title": "OAuth 2.0 Token Revocation",
+  "subtitle": "Signing out for real: the client tells the AS to invalidate a token, and the effect cascades to the whole token family (RFC 7009).",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "User", "to": "Client", "label": "Sign out / disconnect app", "hop": "User → Client",
+      "lede": "The user asks to end the session or disconnect the application. Nothing has hit the network yet.",
+      "devtools": "For a confidential (server-side) client the revocation call happens on your server — it will NOT show in the browser Network tab. Only a public SPA that revokes directly from the browser would be visible. Watch server / AS access logs otherwise."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "POST /revoke", "hop": "Client → IdP (back-channel)",
+      "lede": "The client sends the refresh token to the revocation endpoint, authenticating with its own client credentials. token_type_hint is just an optimization; if it is wrong the AS falls back to searching other token types.",
+      "req": { "method": "POST", "url": "https://as.example.com/revoke",
+        "headers": [["authorization", "Basic czZCaGRSa3F0MzpjbGktczNjcjN0LXNoaGg="], ["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["token", "rt.8f3c1d9a-family-01"], ["token_type_hint", "refresh_token"]] },
+      "devtools": "Filter for the <code>/revoke</code> path on <code>as.example.com</code>. The <b>Basic</b> value decodes to <code>s6BhdRkqt3:cli-s3cr3t-shhh</code> — which client is revoking. URL-decode the form body to read <code>token</code> and <code>token_type_hint</code>."
+    },
+    {
+      "from": "IdP", "to": "Client", "label": "200 (empty body)", "hop": "IdP → Client (back-channel)",
+      "lede": "The AS verifies the client owns the token, invalidates it, and cascades to its dependent access tokens and — under rotation — the whole token family. Success is a bare 200.",
+      "resp": { "status": 200, "statusText": "OK", "headers": [["cache-control", "no-store"]] },
+      "devtools": "<b>200 + empty body = success — but 200 is ALSO returned for an unknown or already-invalid token</b> (RFC 7009 §2.2). The endpoint is deliberately not a validity oracle, so the status tells you nothing about prior existence. The only meaningful error is <code>401 invalid_client</code> (bad client auth); <code>400 unsupported_token_type</code> if the type can't be revoked here."
+    },
+    {
+      "from": "Client", "to": "Client", "label": "Discard local tokens", "hop": "Client (local)",
+      "lede": "The client drops its cached access and refresh tokens and clears the local session. From the user's perspective they are now signed out.",
+      "devtools": "No network event. The local cleanup and the server-side revocation are independent — do both: clearing local storage without calling /revoke leaves a live refresh token on the AS."
+    },
+    {
+      "from": "Client", "to": "API", "label": "Next call with the revoked token → 401", "hop": "Client → API", "vis": "browser",
+      "lede": "The now-revoked access token (same family as the refresh token) is presented on the next API call. Because this resource server validates via introspection, it is rejected immediately.",
+      "req": { "method": "GET", "url": "https://api.example.com/resource",
+        "headers": [["authorization", "Bearer mF_9.B5f-4.1JqM"]] },
+      "resp": { "status": 401, "statusText": "Unauthorized", "headers": [["www-authenticate", "Bearer error=\"invalid_token\""], ["content-type", "application/json"]],
+        "json": "{ \"error\": \"invalid_token\" }" },
+      "devtools": "In the browser Network tab this is the visible effect of revocation: a <b>401</b> with <code>WWW-Authenticate: Bearer error=\"invalid_token\"</code>. Immediacy depends on validation: a resource server checking a self-contained JWT <i>locally</i> would keep honoring the token until its <code>exp</code>."
+    },
+    {
+      "from": "API", "to": "IdP", "label": "How the API learns it's revoked", "hop": "API → IdP (back-channel)",
+      "lede": "Behind that 401, the resource server introspected the token. After revocation the response flips to active:false — that flip is what produced the 401.",
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"active\": false }" },
+      "devtools": "Back-channel, not in the browser. Revoking the refresh token <code>rt.8f3c1d9a-family-01</code> cascaded to the access token <code>mF_9.B5f-4.1JqM</code> in the same family. Confirm blast radius by introspecting a <i>sibling</i> access token — it too should read <code>active:false</code>."
+    }
+  ]
+}

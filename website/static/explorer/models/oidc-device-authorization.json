@@ -1,0 +1,80 @@
+{
+  "title": "OIDC Device Authorization Grant (RFC 8628)",
+  "subtitle": "How a smart TV or CLI signs you in: it polls the token endpoint on a back channel while you approve on your phone. The device calls are invisible in a browser; the approval is not.",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "User", "to": "Client", "label": "Start sign-in on the device", "hop": "User → Client",
+      "lede": "The user starts sign-in on a constrained device (smart TV or CLI) that has no browser and no easy keyboard. The device will drive the flow over a back channel.",
+      "devtools": "The device’s calls are <b>not in any browser</b> — inspect them with a proxy (mitmproxy / Charles) or the device/CLI’s own logs. Only the approval on your <i>phone</i> is a normal browser flow you can watch in DevTools."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "Device authorization request", "hop": "Client → IdP",
+      "lede": "The device posts its client_id and scope to the device-authorization endpoint. The IdP returns a high-entropy device_code (stays on the device↔IdP channel) and a short human-readable user_code.",
+      "req": { "method": "POST", "url": "https://idp.example.com/device_authorization",
+        "headers": [["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["client_id", "tv-device-app-01"], ["scope", "openid profile"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"device_code\": \"dc_synthetic_GmRhmhcxhwAZ\",\n  \"user_code\": \"WDJB-MJHT\",\n  \"verification_uri\": \"https://idp.example.com/activate\",\n  \"verification_uri_complete\": \"https://idp.example.com/activate?user_code=WDJB-MJHT\",\n  \"expires_in\": 900,\n  \"interval\": 5\n}" },
+      "devtools": "Back-channel (the engine flags it). Read <b>interval</b> (minimum seconds between polls) and <b>expires_in</b> (how long the codes live). <b>device_code</b> is high-entropy and never shown to the human; <b>user_code</b> is the short code they type."
+    },
+    {
+      "from": "Client", "to": "User", "label": "Display the code and URL", "hop": "Client (local)",
+      "lede": "The device shows the user_code and verification_uri on screen — often with a QR of verification_uri_complete so a phone scan skips manual entry.",
+      "codeTitle": "Shown on the TV / CLI",
+      "code": "To sign in, visit:  https://idp.example.com/activate\nand enter code:     WDJB-MJHT\n\n(or scan the QR — it opens\n https://idp.example.com/activate?user_code=WDJB-MJHT )",
+      "devtools": "Not a network event. The QR encodes <b>verification_uri_complete</b>, which carries the <b>user_code</b> in its query string so the user does not have to type it."
+    },
+    {
+      "from": "Browser", "to": "IdP", "label": "Open the verification page", "hop": "Phone → IdP", "vis": "browser",
+      "lede": "On a second device, the user opens the verification_uri. If they scanned the QR, the user_code arrives in the query string; if they typed it, it arrives in the following form POST.",
+      "req": { "method": "GET", "url": "https://idp.example.com/activate", "q": [["user_code", "WDJB-MJHT"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [
+        ["content-type", "text/html; charset=utf-8"], ["set-cookie", "idp_session=…; HttpOnly; Secure; SameSite=Lax"]] },
+      "devtools": "This is the part you <i>can</i> watch. In the phone’s DevTools → Network, filter <b>activate</b>. In <b>Query String Parameters</b> you’ll see <b>user_code</b> when the QR was used; if typed, it’s in the subsequent POST body instead. The IdP sets its <b>idp_session</b> cookie here."
+    },
+    {
+      "from": "Browser", "to": "IdP", "label": "Authenticate and approve", "hop": "Phone → IdP", "vis": "browser",
+      "lede": "The user logs in at the IdP and approves the device — the consent screen shows the client name and requested scopes. The IdP then marks the device_code as authorized.",
+      "req": { "method": "POST", "url": "https://idp.example.com/activate",
+        "headers": [["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["user_code", "WDJB-MJHT"], ["action", "approve"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html; charset=utf-8"]] },
+      "devtools": "Confirm the consent screen names the <b>real client</b> and the scopes before approving. The response is typically a “you can return to your device” page. Approving here is what flips the device’s next poll from pending to success."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "Poll /token — still pending", "hop": "Client → IdP",
+      "lede": "Meanwhile the device polls the token endpoint every interval seconds with grant_type=device_code. Until the user approves, the IdP answers 400 authorization_pending.",
+      "req": { "method": "POST", "url": "https://idp.example.com/token",
+        "headers": [["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["grant_type", "urn:ietf:params:oauth:grant-type:device_code"], ["device_code", "dc_synthetic_GmRhmhcxhwAZ"], ["client_id", "tv-device-app-01"]] },
+      "resp": { "status": 400, "statusText": "Bad Request", "headers": [["content-type", "application/json"]],
+        "json": "{ \"error\": \"authorization_pending\" }" },
+      "devtools": "Back-channel polling. The device must honor <b>interval</b>; if it polls too fast the IdP returns <code>slow_down</code> and the device adds 5s (RFC 8628 §3.5). Other terminal errors: <code>expired_token</code> (codes timed out) and <code>access_denied</code> (user declined)."
+    },
+    {
+      "from": "IdP", "to": "Client", "label": "Poll /token — tokens issued", "hop": "Client → IdP",
+      "lede": "Once the user has approved on the phone, the next poll succeeds: the IdP returns an access token, an ID token, and a refresh token.",
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"access_token\": \"at_synthetic_dev_55667788\",\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 3600,\n  \"scope\": \"openid profile\",\n  \"refresh_token\": \"rt_synthetic_D1_0000\",\n  \"id_token\": \"eyJhbGciOiJSUzI1Ni….eyJpc3Mi….SIG\"\n}" },
+      "jwt": { "title": "Decoded id_token",
+        "header": "{ \"alg\": \"RS256\", \"typ\": \"JWT\", \"kid\": \"idp-2026-07-key1\" }",
+        "payload": [
+          ["iss", "https://idp.example.com", "Issuer — the authorization server"],
+          ["sub", "248289761001", "Stable opaque user id (the account approved on the phone)"],
+          ["aud", "tv-device-app-01", "Audience — must equal the device client_id"],
+          ["exp", "1774000000", "Expiry (epoch)"],
+          ["iat", "1773996400", "Issued-at (epoch)"],
+          ["auth_time", "1773996380", "When the user authenticated on the secondary device"],
+          ["name", "Ada Lovelace", "Profile claim (synthetic)"],
+          ["email", "ada.lovelace@example.com", "Profile claim (synthetic)"],
+          ["email_verified", "true", "Address verified by the IdP"]] },
+      "devtools": "There is <b>no nonce</b> here — the device flow has no front-channel /authorize to carry one; binding is via the <b>device_code</b> on the back channel. Validate the signature (JWKS via <code>kid</code>), then <b>iss</b>, <b>aud == client_id</b>, and <b>exp</b>."
+    },
+    {
+      "from": "Client", "to": "User", "label": "Signed in", "hop": "Client (local)",
+      "lede": "The device establishes its session from the validated tokens and shows the authenticated UI. It can later use the refresh_token to renew silently.",
+      "devtools": "Nothing further on the wire. The whole exchange bound a browser login on one device to a session on another, without the constrained device ever handling the user’s password."
+    }
+  ]
+}

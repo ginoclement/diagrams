@@ -1,0 +1,57 @@
+{
+  "title": "OIDC Front-Channel Logout",
+  "subtitle": "The IdP loads one hidden iframe per app so each clears its own session — fully browser-visible, but best-effort and easily partial on modern browsers.",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "User", "to": "Browser", "label": "Logout already initiated", "hop": "User → Browser",
+      "lede": "A logout has begun — typically RP-Initiated Logout reached the IdP’s end_session_endpoint. The IdP now needs to propagate it to every app in the SSO session.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b>, enable <b>Preserve log</b> (the logout page navigates away). Unlike back-channel logout, <b>every step here is browser-visible</b> — that is the whole point of the front channel."
+    },
+    {
+      "from": "IdP", "to": "Browser", "label": "Logout page with hidden iframes", "hop": "IdP → Browser", "vis": "browser",
+      "lede": "The IdP terminates the SSO session and returns an HTML page containing one hidden <iframe> per RP that joined it — each pointing at that RP’s frontchannel_logout_uri.",
+      "req": { "method": "GET", "url": "https://idp.example.com/end_session", "q": [
+        ["id_token_hint", "eyJhbGciOiJSUzI1NiJ9.eyJzdWIi….SIG_synthetic"],
+        ["post_logout_redirect_uri", "https://rp1.example.com/loggedout"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [
+        ["content-type", "text/html; charset=utf-8"],
+        ["set-cookie", "idp_session=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=None"]],
+        "json": "<!doctype html><title>Logging out</title>\n<iframe hidden src=\"https://rp1.example.com/frontchannel-logout?iss=https://idp.example.com&sid=abc123session\"></iframe>\n<iframe hidden src=\"https://rp2.example.com/frontchannel-logout?iss=https://idp.example.com&sid=abc123session\"></iframe>" },
+      "devtools": "Filter on <b>end_session</b>. Open the <b>Response</b> tab and read the HTML — its body lists one hidden <code>&lt;iframe&gt;</code> per RP. Those <code>src</code> URLs are what the browser fetches next."
+    },
+    {
+      "from": "Browser", "to": "App", "label": "RP1 iframe fires — cookie present", "hop": "Browser → App", "vis": "browser",
+      "lede": "The browser loads RP1’s logout iframe. Its own session cookie rides along, so RP1 can validate iss/sid and clear the session — a clean logout.",
+      "req": { "method": "GET", "url": "https://rp1.example.com/frontchannel-logout",
+        "q": [["iss", "https://idp.example.com"], ["sid", "abc123session"]],
+        "headers": [["cookie", "rp1_session=SYNTHETIC-rp1-session"], ["sec-fetch-dest", "iframe"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [
+        ["cache-control", "no-store"],
+        ["set-cookie", "rp1_session=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Lax"]] },
+      "devtools": "Filter on <b>frontchannel-logout</b>. Check the <b>Request Cookies</b> — <b>rp1_session</b> was sent — and the <b>Response</b> <b>Set-Cookie</b> clears it (<code>Max-Age=0</code>). Cookie sent + cookie cleared = that RP is logged out. The <b>sid</b> query param must match the <b>sid</b> claim from that RP’s ID token."
+    },
+    {
+      "from": "Browser", "to": "App", "label": "RP2 iframe fires — cookie blocked", "hop": "Browser → App", "vis": "browser",
+      "lede": "RP2’s iframe loads too, but as a third-party frame the browser partitions/blocks its cookie. With no session cookie visible, RP2 has nothing to clear — a partial logout.",
+      "req": { "method": "GET", "url": "https://rp2.example.com/frontchannel-logout",
+        "q": [["iss", "https://idp.example.com"], ["sid", "abc123session"]],
+        "headers": [["sec-fetch-dest", "iframe"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["cache-control", "no-store"]] },
+      "devtools": "Same filter. Here the <b>Request Cookies</b> are <i>empty</i> — <b>rp2_session</b> was partitioned/dropped — and there is <b>no Set-Cookie</b> in the response. The frame returned <code>200</code> but nothing was cleared: <b>partial logout</b>, and RP2’s session survives. This is the expected outcome on current browsers."
+    },
+    {
+      "from": "Browser", "to": "App", "label": "Return to post_logout_redirect_uri", "hop": "Browser → App", "vis": "browser",
+      "lede": "After a fixed timeout the IdP proceeds to the RP’s post_logout_redirect_uri. This return leg fires regardless of whether the frames succeeded — there is no acknowledgement channel.",
+      "req": { "method": "GET", "url": "https://rp1.example.com/loggedout" },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html"]],
+        "json": "<!doctype html><title>Logged out</title>Best effort complete." },
+      "devtools": "Filter on <b>loggedout</b>. A <code>200</code> here does <b>not</b> confirm every RP was logged out — front-channel logout is best-effort. Also watch the <b>Console</b>: an RP that sends <code>X-Frame-Options: DENY</code> or a restrictive <code>frame-ancestors</code> CSP produces a “Refused to display in a frame” error, and the IdP gets no signal either way."
+    },
+    {
+      "from": "Browser", "to": "User", "label": "“Logged out everywhere” (best effort)", "hop": "Browser → User",
+      "lede": "The user sees a logged-out confirmation. But as the RP2 frame showed, that message is optimistic — a partitioned cookie means at least one app’s session may still be alive.",
+      "devtools": "Conclusion from the capture: <b>frame 200 + cookie sent + cookie cleared</b> → logged out; <b>frame 200 + cookie missing</b> → partial logout. Where reliability matters, pair or replace this with <i>back-channel logout</i>, whose server-to-server delivery does not depend on third-party cookies."
+    }
+  ]
+}

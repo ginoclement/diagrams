@@ -1,0 +1,63 @@
+{
+  "title": "OIDC DPoP — Demonstrating Proof of Possession",
+  "subtitle": "Bind the access token to a key the client holds, so a stolen token is useless without a matching per-request proof JWT (RFC 9449).",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "App", "to": "App", "label": "Generate key pair + build token proof", "hop": "App (local)",
+      "lede": "The public client generates a DPoP key pair (the private key never leaves the app) and builds a proof JWT for the token request: header carries the public jwk and typ dpop+jwt, payload binds the HTTP method and URL.",
+      "jwt": { "title": "DPoP proof for POST /token",
+        "header": "{ \"typ\": \"dpop+jwt\", \"alg\": \"ES256\", \"jwk\": { \"kty\": \"EC\", \"crv\": \"P-256\", \"x\": \"l8tFrhx-34tV3hRICRDY9zCkDlpBhF42UQUfWVAWBFs\", \"y\": \"9VE4jf_Ok_o64zbTTlcuNJajHmt6v9TDVrU0CdvGRDA\" } }",
+        "payload": [
+          ["jti", "proof-e1b2c3d4", "Unique id — server tracks it to block replay"],
+          ["htm", "POST", "Must equal the request method"],
+          ["htu", "https://as.example.com/token", "Must equal the request URI (no query)"],
+          ["iat", "1774000000", "Issued-at — tight freshness window; no ath yet"]] },
+      "devtools": "Not a network event. The <b>jwk</b> in the header is the PUBLIC key only — the AS will hash it to derive the binding thumbprint. There is <b>no ath</b> claim here: there's no access token to hash yet."
+    },
+    {
+      "from": "App", "to": "IdP", "label": "POST /token with DPoP proof", "hop": "App → IdP", "vis": "browser",
+      "lede": "The client redeems its authorization code (PKCE underneath) and attaches the proof in the DPoP request header. The AS verifies the proof and computes the key thumbprint.",
+      "req": { "method": "POST", "url": "https://as.example.com/token",
+        "headers": [["content-type", "application/x-www-form-urlencoded"], ["dpop", "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2Iiwiandr… (proof from step 1)"]],
+        "form": [["grant_type", "authorization_code"], ["code", "SplxlOBeZQQYbYS6WxSbIA"], ["redirect_uri", "https://app.example.com/cb"], ["code_verifier", "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"]] },
+      "devtools": "In the Network tab, filter on <code>/token</code> and read the <b>DPoP</b> request header. Split it on <code>.</code> and base64url-decode header + payload: confirm <code>typ=dpop+jwt</code>, an asymmetric <code>alg</code> (ES256), the <code>jwk</code>, and <code>htm=POST</code> / <code>htu</code> matching this request."
+    },
+    {
+      "from": "IdP", "to": "App", "label": "200 DPoP-bound token", "hop": "IdP → App", "vis": "browser",
+      "lede": "The AS returns token_type DPoP (not Bearer) and binds the access token to the proof's key via cnf.jkt — the SHA-256 thumbprint of the jwk.",
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"access_token\": \"mF_9.B5f-4.1JqM\",\n  \"token_type\": \"DPoP\",\n  \"expires_in\": 3600,\n  \"scope\": \"read:orders\"\n}" },
+      "devtools": "<b>token_type is DPoP</b>, not Bearer — the client must present it with the DPoP scheme from now on. The token is bound via <code>cnf.jkt = \"0ZcOCORZNYy-DWpqq30jZyJGHTN0d2HglBV3uiguA4I\"</code>, the SHA-256 thumbprint of the step-1 <code>jwk</code>. For an opaque token you'd see <code>jkt</code> via introspection; for a JWT AT it's in the payload's <code>cnf</code>."
+    },
+    {
+      "from": "App", "to": "App", "label": "Build resource proof with ath", "hop": "App (local)",
+      "lede": "For the API call the client builds a NEW proof — same key, but a fresh jti and iat, htm/htu for the resource, and an ath claim that hashes the access token.",
+      "jwt": { "title": "DPoP proof for GET /resource",
+        "header": "{ \"typ\": \"dpop+jwt\", \"alg\": \"ES256\", \"jwk\": { \"kty\": \"EC\", \"crv\": \"P-256\", \"x\": \"l8tFrhx-34tV3hRICRDY9zCkDlpBhF42UQUfWVAWBFs\", \"y\": \"9VE4jf_Ok_o64zbTTlcuNJajHmt6v9TDVrU0CdvGRDA\" } }",
+        "payload": [
+          ["jti", "proof-a9f8e7d6", "DIFFERENT jti from the token-endpoint proof"],
+          ["htm", "GET", "Matches the resource request method"],
+          ["htu", "https://api.example.com/resource", "Matches the resource URI"],
+          ["iat", "1774000100", "Fresh issued-at"],
+          ["ath", "fUHyO2r2Z3DZ53EsNrWBb0xWXoaNy59IiKCAqksmQEo", "base64url(SHA-256(access_token))"]] },
+      "devtools": "Verify <b>ath</b> by hand: <code>printf %s \"mF_9.B5f-4.1JqM\" | openssl dgst -binary -sha256 | basenc --base64url</code> and compare. The <b>jti</b> must be new — never reuse the step-1 value."
+    },
+    {
+      "from": "App", "to": "API", "label": "GET /resource with DPoP scheme + proof", "hop": "App → API", "vis": "browser",
+      "lede": "The client calls the API presenting the token with the DPoP auth scheme (not Bearer) and the fresh proof. The API verifies everything in one shot.",
+      "req": { "method": "GET", "url": "https://api.example.com/resource",
+        "headers": [["authorization", "DPoP mF_9.B5f-4.1JqM"], ["dpop", "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2Iiwiandr… (proof from step 4)"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"orderId\": \"ord-1001\", \"status\": \"shipped\" }" },
+      "devtools": "Note the <b>DPoP</b> auth scheme, not <code>Bearer</code>. The API verifies: (1) proof signature against the embedded <code>jwk</code>, (2) <code>jkt(jwk)</code> == the token's <code>cnf.jkt</code>, (3) <code>ath</code> == hash(token), (4) <code>htm</code>/<code>htu</code> match, (5) <code>jti</code> fresh. A bound token replayed as plain <code>Bearer</code>, or a proof signed by a different key, fails checks 1/2 → <code>401 invalid_token</code>."
+    },
+    {
+      "from": "App", "to": "IdP", "label": "Nonce challenge → retry", "hop": "App → IdP", "vis": "browser",
+      "lede": "When the server requires a DPoP nonce, a proof without one is rejected 400 use_dpop_nonce with a DPoP-Nonce header. The client copies that value into a nonce claim on a rebuilt proof and retries, which then succeeds.",
+      "resp": { "status": 400, "statusText": "Bad Request", "headers": [["content-type", "application/json"], ["dpop-nonce", "eyJ7S_zG.ewauwAF.n-0S6"]],
+        "json": "{ \"error\": \"use_dpop_nonce\" }" },
+      "devtools": "Read the <b>DPoP-Nonce</b> response header (<code>WWW-Authenticate: DPoP …</code> at the resource server). Add it as a <code>nonce</code> claim to the next proof and retry — you'll see the failed attempt immediately followed by a 200. This closes the pre-generated-proof gap. A reused <b>jti</b> within the server's window also yields <code>401 invalid_token</code>."
+    }
+  ]
+}

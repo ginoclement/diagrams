@@ -1,0 +1,71 @@
+{
+  "title": "OIDC Back-Channel Logout",
+  "subtitle": "The IdP tells every app a user is signed out of by POSTing a signed logout_token server-to-server — the core step never touches the browser.",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "User", "to": "Browser", "label": "User (or an admin) triggers logout", "hop": "User → Browser",
+      "lede": "Something ends the SSO session — the user clicks “Log out” or an admin revokes the session at the IdP. This is where the chain starts.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b> tab, enable <b>Preserve log</b> so the redirect chain survives navigation. The <i>important</i> step of this flow will <b>not</b> appear here — that is the lesson."
+    },
+    {
+      "from": "Browser", "to": "IdP", "label": "Logout reaches the end_session_endpoint", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "The logout is delivered to the IdP — typically via RP-Initiated Logout hitting end_session. The IdP clears its own session cookie and redirects back.",
+      "req": { "method": "GET", "url": "https://idp.example.com/end_session", "q": [
+        ["id_token_hint", "eyJhbGciOiJSUzI1NiJ9.eyJpc3Mi….SIG_synthetic"],
+        ["post_logout_redirect_uri", "https://rp1.example.com/loggedout"],
+        ["state", "af0ifjsldkj"]] },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://rp1.example.com/loggedout?state=af0ifjsldkj"],
+        ["set-cookie", "idp_session=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=None"]] },
+      "devtools": "Filter on <b>end_session</b>. Decode the <b>id_token_hint</b> (jwt.io / Auth Inspector) to read <b>sub</b> and <b>sid</b> — the session the IdP is about to tear down. Confirm the <b>idp_session</b> cookie is cleared with <code>Max-Age=0</code>."
+    },
+    {
+      "from": "IdP", "to": "IdP", "label": "Terminate session, mint one logout_token per RP", "hop": "IdP (local)",
+      "lede": "The IdP terminates SSO session sid=abc123session, enumerates every RP that joined it, and mints a distinct logout_token (a JWT) for each — audience-scoped to that RP.",
+      "codeTitle": "Per-RP logout_token (computed at the IdP)",
+      "code": "for rp in session.participants:            # RP1, RP2, …\n  logout_token = sign(\n    iss    = \"https://idp.example.com\",\n    aud    = rp.client_id,                 # scoped to ONE rp\n    events = { \"http://schemas.openid.net/event/backchannel-logout\": {} },\n    sub    = \"248289761001\",\n    sid    = \"abc123session\",\n    jti    = unique(), iat = now, exp = now + 120 )\n  POST rp.backchannel_logout_uri  logout_token=<jwt>",
+      "devtools": "Not a network event you can see — it happens inside the IdP. Note the <b>events</b> claim is what distinguishes a logout token from a replayed ID token."
+    },
+    {
+      "from": "IdP", "to": "App", "label": "POST logout_token to the RP (back-channel)", "hop": "IdP → App (server-to-server)",
+      "lede": "The IdP POSTs the logout_token directly to the RP’s backchannel_logout_uri. This request is server-to-server: it never traverses the browser, so it is invisible in the Network tab.",
+      "req": { "method": "POST", "url": "https://rp1.example.com/backchannel-logout",
+        "headers": [["content-type", "application/x-www-form-urlencoded"], ["user-agent", "OpenID-Provider/1.0 (synthetic)"]],
+        "form": [["logout_token", "eyJhbGciOiJSUzI1NiIsInR5cCI6ImxvZ291dCtqd3QiLCJraWQiOiJpZHAta2V5LTIwMjYifQ.eyJpc3Mi…synthetic…fQ.SIG_synthetic_not_a_real_signature_do_not_verify"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["cache-control", "no-store"], ["content-length", "0"]] },
+      "jwt": { "title": "Decoded logout_token",
+        "header": "{ \"alg\": \"RS256\", \"typ\": \"logout+jwt\", \"kid\": \"idp-key-2026\" }",
+        "payload": [
+          ["iss", "https://idp.example.com", "Issuer — must equal the expected OP"],
+          ["aud", "s6BhdRkqt3", "Audience — must contain this RP’s client_id"],
+          ["iat", "1774000000", "Issued-at — must be recent"],
+          ["jti", "bWJq-logout-0001", "Unique id — cache it to reject replays"],
+          ["exp", "1774000120", "Expiry — short-lived (120s after iat)"],
+          ["events", "{ \"…/backchannel-logout\": {} }", "REQUIRED — marks this a back-channel logout"],
+          ["sub", "248289761001", "Subject — which user"],
+          ["sid", "abc123session", "Session id — which specific session to kill"]] },
+      "devtools": "<b>You will NOT find this in DevTools.</b> It is delivered IdP → RP over the back channel; capture it in RP access logs or a proxy (mitmproxy) in front of the RP. A common gotcha: a <b>nonce</b> claim must be <i>absent</i> — its presence means an ID token was replayed as a logout token → reject with <code>400</code>."
+    },
+    {
+      "from": "App", "to": "App", "label": "Validate the token, destroy the session", "hop": "App (local)",
+      "lede": "The RP validates the logout_token like an ID token — with two twists — then finds the session by sid and destroys it, revoking any refresh tokens. Handlers must be idempotent.",
+      "devtools": "Server-side: verify the signature against the IdP JWK <code>kid=idp-key-2026</code> (<b>alg</b> not <code>none</code>), check <b>iss</b>, <b>aud</b>, <b>iat</b>/<b>exp</b>, that <b>events</b> is present and <b>nonce</b> is not, and that <b>jti</b> is unseen. Delivery is at-least-once — a repeated <b>jti</b> or an unknown <b>sid</b> must return <code>200</code>, not error."
+    },
+    {
+      "from": "Browser", "to": "App", "label": "Next visit finds no session", "hop": "Browser → App", "vis": "browser",
+      "lede": "This is the only browser-side evidence the logout landed. On the next request the orphaned RP cookie matches no session, so the RP clears it and bounces the browser to re-authenticate.",
+      "req": { "method": "GET", "url": "https://rp1.example.com/app",
+        "headers": [["cookie", "rp1_session=SYNTHETIC-orphaned-rp-session"]] },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://idp.example.com/authorize?response_type=code&client_id=s6BhdRkqt3&redirect_uri=https%3A%2F%2Frp1.example.com%2Fcb&scope=openid&state=xyz789"],
+        ["set-cookie", "rp1_session=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Lax"]] },
+      "devtools": "Filter on <b>authorize</b>. The <b>Set-Cookie</b> clearing <b>rp1_session</b> plus the fresh <code>/authorize</code> redirect is your proof the back-channel POST actually destroyed the server-side session."
+    },
+    {
+      "from": "App", "to": "User", "label": "Signed out everywhere", "hop": "App → User",
+      "lede": "Every RP that joined the session has been notified out-of-band. The user is signed out across all of them and must re-authenticate to continue.",
+      "devtools": "The value of the back channel: logout is reliable and driven by the IdP even if the browser is closed — but you must capture on the server to see it work. Contrast with <i>front-channel logout</i>, which is fully browser-visible but best-effort."
+    }
+  ]
+}

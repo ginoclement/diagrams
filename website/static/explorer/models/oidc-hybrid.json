@@ -1,0 +1,86 @@
+{
+  "title": "OIDC Hybrid Flow (code id_token)",
+  "subtitle": "The IdP returns a code AND a front-channel ID token at once — the id_token’s c_hash binds the code so a stolen/substituted code can’t be redeemed.",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "User", "to": "App", "label": "Visit a protected page", "hop": "User → App",
+      "lede": "The user hits a protected page in a web app (the RP). The app stores state and nonce, then bounces to the IdP asking for both a code and a front-channel ID token.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b>, enable <b>Preserve log</b> (the authorize redirect navigates away). Hybrid’s tell is <code>response_type=code id_token</code>: you get an ID token in the front channel <i>and</i> a code to redeem in the back channel."
+    },
+    {
+      "from": "App", "to": "IdP", "label": "Redirect to /authorize (form_post)", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "The browser is redirected to the authorization endpoint. nonce is mandatory for hybrid. With response_mode=form_post the IdP returns an HTML page that auto-submits code + id_token + state to the callback.",
+      "req": { "method": "GET", "url": "https://idp.example.com/authorize", "q": [
+        ["response_type", "code id_token"], ["client_id", "s6BhdRkqt3"], ["redirect_uri", "https://rp.example.com/cb"],
+        ["scope", "openid email"], ["state", "abc"], ["nonce", "n-xyz-hybrid-77"], ["response_mode", "form_post"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html; charset=utf-8"], ["cache-control", "no-store"]],
+        "json": "<!doctype html>\n<form method=post action=\"https://rp.example.com/cb\">\n  <input name=code value=\"SplxlOBeZQQYbYS6WxSbIA\">\n  <input name=id_token value=\"eyJ…front…\">\n  <input name=state value=\"abc\">\n</form>\n<script>document.forms[0].submit()</script>" },
+      "devtools": "Filter on <b>authorize</b>. Confirm <b>response_type=code id_token</b>, <b>state</b>, and the mandatory <b>nonce</b>. If <b>response_mode=form_post</b>, the response is an auto-submitting HTML form (below) rather than a fragment redirect — much easier to read."
+    },
+    {
+      "from": "Browser", "to": "App", "label": "form_post delivers code + front-channel id_token", "hop": "Browser → App", "vis": "browser",
+      "lede": "The auto-submitted form POSTs code, the front-channel id_token, and state to the RP callback. The RP verifies state, validates the id_token, then confirms c_hash binds this exact code.",
+      "req": { "method": "POST", "url": "https://rp.example.com/cb",
+        "headers": [["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["code", "SplxlOBeZQQYbYS6WxSbIA"],
+          ["id_token", "eyJhbGciOiJSUzI1Ni….eyJpc3Mi…cf9oYXNo….SIG_synthetic"],
+          ["state", "abc"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html"],
+        ["set-cookie", "rp_session=SYNTHETIC-new-rp-session; Path=/; Secure; HttpOnly; SameSite=Lax"]] },
+      "jwt": { "title": "Decoded front-channel id_token (carries c_hash)",
+        "header": "{ \"alg\": \"RS256\", \"typ\": \"JWT\", \"kid\": \"idp-key-2026\" }",
+        "payload": [
+          ["iss", "https://idp.example.com", "Issuer — must equal your IdP"],
+          ["sub", "248289761001", "Stable user identifier"],
+          ["aud", "s6BhdRkqt3", "Audience — must equal your client_id"],
+          ["exp", "1774003600", "Expiry (epoch)"],
+          ["nonce", "n-xyz-hybrid-77", "Must equal the nonce you sent — replay binding"],
+          ["c_hash", "LDktKdoQak3Pk0cnXxCltA", "base64url(left-half(SHA-256(code))) — binds the code"],
+          ["s_hash", "aGciOiJSUzI1", "State hash (when present) — binds state"],
+          ["acr", "1", "Authentication context class"]] },
+      "devtools": "Filter on <b>cb</b>. Read the <b>Form Data</b>: <b>code</b>, <b>id_token</b>, <b>state</b>. Decode the id_token and confirm <b>nonce</b> matches and a <b>c_hash</b> claim is present. (In default fragment mode the tokens would be after <code>#</code> in the address bar — not sent to the server — with the same leakage caution as implicit.)"
+    },
+    {
+      "from": "App", "to": "App", "label": "Validate id_token + verify c_hash", "hop": "App (local)",
+      "lede": "The RP fully validates the front-channel id_token (JWKS signature, iss, aud, exp, nonce), then recomputes base64url(left-half(SHA-256(code))) and compares it to c_hash. A match proves the code wasn’t substituted — the RP can start a session immediately.",
+      "codeTitle": "c_hash check (computed at the RP)",
+      "code": "digest      = SHA-256(\"SplxlOBeZQQYbYS6WxSbIA\")   # the code\ncomputed    = base64url( digest[0 : len(digest)/2] )  # left half\nassert computed == id_token.c_hash                    # else REJECT, do not redeem\n\n// c_hash is the whole reason to use hybrid: it lets the RP\n// detect an injected/substituted code BEFORE the /token call.",
+      "devtools": "Not a network event. A <b>c_hash</b> mismatch means code injection/substitution — the RP must reject and <b>never</b> redeem the code at <code>/token</code>."
+    },
+    {
+      "from": "App", "to": "IdP", "label": "Redeem code at /token (back-channel)", "hop": "App → IdP (server-to-server)",
+      "lede": "The RP back end POSTs the code to /token with client authentication and gets back an access token plus a SECOND id_token — this one richer, from the back channel.",
+      "req": { "method": "POST", "url": "https://idp.example.com/token",
+        "headers": [["content-type", "application/x-www-form-urlencoded"], ["authorization", "Basic czZCaGRSa3F0MzpTWU5USEVUSUM="]],
+        "form": [["grant_type", "authorization_code"], ["code", "SplxlOBeZQQYbYS6WxSbIA"], ["redirect_uri", "https://rp.example.com/cb"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"access_token\": \"SlAV32hkKG-synthetic\",\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 3600,\n  \"refresh_token\": \"8xLOxBtZp8-synthetic\",\n  \"id_token\": \"eyJhbGciOiJSUzI1Ni….eyJpc3Mi…lbWFpbA….SIG_synthetic\"\n}" },
+      "jwt": { "title": "Decoded back-channel id_token (second token)",
+        "header": "{ \"alg\": \"RS256\", \"typ\": \"JWT\", \"kid\": \"idp-key-2026\" }",
+        "payload": [
+          ["iss", "https://idp.example.com", "MUST equal the front-channel token’s iss"],
+          ["sub", "248289761001", "MUST equal the front-channel token’s sub"],
+          ["aud", "s6BhdRkqt3", "Audience — your client_id"],
+          ["iat", "1774000005", "Issued a few seconds after the front-channel token"],
+          ["nonce", "n-xyz-hybrid-77", "Same nonce"],
+          ["email", "jordan.rivera@example.com", "Richer claims than the front-channel token"],
+          ["email_verified", "true", "Claim from the email scope"]] },
+      "devtools": "<b>Not in the browser</b> — this is the RP’s server-to-server call. Capture it on the RP if you need to see it. It returns a second id_token; the RP checks its <b>iss</b>/<b>sub</b> match the front-channel token."
+    },
+    {
+      "from": "App", "to": "App", "label": "Cross-token consistency check", "hop": "App (local)",
+      "lede": "The RP compares the two ID tokens: iss and sub MUST be identical. If they differ, it discards the tokens and restarts authentication.",
+      "devtools": "Not a network event. This guards against a mismatched back-channel token being stitched onto a valid front-channel response — a mismatch means discard everything and re-authenticate."
+    },
+    {
+      "from": "App", "to": "API", "label": "Call the API with the access token", "hop": "App → API",
+      "lede": "With validated tokens, the RP calls the resource server presenting the access token as a Bearer credential. If the RP calls the API server-side, this is off-browser too.",
+      "req": { "method": "GET", "url": "https://api.example.com/resource",
+        "headers": [["authorization", "Bearer SlAV32hkKG-synthetic"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"data\": \"synthetic-resource\" }" },
+      "devtools": "Filter on <b>resource</b> — but you’ll only see it here if the <i>browser</i> makes the call. A server-side RP performs this from its back end, invisible to DevTools. The resource server validates the Bearer token (JWKS, <b>iss</b>, <b>aud</b>, <b>exp</b>, scopes) before returning data."
+    }
+  ]
+}

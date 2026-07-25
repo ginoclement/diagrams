@@ -1,0 +1,212 @@
+[
+  {
+    "id": "oidc-client-credentials",
+    "title": "OAuth 2.0 Client Credentials (Machine-to-Machine)",
+    "category": "OIDC",
+    "steps": 6
+  },
+  {
+    "id": "oidc-token-exchange",
+    "title": "OAuth 2.0 Token Exchange",
+    "category": "OIDC",
+    "steps": 6
+  },
+  {
+    "id": "oidc-token-introspection",
+    "title": "OAuth 2.0 Token Introspection",
+    "category": "OIDC",
+    "steps": 7
+  },
+  {
+    "id": "oidc-token-revocation",
+    "title": "OAuth 2.0 Token Revocation",
+    "category": "OIDC",
+    "steps": 6
+  },
+  {
+    "id": "oidc-authorization-code",
+    "title": "OIDC Authorization Code (Confidential Client)",
+    "category": "OIDC",
+    "steps": 8
+  },
+  {
+    "id": "oidc-authorization-code-pkce",
+    "title": "OIDC Authorization Code + PKCE",
+    "category": "OIDC",
+    "steps": 9
+  },
+  {
+    "id": "oidc-back-channel-logout",
+    "title": "OIDC Back-Channel Logout",
+    "category": "OIDC",
+    "steps": 7
+  },
+  {
+    "id": "oidc-ciba",
+    "title": "OIDC CIBA (Client-Initiated Backchannel Authentication)",
+    "category": "OIDC",
+    "steps": 7
+  },
+  {
+    "id": "oidc-device-authorization",
+    "title": "OIDC Device Authorization Grant (RFC 8628)",
+    "category": "OIDC",
+    "steps": 8
+  },
+  {
+    "id": "oidc-dpop",
+    "title": "OIDC DPoP — Demonstrating Proof of Possession",
+    "category": "OIDC",
+    "steps": 6
+  },
+  {
+    "id": "oidc-dynamic-client-registration",
+    "title": "OIDC Dynamic Client Registration (RFC 7591 / 7592)",
+    "category": "OIDC",
+    "steps": 6
+  },
+  {
+    "id": "oidc-front-channel-logout",
+    "title": "OIDC Front-Channel Logout",
+    "category": "OIDC",
+    "steps": 6
+  },
+  {
+    "id": "oidc-hybrid",
+    "title": "OIDC Hybrid Flow (code id_token)",
+    "category": "OIDC",
+    "steps": 7
+  },
+  {
+    "id": "oidc-implicit",
+    "title": "OIDC Implicit Flow",
+    "category": "OIDC",
+    "steps": 7
+  },
+  {
+    "id": "oidc-jar-jarm",
+    "title": "OIDC JAR / JARM — Signed Requests & Responses",
+    "category": "OIDC",
+    "steps": 7
+  },
+  {
+    "id": "oidc-mtls-bound-tokens",
+    "title": "OIDC mTLS Client Auth + Certificate-Bound Tokens",
+    "category": "OIDC",
+    "steps": 7
+  },
+  {
+    "id": "oidc-pushed-authorization-requests",
+    "title": "OIDC Pushed Authorization Requests (PAR)",
+    "category": "OIDC",
+    "steps": 6
+  },
+  {
+    "id": "oidc-refresh-token",
+    "title": "OIDC Refresh Token Grant (with Rotation)",
+    "category": "OIDC",
+    "steps": 6
+  },
+  {
+    "id": "oidc-resource-owner-password-credentials",
+    "title": "OIDC Resource Owner Password Credentials (ROPC)",
+    "category": "OIDC",
+    "steps": 6
+  },
+  {
+    "id": "oidc-rich-authorization-requests",
+    "title": "OIDC Rich Authorization Requests (RAR, RFC 9396)",
+    "category": "OIDC",
+    "steps": 7
+  },
+  {
+    "id": "oidc-rp-initiated-logout",
+    "title": "OIDC RP-Initiated Logout",
+    "category": "OIDC",
+    "steps": 6
+  },
+  {
+    "id": "oidc-session-management",
+    "title": "OIDC Session Management",
+    "category": "OIDC",
+    "steps": 6
+  },
+  {
+    "id": "saml-ecp",
+    "title": "SAML Enhanced Client or Proxy (ECP)",
+    "category": "SAML",
+    "steps": 8
+  },
+  {
+    "id": "saml-artifact-binding",
+    "title": "SAML HTTP-Artifact Binding",
+    "category": "SAML",
+    "steps": 8
+  },
+  {
+    "id": "saml-slo-idp-initiated",
+    "title": "SAML IdP-Initiated Single Logout",
+    "category": "SAML",
+    "steps": 6
+  },
+  {
+    "id": "saml-idp-initiated-sso",
+    "title": "SAML IdP-Initiated Web Browser SSO",
+    "category": "SAML",
+    "steps": 7
+  },
+  {
+    "id": "saml-slo-sp-initiated",
+    "title": "SAML SP-Initiated Single Logout",
+    "category": "SAML",
+    "steps": 7
+  },
+  {
+    "id": "saml-sp-initiated-sso",
+    "title": "SAML SP-Initiated Web Browser SSO",
+    "category": "SAML",
+    "steps": 9
+  },
+  {
+    "id": "tokenless-header-based-sso",
+    "title": "Header-Based SSO (Proxy-Injected Identity)",
+    "category": "Tokenless",
+    "steps": 6
+  },
+  {
+    "id": "tokenless-http-basic-auth",
+    "title": "HTTP Basic Authentication",
+    "category": "Tokenless",
+    "steps": 5
+  },
+  {
+    "id": "tokenless-ip-allowlist-network-auth",
+    "title": "IP Allowlist / Network-Location Auth",
+    "category": "Tokenless",
+    "steps": 5
+  },
+  {
+    "id": "tokenless-magic-link",
+    "title": "Magic Link (Passwordless Email Login)",
+    "category": "Tokenless",
+    "steps": 6
+  },
+  {
+    "id": "tokenless-mutual-tls",
+    "title": "Mutual TLS (mTLS) Client-Certificate Auth",
+    "category": "Tokenless",
+    "steps": 7
+  },
+  {
+    "id": "tokenless-session-cookie",
+    "title": "Session Cookie Authentication",
+    "category": "Tokenless",
+    "steps": 6
+  },
+  {
+    "id": "tokenless-webauthn-passkey-authentication",
+    "title": "WebAuthn / Passkey Authentication",
+    "category": "Tokenless",
+    "steps": 5
+  }
+]

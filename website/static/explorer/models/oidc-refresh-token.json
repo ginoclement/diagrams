@@ -1,0 +1,63 @@
+{
+  "title": "OIDC Refresh Token Grant (with Rotation)",
+  "subtitle": "How a SPA renews an expired access token without sending the user back through login — and how rotation plus reuse-detection catches a stolen token.",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "App", "to": "App", "label": "Access token has expired", "hop": "App (local)",
+      "lede": "The user is already signed in, but the short-lived access token (AT1) has expired. The public client (SPA) still holds a refresh token from the original grant and will use it to get a fresh access token silently.",
+      "devtools": "Open DevTools → <b>Network</b>, enable <b>Preserve log</b>, and filter <b>Fetch/XHR</b> with <code>token</code> in the box. For a <i>public client</i> (SPA) the refresh runs in the browser and is fully visible; for a confidential/BFF client it would be a back-channel call you’d only see in backend logs."
+    },
+    {
+      "from": "App", "to": "IdP", "label": "Send the refresh request", "hop": "App → IdP", "vis": "browser",
+      "lede": "The client posts grant_type=refresh_token with the stored refresh token. A public client identifies itself with client_id (no secret); the browser is the origin.",
+      "req": { "method": "POST", "url": "https://idp.example.com/token",
+        "headers": [["content-type", "application/x-www-form-urlencoded"], ["origin", "https://app.example.com"]],
+        "form": [["grant_type", "refresh_token"], ["refresh_token", "rt_synthetic_A1_0000"], ["client_id", "spa-public-001"]] },
+      "devtools": "Open the <b>Payload</b> tab and confirm <b>grant_type=refresh_token</b> and the <b>refresh_token</b> being sent (<code>rt_synthetic_A1_0000</code>). Note the value — you’ll compare it against the one that comes back. A confidential client would instead send an <b>Authorization: Basic</b> header or a <code>client_assertion</code> on the back channel."
+    },
+    {
+      "from": "IdP", "to": "App", "label": "Rotated tokens returned", "hop": "IdP → App", "vis": "browser",
+      "lede": "The IdP validates the refresh token, then rotates it: it invalidates the one you sent and returns a brand-new refresh token (same family) alongside a fresh access token and a re-issued ID token.",
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"access_token\": \"at_synthetic_new_99887766\",\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 3600,\n  \"scope\": \"openid profile email\",\n  \"refresh_token\": \"rt_synthetic_A2_0001\",\n  \"id_token\": \"eyJhbGciOiJSUzI1Ni….eyJpc3Mi….SIG\"\n}" },
+      "jwt": { "title": "Decoded re-issued id_token",
+        "header": "{ \"alg\": \"RS256\", \"typ\": \"JWT\", \"kid\": \"idp-2026-07-key1\" }",
+        "payload": [
+          ["iss", "https://idp.example.com", "Issuer — the authorization server"],
+          ["sub", "248289761001", "Stable opaque user id (unchanged across refreshes)"],
+          ["aud", "spa-public-001", "Audience — the client_id"],
+          ["exp", "1774010000", "NEW expiry — later than the previous token"],
+          ["iat", "1774006400", "NEW issued-at — the moment of this refresh"],
+          ["auth_time", "1773996390", "UNCHANGED — the original login, not now"],
+          ["name", "Ada Lovelace", "Profile claim (synthetic)"],
+          ["email", "ada.lovelace@example.com", "Profile claim (synthetic)"],
+          ["email_verified", "true", "Address verified by the IdP"]] },
+      "devtools": "In the <b>Response</b>, confirm the <b>refresh_token</b> differs from the one you sent (<code>…A2_0001</code> vs <code>…A1_0000</code>) — that is rotation. The client must now store the new one and discard the old. In the id_token, <b>iat</b>/<b>exp</b> move forward but <b>auth_time</b> stays pinned to the original login: a refresh renews tokens, it does not re-authenticate the user. There is no <b>nonce</b> (no front-channel /authorize)."
+    },
+    {
+      "from": "App", "to": "API", "label": "Call the API with the fresh token", "hop": "App → API", "vis": "browser",
+      "lede": "The client retries the resource call, now presenting the freshly minted access token as a Bearer credential.",
+      "req": { "method": "GET", "url": "https://api.example.com/v1/reports",
+        "headers": [["authorization", "Bearer at_synthetic_new_99887766"], ["accept", "application/json"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"reports\": [ { \"id\": \"r-001\", \"status\": \"ready\" } ] }" },
+      "devtools": "Confirm the <b>Authorization: Bearer</b> header carries the <i>new</i> access token, not the expired one. The resource server validates it (signature via JWKS, <b>iss</b>, <b>aud</b>, <b>exp</b>, scopes) before returning data."
+    },
+    {
+      "from": "App", "to": "IdP", "label": "Reuse detection: old token replayed", "hop": "App → IdP", "vis": "browser",
+      "lede": "If the already-rotated token (…A1_0000) is replayed — typically by an attacker who stole it — the IdP sees a used token, treats it as a breach, and revokes the entire token family.",
+      "req": { "method": "POST", "url": "https://idp.example.com/token",
+        "headers": [["content-type", "application/x-www-form-urlencoded"], ["origin", "https://app.example.com"]],
+        "form": [["grant_type", "refresh_token"], ["refresh_token", "rt_synthetic_A1_0000"], ["client_id", "spa-public-001"]] },
+      "resp": { "status": 400, "statusText": "Bad Request", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"error\": \"invalid_grant\",\n  \"error_description\": \"Refresh token already used; token family revoked\"\n}" },
+      "devtools": "This shows as a red <b>400</b> on the <code>token</code> request with <code>error=invalid_grant</code>. Because the AS revokes the whole family, the <i>next</i> refresh — even with the current <code>…A2_0001</code> token — will also fail, forcing interactive re-authentication. That is the point: a stolen refresh token cannot be used silently for long."
+    },
+    {
+      "from": "App", "to": "User", "label": "Re-authentication required", "hop": "App (local)",
+      "lede": "With the family revoked, the client can no longer refresh. It falls back to sending the user through an interactive login at /authorize.",
+      "devtools": "Nothing more to refresh. Other benign reasons a refresh returns <code>invalid_grant</code>: the family hit its sliding idle window or absolute lifetime. In all cases the client redirects to <b>/authorize</b> for a fresh login. Scope on refresh may only <i>narrow</i> the grant, never widen it."
+    }
+  ]
+}

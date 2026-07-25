@@ -1,0 +1,60 @@
+{
+  "title": "OAuth 2.0 Token Exchange",
+  "subtitle": "One service trades a user's token for a narrower, delegated token to call the next service in the chain — with an act claim that keeps the acting party auditable (RFC 8693).",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "User", "to": "Client", "label": "Request that fans out to service B", "hop": "User → Service A",
+      "lede": "Service A already holds the user's access token. To fulfil the request it must call service B on the user's behalf — but it should present a token scoped to B, not the user's full token.",
+      "devtools": "The exchange that follows is a back-channel, service-to-service call. None of it appears in the browser Network tab — watch service A's egress logs or the STS access logs."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "POST /token (token-exchange grant)", "hop": "Service A → STS (back-channel)",
+      "lede": "Service A posts the user's token as subject_token and asks the Security Token Service to mint a token for a narrower audience and scope. It authenticates with its own client credentials.",
+      "req": { "method": "POST", "url": "https://as.example.com/token",
+        "headers": [["authorization", "Basic c3ZjLWE6c3ZjLWEtczNjcjN0"], ["content-type", "application/x-www-form-urlencoded"], ["accept", "application/json"]],
+        "form": [["grant_type", "urn:ietf:params:oauth:grant-type:token-exchange"], ["subject_token", "AT-user.9a1c7f20"], ["subject_token_type", "urn:ietf:params:oauth:token-type:access_token"], ["audience", "https://api.example.com"], ["scope", "read:orders"]] },
+      "devtools": "URL-decode the form body. The <b>Basic</b> value decodes to <code>svc-a:svc-a-s3cr3t</code>. Key params: <code>subject_token</code> (who the new token represents), <code>audience</code> and <code>scope</code> — these should <b>narrow</b>, never widen, the downstream reach."
+    },
+    {
+      "from": "IdP", "to": "IdP", "label": "Validate + mint delegated token", "hop": "STS (local)",
+      "lede": "The STS validates the subject_token, checks its may_act policy permits service A to act for the user, then mints a delegated token: same subject (the user), narrowed aud and scope, plus an act claim naming service A.",
+      "devtools": "No network event. The <b>may_act</b> check is the authorization gate: if the subject token's policy does not list service A as a permitted actor, the exchange is denied with <code>400 invalid_request</code>."
+    },
+    {
+      "from": "IdP", "to": "Client", "label": "200 issued delegated token", "hop": "STS → Service A (back-channel)",
+      "lede": "The STS returns the exchanged token. issued_token_type reports what was actually minted (it may differ from what was requested). expires_in is short — 5 minutes here.",
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"issued_token_type\": \"urn:ietf:params:oauth:token-type:access_token\",\n  \"access_token\": \"eyJhbGciOiJSUzI1Ni…at+jwt…\",\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 300,\n  \"scope\": \"read:orders\"\n}" },
+      "jwt": { "title": "Decoded access_token (at+jwt)",
+        "header": "{ \"alg\": \"RS256\", \"typ\": \"at+jwt\", \"kid\": \"as-2026-07\" }",
+        "payload": [
+          ["iss", "https://as.example.com", "Issuing STS"],
+          ["sub", "248289761001", "The USER — unchanged by the exchange"],
+          ["aud", "https://api.example.com", "Narrowed downstream audience (service B)"],
+          ["act", "{ \"sub\": \"svc-a\" }", "ACTOR chain — service A is acting for the user"],
+          ["scope", "read:orders", "Narrowed scope"],
+          ["client_id", "svc-a", "The exchanging client"],
+          ["exp", "1774000300", "Expiry — 2026-03-17T13:51:40Z"],
+          ["iat", "1774000000", "Issued-at — 2026-03-17T13:46:40Z"],
+          ["jti", "tex-3f9c2a1b", "Unique token id"]] },
+      "devtools": "The single most important claim to read is <b>act</b>. Its presence (<code>{\"sub\":\"svc-a\"}</code>) means this is <b>delegation</b>: downstream can see who is acting. An <b>impersonation</b> token would be identical <i>minus</i> the <code>act</code> claim — the actor invisible. Chains nest: <code>\"act\":{\"sub\":\"svc-b\",\"act\":{\"sub\":\"svc-a\"}}</code>, read outermost-first."
+    },
+    {
+      "from": "Client", "to": "API", "label": "Call service B with the delegated token", "hop": "Service A → Service B",
+      "lede": "Service A calls service B presenting the exchanged token as a Bearer credential. This hop is typically service-to-service as well.",
+      "req": { "method": "GET", "url": "https://api.example.com/orders",
+        "headers": [["authorization", "Bearer eyJhbGciOiJSUzI1Ni…at+jwt…"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"orders\": [ { \"id\": \"ord-1001\", \"total\": 42.5 } ] }" },
+      "devtools": "Decode the Bearer token and confirm service B sees <b>sub=user</b> and <b>act.sub=svc-a</b>, and enforces the narrowed <code>read:orders</code> scope against itself. The user is present, the acting service is auditable."
+    },
+    {
+      "from": "IdP", "to": "Client", "label": "Denied — may_act does not permit this actor", "hop": "STS → Service A (back-channel)",
+      "lede": "If the exchange supplies an actor_token whose identity is not listed in the subject token's may_act, the STS refuses to mint a delegated token.",
+      "resp": { "status": 400, "statusText": "Bad Request", "headers": [["content-type", "application/json"]],
+        "json": "{ \"error\": \"invalid_request\" }" },
+      "devtools": "The policy check failed: the subject token's <b>may_act</b> did not authorize the requested actor (e.g. service X). Delegation is preferred over impersonation precisely because this authority is explicit and, in the issued token, auditable via <code>act</code>."
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "title": "SAML Enhanced Client or Proxy (ECP)",
+  "subtitle": "A non-browser profile: a SOAP/PAOS reverse-SOAP exchange where the client itself parses the AuthnRequest, authenticates to the IdP, and enforces the URL-match check that defeats a rogue SP.",
+  "category": "SAML",
+  "steps": [
+    {
+      "from": "User", "to": "Client", "label": "Launch the ECP client", "hop": "User → Client",
+      "lede": "A CLI or desktop client (not a browser) requests a federated resource. Because ECP is non-browser, none of the following happens in a Network tab.",
+      "devtools": "<b>DevTools does not apply here</b> — no browser is involved. Capture the exchange with <code>curl -v</code>, <b>mitmproxy</b>, or Wireshark. The <b>SAML Tracer</b> / <b>Auth Inspector</b> extensions also do not apply; paste the SOAP bodies into <code>xmllint --format</code> instead."
+    },
+    {
+      "from": "Client", "to": "SP", "label": "Request the resource, advertising PAOS", "hop": "Client → SP",
+      "lede": "The client GETs the protected resource announcing PAOS support. The SP has no session, sees an ECP-capable client, and returns a SOAP envelope — the AuthnRequest travels inside an HTTP response (reverse SOAP).",
+      "req": { "method": "GET", "url": "https://sp.example.com/protected/resource", "headers": [
+        ["accept", "application/vnd.paos+xml"],
+        ["paos", "ver=\"urn:liberty:paos:2003-08\";\"urn:oasis:names:tc:SAML:2.0:profiles:SSO:ecp\""]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/vnd.paos+xml"]] },
+      "codeTitle": "PAOS response — SOAP-wrapped AuthnRequest (inline XML, no base64/DEFLATE)",
+      "code": "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\">\n  <S:Header>\n    <paos:Request xmlns:paos=\"urn:liberty:paos:2003-08\"\n        responseConsumerURL=\"https://sp.example.com/saml/acs\"\n        service=\"urn:oasis:names:tc:SAML:2.0:profiles:SSO:ecp\"/>\n    <ecp:Request xmlns:ecp=\"urn:oasis:names:tc:SAML:2.0:profiles:SSO:ecp\" IsPassive=\"0\">\n      <saml:Issuer>https://sp.example.com/saml/metadata</saml:Issuer>\n    </ecp:Request>\n    <ecp:RelayState>cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ</ecp:RelayState>\n  </S:Header>\n  <S:Body>\n    <samlp:AuthnRequest ID=\"_synthetic-req-0000000000000000000000001\"\n        AssertionConsumerServiceURL=\"https://sp.example.com/saml/acs\">…</samlp:AuthnRequest>\n  </S:Body>\n</S:Envelope>",
+      "devtools": "In <code>curl -v</code> look at the response body. The <b>AuthnRequest</b> is <i>inline XML</i>, not base64/DEFLATE — read it directly. Record <b>paos:Request/@responseConsumerURL</b> and the <b>ecp:RelayState</b> header block; you will need both later."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "POST the AuthnRequest to the IdP over SOAP", "hop": "Client → IdP",
+      "lede": "The client selects an IdP from the ecp:Request list and POSTs the SOAP-wrapped AuthnRequest to the IdP's ECP SingleSignOnService, authenticating directly — HTTP Basic here.",
+      "req": { "method": "POST", "url": "https://idp.example.net/idp/profile/SAML2/SOAP/ECP", "headers": [
+        ["content-type", "text/xml; charset=utf-8"],
+        ["authorization", "Basic am9yZGFuLmRvZTpTWU5USEVUSUM="]] },
+      "devtools": "The <b>Authorization: Basic</b> value base64-decodes to <code>jordan.doe:SYNTHETIC</code> — the client authenticates directly to the IdP, no redirect. A <b>401</b> means the credentials failed."
+    },
+    {
+      "from": "IdP", "to": "Directory", "label": "Validate credentials", "hop": "IdP → Directory",
+      "lede": "The IdP checks the supplied credentials against its user Directory before it will build any assertion. On failure it returns 401 (or a SOAP fault with AuthnFailed).",
+      "devtools": "Server-side at the IdP; nothing crosses the client here. If this fails the client should prompt for credentials and retry up to its limit."
+    },
+    {
+      "from": "IdP", "to": "Client", "label": "SOAP Response with the signed assertion", "hop": "IdP → Client",
+      "lede": "On success the IdP returns a SOAP envelope with an ecp:Response header carrying the AssertionConsumerServiceURL, plus the signed SAML Response + Assertion in the body.",
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/xml"]] },
+      "jwt": { "title": "Decoded SAML Assertion (XML)", "header": "",
+        "payload": [
+          ["ecp:Response/@ACSURL", "https://sp.example.com/saml/acs", "SOAP header — MUST equal the SP's responseConsumerURL from step 2 (the profile's MITM defence)"],
+          ["Response/Issuer", "https://idp.example.net/saml/metadata", "IdP entityID — validate against IdP metadata"],
+          ["InResponseTo", "_synthetic-req-0000000000000000000000001", "Echoes the AuthnRequest ID from the PAOS response"],
+          ["Status", "urn:oasis:names:tc:SAML:2.0:status:Success", "Gates acceptance"],
+          ["Subject/NameID", "S-1-5-21-SYNTHETIC-USER-abc123", "The federated user identifier (persistent format)"],
+          ["Conditions", "NotBefore=2026-07-25T15:04:05Z … NotOnOrAfter=2026-07-25T15:09:10Z", "Validity bounds — allow small clock skew"],
+          ["Audience", "https://sp.example.com/saml/metadata", "Must name this SP's entityID"],
+          ["AuthnStatement/SessionIndex", "_synthetic-session-0000000000001", "Ties to the SSO session"]] },
+      "devtools": "Pretty-print the SOAP body with <code>xmllint --format</code>. The signed <b>samlp:Response</b> is validated exactly as in the browser profile; the extra ECP element to grab is <b>ecp:Response/@AssertionConsumerServiceURL</b>."
+    },
+    {
+      "from": "Client", "to": "Client", "label": "Enforce the URL-match check", "hop": "Client (local)",
+      "lede": "Before delivering anything, the client compares the IdP's AssertionConsumerServiceURL with the SP's responseConsumerURL. A mismatch means a possible MITM by a rogue SP — the client sends a SOAP fault and aborts.",
+      "codeTitle": "The MITM defence (computed locally)",
+      "code": "responseConsumerURL   (from SP, step 2)  = https://sp.example.com/saml/acs\nAssertionConsumerServiceURL (from IdP, step 5) = https://sp.example.com/saml/acs\n\nmatch  →  deliver the assertion to the ACS\nmismatch  →  SOAP fault to responseConsumerURL, DO NOT deliver",
+      "devtools": "Not a network event. This equality check is unique to ECP: because the client (not a browser) actively drives the flow, it — not the IdP — is what stops a rogue SP from harvesting an assertion meant for someone else."
+    },
+    {
+      "from": "Client", "to": "SP", "label": "Deliver the Response to the ACS (PAOS)", "hop": "Client → SP",
+      "lede": "The URLs match, so the client POSTs the SOAP-wrapped Response to the SP's ACS as application/vnd.paos+xml, replaying the exact ecp:RelayState it received. The SP validates the assertion and issues a session.",
+      "req": { "method": "POST", "url": "https://sp.example.com/saml/acs", "headers": [
+        ["content-type", "application/vnd.paos+xml; charset=utf-8"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [
+        ["set-cookie", "sp_session=SYNTHETIC-SESSION-COOKIE; HttpOnly; Secure"]] },
+      "devtools": "The final POST carries the SAML <b>Response</b> plus the <b>ecp:RelayState</b> header block returned verbatim (<code>cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ</code>). The SP validates signature, Issuer, Audience, Conditions, InResponseTo, then sets <b>sp_session</b>."
+    },
+    {
+      "from": "SP", "to": "User", "label": "Resource delivered", "hop": "SP → User",
+      "lede": "The SP returns the protected resource to the ECP client with its session token, and the client hands the result back to the user. On an invalid assertion the SP would instead return a SOAP fault / 403.",
+      "devtools": "The exchange is complete over three SOAP round-trips — no redirects, no browser, no auto-POST forms."
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "title": "OIDC Implicit Flow",
+  "subtitle": "DEPRECATED — kept for recognizing and migrating legacy integrations. The IdP returns tokens directly in the URL fragment with no code exchange and no client authentication; use Authorization Code + PKCE instead.",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "User", "to": "App", "label": "Open the SPA", "hop": "User → App",
+      "lede": "The user loads a single-page app. The SPA generates state and nonce, then redirects to the IdP asking for tokens to be returned directly — no back-channel code exchange.",
+      "devtools": "<b>⛔ Deprecated flow</b> — this walkthrough is for auditing legacy implicit integrations; new work should use Authorization Code + PKCE. Open DevTools (<b>F12</b>) → <b>Network</b>, enable <b>Preserve log</b> (the authorize response redirects). The tell is <code>response_type=id_token token</code>."
+    },
+    {
+      "from": "App", "to": "IdP", "label": "Redirect to /authorize", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "The browser is redirected to the authorization endpoint requesting id_token token. nonce is required — in implicit it is the ONLY replay defense. The IdP returns the tokens in the redirect URL fragment.",
+      "req": { "method": "GET", "url": "https://idp.example.com/authorize", "q": [
+        ["response_type", "id_token token"], ["client_id", "s6BhdRkqt3"], ["redirect_uri", "https://spa.example.com/callback"],
+        ["scope", "openid profile"], ["state", "abc"], ["nonce", "n-xyz-implicit-42"]] },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://spa.example.com/callback#id_token=eyJ…&access_token=SlAV32hkKG-synthetic&token_type=Bearer&expires_in=3600&state=abc"]] },
+      "devtools": "Filter on <b>authorize</b>. Confirm <b>response_type=id_token token</b>, <b>state</b>, and the required <b>nonce</b>. The <b>302</b> <b>Location</b> carries the tokens after <code>#</code> — the fragment. Note there is <i>no</i> <code>/token</code> call and <i>no</i> client authentication anywhere in this flow."
+    },
+    {
+      "from": "Browser", "to": "App", "label": "Callback loads — fragment NOT sent to server", "hop": "Browser → App", "vis": "browser",
+      "lede": "The callback page loads. Critically, the browser does NOT send the fragment to the server, so this request carries no token data. The SPA reads the tokens from location.hash in JavaScript instead.",
+      "req": { "method": "GET", "url": "https://spa.example.com/callback" },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html"]],
+        "json": "<!doctype html><title>SPA</title><script src=app.js></script>" },
+      "jwt": { "title": "Decoded id_token (carries at_hash)",
+        "header": "{ \"alg\": \"RS256\", \"typ\": \"JWT\", \"kid\": \"idp-key-2026\" }",
+        "payload": [
+          ["iss", "https://idp.example.com", "Issuer"],
+          ["sub", "248289761001", "Subject"],
+          ["aud", "s6BhdRkqt3", "This SPA’s client_id"],
+          ["exp", "1774003600", "Expiry (epoch)"],
+          ["auth_time", "1773999900", "When the user authenticated"],
+          ["nonce", "n-xyz-implicit-42", "Must match — the ONLY replay defense in implicit"],
+          ["at_hash", "x7vk3Qb2mN9pLwErTyUiOA", "base64url(left-half(SHA-256(access_token))) — binds the access token"]] },
+      "devtools": "The callback <b>request</b> shows <b>no</b> token data — the fragment never reached the server. Read the tokens from the <b>address bar</b>, the authorize row’s <b>Location</b> header, or <code>location.hash</code> in the <b>Console</b>. That any script can read <code>location.hash</code> is exactly the leakage problem. Decode the id_token and confirm <b>nonce</b> matches and <b>at_hash</b> is present."
+    },
+    {
+      "from": "App", "to": "App", "label": "Verify state, validate id_token + at_hash", "hop": "App (local)",
+      "lede": "The SPA parses the fragment, strips it from the URL, verifies state, and fully validates the id_token (JWKS signature, iss, aud, exp, nonce). It also checks at_hash to bind the access token that arrived alongside it.",
+      "devtools": "Not a network event. With no back-channel exchange, <b>nonce</b> is the only replay protection and <b>at_hash</b> is the only binding between the ID token and the access token. A <b>nonce</b> mismatch means a replayed/injected id_token — reject."
+    },
+    {
+      "from": "App", "to": "API", "label": "Call the API with the access token", "hop": "Browser → API", "vis": "browser",
+      "lede": "The SPA calls the resource server with the access token it parsed from the fragment — the same value that sat in the URL. There is no sender constraint: anyone who read the fragment can replay this exact header.",
+      "req": { "method": "GET", "url": "https://api.example.com/resource",
+        "headers": [["authorization", "Bearer SlAV32hkKG-synthetic"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"data\": \"synthetic-resource\" }" },
+      "devtools": "Filter on <b>resource</b>. The <b>Authorization: Bearer</b> header is the same token that was in the URL fragment. It is a pure bearer credential — no sender constraint — so an attacker who obtained the fragment (history sync, injected script, leaked link) can replay it and the API cannot tell them apart."
+    },
+    {
+      "from": "App", "to": "App", "label": "Why this flow is deprecated", "hop": "App (local)",
+      "lede": "Tokens in the URL, no /token call, no client authentication: whoever obtains the fragment can replay the access token, and there is no in-protocol mitigation. This is what deprecated implicit.",
+      "devtools": "The fragment lands in browser history, is exposed to any injected script via <code>location.hash</code>, and can leak via referrer edge cases. Theft is undetectable because the token has no sender constraint. <b>The fix is not a patch — migrate to Authorization Code + PKCE.</b>"
+    },
+    {
+      "from": "App", "to": "IdP", "label": "Silent renewal (no refresh token)", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "Implicit issues no refresh token, so renewal happens only via a hidden iframe re-running /authorize with prompt=none. Under blocked third-party cookies this returns error=login_required, forcing a full interactive redirect.",
+      "req": { "method": "GET", "url": "https://idp.example.com/authorize", "q": [
+        ["response_type", "id_token token"], ["client_id", "s6BhdRkqt3"], ["prompt", "none"],
+        ["state", "abc"], ["nonce", "n-renew-88"]] },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://spa.example.com/callback#error=login_required&state=abc"]] },
+      "devtools": "Filter on <b>authorize</b> again — a hidden iframe with <b>prompt=none</b>. On modern browsers that block third-party cookies the response fragment carries <code>#error=login_required</code>, so the SPA must fall back to a full interactive redirect. This renewal fragility is another reason implicit is hard to keep alive."
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "title": "SAML IdP-Initiated Web Browser SSO",
+  "subtitle": "The user starts on the IdP portal, clicks an app tile, and the IdP posts an unsolicited assertion to the SP — no AuthnRequest, and no InResponseTo to correlate.",
+  "category": "SAML",
+  "steps": [
+    {
+      "from": "User", "to": "Browser", "label": "Click an app tile on the IdP portal", "hop": "User → Browser",
+      "lede": "The user is already on the IdP portal and launches an application. The SP is never visited first — this is the defining shape of IdP-initiated SSO.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b>, enable <b>Preserve log</b>, keep <b>Disable cache</b> on. The tell-tale of this flow is what you will <i>not</i> see: no <b>SAMLRequest</b> anywhere."
+    },
+    {
+      "from": "Browser", "to": "IdP", "label": "Launch the tile (no AuthnRequest)", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "Clicking the tile issues a plain GET to the IdP's launch endpoint. The IdP will build the response entirely on its own — there is no request message on the wire.",
+      "req": { "method": "GET", "url": "https://idp.example.net/app/launch/app-0007",
+        "headers": [["accept", "text/html"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html"]] },
+      "devtools": "Find the <b>GET</b> to <b>/app/launch/…</b>. Confirm there is <b>no SAMLRequest</b> query param — that absence is the whole point. The IdP is the origin of the flow."
+    },
+    {
+      "from": "User", "to": "IdP", "label": "Submit credentials (often skipped)", "hop": "User → IdP", "vis": "browser",
+      "lede": "If the portal session is already live this step does not happen at all. Otherwise the user authenticates against the IdP before the tile can launch.",
+      "req": { "method": "POST", "url": "https://idp.example.net/sso/login",
+        "headers": [["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["username", "jordan.doe"], ["password", "SYNTHETIC-REDACTED"]] },
+      "devtools": "Under a live portal session there is <i>no</i> credential <b>POST</b> — you jump straight to the ACS. Otherwise you will see username/password/otp posted to the IdP domain first."
+    },
+    {
+      "from": "IdP", "to": "Browser", "label": "Auto-POST the unsolicited SAMLResponse", "hop": "IdP → Browser", "vis": "browser",
+      "lede": "The IdP mints an unsolicited Response — no InResponseTo — and returns an HTML page that auto-submits it to the SP's ACS. RelayState is chosen by the IdP as the post-login deep link.",
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html"]],
+        "json": "<html><body onload='document.forms[0].submit()'>\n  <form method='POST' action='https://sp.example.com/saml/acs'>\n    <input type='hidden' name='SAMLResponse'\n      value='U1lOVEhFVElDX1NBTUxSZXNwb25zZV9iYXNlNjRfcGxhY2Vob2xkZXJfQkJC…'/>\n    <input type='hidden' name='RelayState'\n      value='cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ'/>\n  </form>\n</body></html>" },
+      "devtools": "The response body is the auto-submit form. <b>RelayState</b> here is configured per app tile, not round-tripped from an SP request — treat it as attacker-influencable and allow-list it at the SP."
+    },
+    {
+      "from": "Browser", "to": "SP", "label": "ACS receives the unsolicited assertion", "hop": "Browser → SP", "vis": "browser",
+      "lede": "The browser POSTs the SAMLResponse to the ACS. With no request to correlate, replay defence rests entirely on the assertion-ID cache and the short NotOnOrAfter window.",
+      "req": { "method": "POST", "url": "https://sp.example.com/saml/acs",
+        "headers": [["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["SAMLResponse", "U1lOVEhFVElDX1NBTUxSZXNwb25zZV9iYXNlNjRfcGxhY2Vob2xkZXJfQkJCQkJCQkJCQkJCQkJCQkJDQ0NDQ0NDQ0NDQ0NEREREREREREQ"],
+          ["RelayState", "cmVsYXlzdGF0ZS1zeW50aGV0aWMtL2FwcC9kYXNoYm9hcmQ"]] },
+      "jwt": { "title": "Decoded SAML Assertion (XML)", "header": "",
+        "payload": [
+          ["Response/Issuer", "https://idp.example.net/saml/metadata", "IdP entityID — validate against IdP metadata before trusting anything"],
+          ["Destination", "https://sp.example.com/saml/acs", "The ACS URL this Response is bound to"],
+          ["InResponseTo", "(absent)", "Unsolicited response — there is no request to correlate to; SubjectConfirmationData carries no InResponseTo either"],
+          ["Status", "urn:oasis:names:tc:SAML:2.0:status:Success", "Gates acceptance; Responder / AuthnFailed mean reject"],
+          ["Subject/NameID", "S-1-5-21-SYNTHETIC-USER-abc123", "The federated user identifier (persistent format)"],
+          ["Conditions", "NotBefore=2026-07-25T15:04:05Z … NotOnOrAfter=2026-07-25T15:09:10Z", "Validity bounds — allow small clock skew"],
+          ["Audience", "https://sp.example.com/saml/metadata", "Must name this SP's entityID"],
+          ["AuthnStatement/SessionIndex", "_synthetic-session-0000000000001", "Ties to the SSO session — needed later for Single Logout"]] },
+      "devtools": "Select the <b>POST</b> to <b>/saml/acs</b> → <b>Payload / Form Data</b>, base64-decode <b>SAMLResponse</b> (POST binding, <i>no inflate</i>). Confirm the Response has <b>NO InResponseTo</b> attribute and no <code>SubjectConfirmationData/@InResponseTo</code> — an unsolicited response must not carry one. Use <b>SAML Tracer</b> / <b>Auth Inspector</b> to pretty-print."
+    },
+    {
+      "from": "SP", "to": "Browser", "label": "SP session created, land on the deep link", "hop": "SP → Browser", "vis": "browser",
+      "lede": "If the SP's policy allows unsolicited responses and the assertion ID is fresh, the SP marks it consumed, creates a session, and redirects to the IdP-supplied deep link.",
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://sp.example.com/app/dashboard"],
+        ["set-cookie", "sp_session=SYNTHETIC-SESSION-COOKIE; HttpOnly; Secure"]] },
+      "devtools": "The ACS answers <b>302</b> to the deep link and sets <b>sp_session</b>. If the SP is SP-initiated-only, instead of an error many SPs bounce the user into SP-initiated SSO with a fresh AuthnRequest."
+    },
+    {
+      "from": "SP", "to": "User", "label": "Signed in at the deep-link destination", "hop": "SP → User",
+      "lede": "The browser follows the redirect with the new cookie and the requested page renders. The assertion ID is now in the SP replay cache until its validity window closes.",
+      "devtools": "Nothing further on the wire. Re-presenting the same assertion is rejected as a duplicate assertion ID within the validity window — that is the only replay defence available without request correlation."
+    }
+  ]
+}

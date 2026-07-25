@@ -1,0 +1,84 @@
+{
+  "title": "OIDC Authorization Code + PKCE",
+  "subtitle": "The default flow for SPAs and native apps. Step through it and see what each request carries — and how to read it in the Network tab.",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "User", "to": "App", "label": "User taps “Sign in”", "hop": "User → App",
+      "lede": "The user starts sign-in in a public client (SPA or native app). Nothing has hit the network yet.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b> tab, enable <b>Preserve log</b> so redirects aren’t cleared, and filter on <b>Doc</b> / <b>Fetch</b>."
+    },
+    {
+      "from": "App", "to": "App", "label": "Generate PKCE verifier + challenge", "hop": "App (local)",
+      "lede": "The client creates a random code_verifier and derives a code_challenge. The verifier never leaves the client until the token call.",
+      "codeTitle": "Computed locally",
+      "code": "code_verifier  = base64url(random(32 bytes))\n             = \"dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk\"\ncode_challenge = base64url( SHA-256( code_verifier ) )\n             = \"E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM\"\nmethod         = S256",
+      "devtools": "Not a network event — but in a real app you can watch the verifier get stored in <b>Session Storage</b> (Application tab) before the redirect."
+    },
+    {
+      "from": "App", "to": "IdP", "label": "Redirect to /authorize", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "The browser is redirected to the authorization endpoint. Note the challenge is sent, the verifier is not.",
+      "req": { "method": "GET", "url": "https://idp.example.com/authorize", "q": [
+        ["response_type", "code"], ["client_id", "s6BhdRkqt3"], ["redirect_uri", "https://app.example.com/callback"],
+        ["scope", "openid profile email"], ["state", "af0ifjsldkj"], ["nonce", "n-0S6_WzA2Mj"],
+        ["code_challenge", "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"], ["code_challenge_method", "S256"]] },
+      "devtools": "Find the request to <b>/authorize</b>. Read the <b>query string</b> params — confirm <b>code_challenge_method=S256</b> and that no secret is present. Copy <b>state</b>; you’ll match it on the way back."
+    },
+    {
+      "from": "IdP", "to": "User", "label": "Login + consent screen", "hop": "IdP → User", "vis": "browser",
+      "lede": "The IdP serves its login page (and consent, if required). Credentials are entered against the IdP, never the app.",
+      "req": { "method": "GET", "url": "https://idp.example.com/login?..." },
+      "resp": { "status": 200, "statusText": "OK", "headers": [
+        ["content-type", "text/html; charset=utf-8"], ["set-cookie", "idp_session=…; HttpOnly; Secure; SameSite=Lax"]] },
+      "devtools": "You’ll see the IdP’s own HTML documents and an <b>idp_session</b> cookie set with <b>HttpOnly; Secure</b>. Credentials post to the IdP’s domain — verify the origin is the real IdP."
+    },
+    {
+      "from": "IdP", "to": "App", "label": "Redirect back with code", "hop": "IdP → Browser", "vis": "browser",
+      "lede": "On success the IdP 302-redirects back to redirect_uri with a short-lived authorization code and the echoed state.",
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://app.example.com/callback?code=SplxlOBeZQQYbYS6WxSbIA&state=af0ifjsldkj"]] },
+      "devtools": "Find the <b>302</b> whose <b>Location</b> header points at your <b>redirect_uri</b>. The <b>code</b> is in the query string. Verify the returned <b>state</b> equals the one you sent — a mismatch means CSRF; abort."
+    },
+    {
+      "from": "App", "to": "IdP", "label": "Exchange code at /token", "hop": "App → IdP", "vis": "browser",
+      "lede": "The client posts the code plus the original code_verifier. The IdP recomputes SHA-256(verifier) and checks it equals the stored challenge — this is what defeats a stolen code.",
+      "req": { "method": "POST", "url": "https://idp.example.com/token",
+        "headers": [["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["grant_type", "authorization_code"], ["code", "SplxlOBeZQQYbYS6WxSbIA"],
+          ["redirect_uri", "https://app.example.com/callback"], ["client_id", "s6BhdRkqt3"],
+          ["code_verifier", "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"]] },
+      "devtools": "Filter for <b>token</b>. Open the <b>Payload</b> tab: confirm <b>code_verifier</b> is present and there is <b>no client_secret</b> (public client). If this were a confidential client, the secret would be server-side and this call would <i>not</i> appear in the browser."
+    },
+    {
+      "from": "IdP", "to": "App", "label": "Tokens returned", "hop": "IdP → App", "vis": "browser",
+      "lede": "The IdP returns an access token, an ID token (a JWT about the user), and often a rotating refresh token.",
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 3600,\n  \"access_token\": \"AT.aB3…synthetic…9Zq\",\n  \"id_token\": \"eyJhbGciOiJSUzI1Ni….eyJpc3Mi….SIG\",\n  \"refresh_token\": \"RT.f7…synthetic…k2\",\n  \"scope\": \"openid profile email\"\n}" },
+      "jwt": { "title": "Decoded id_token",
+        "header": "{ \"alg\": \"RS256\", \"kid\": \"idp-2026-a\", \"typ\": \"JWT\" }",
+        "payload": [
+          ["iss", "https://idp.example.com", "Issuer — must equal your IdP"],
+          ["aud", "s6BhdRkqt3", "Audience — must equal your client_id"],
+          ["sub", "248289761001", "Stable user identifier"],
+          ["email", "ada@example.com", "Claim from the profile/email scope"],
+          ["nonce", "n-0S6_WzA2Mj", "Must equal the nonce you sent in /authorize"],
+          ["iat", "1919251200", "Issued-at (epoch)"],
+          ["exp", "1919254800", "Expiry (epoch) — reject if past"]] },
+      "devtools": "In the <b>token</b> response → <b>Response</b> tab, copy the <b>id_token</b>. It’s a JWT: three base64url parts split by <code>.</code>. Base64url-decode the first two for header and claims (or paste into jwt.io / use the Auth Inspector extension). <b>Never</b> trust a JWT you haven’t verified server-side."
+    },
+    {
+      "from": "App", "to": "API", "label": "Call the API with the token", "hop": "App → API", "vis": "browser",
+      "lede": "The client calls a resource server, presenting the access token as a Bearer credential.",
+      "req": { "method": "GET", "url": "https://api.example.com/me",
+        "headers": [["authorization", "Bearer AT.aB3…synthetic…9Zq"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"sub\": \"248289761001\", \"name\": \"Ada Lovelace\", \"email\": \"ada@example.com\" }" },
+      "devtools": "Find the API request and read the <b>Authorization: Bearer</b> request header. On the resource server this token is validated (signature via JWKS, <b>iss</b>, <b>aud</b>, <b>exp</b>, scopes) before the data is returned."
+    },
+    {
+      "from": "App", "to": "App", "label": "Signed in", "hop": "App (local)",
+      "lede": "The client establishes its session from the validated tokens and shows the authenticated UI. The verifier, code, and any secrets are discarded.",
+      "devtools": "Nothing further on the wire for sign-in. A stolen authorization code from the redirect is now <b>useless</b> to an attacker: without the matching <b>code_verifier</b>, the token exchange fails with <code>invalid_grant</code>. That is PKCE."
+    }
+  ]
+}

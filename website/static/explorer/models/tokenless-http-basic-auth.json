@@ -1,0 +1,47 @@
+{
+  "title": "HTTP Basic Authentication",
+  "subtitle": "A 401 challenge, then the username and password base64-encoded into an Authorization header and replayed on every request. Step through it and see why base64 is encoding, not encryption.",
+  "category": "Tokenless",
+  "steps": [
+    {
+      "from": "Browser", "to": "Server", "label": "GET /metrics (no credentials)", "hop": "Browser → Server", "vis": "browser",
+      "lede": "The client requests a protected resource with no Authorization header. There is no session and no prior login step — Basic starts with the server challenging.",
+      "req": { "method": "GET", "url": "https://api.example.com/metrics",
+        "headers": [["host", "api.example.com"], ["accept", "*/*"]] },
+      "resp": { "status": 401, "statusText": "Unauthorized", "headers": [
+        ["www-authenticate", "Basic realm=\"Metrics\", charset=\"UTF-8\""],
+        ["content-type", "text/plain"]], "json": "Unauthorized" },
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b>, enable <b>Preserve log</b>. On the <b>401</b> row read <b>WWW-Authenticate: Basic realm=\"Metrics\"</b> in Response Headers — that is the challenge that makes the browser pop its native username/password dialog for the realm."
+    },
+    {
+      "from": "Server", "to": "User", "label": "Browser prompts for credentials", "hop": "Server → User",
+      "lede": "In response to the challenge the browser shows the native credential dialog naming the realm. The user types their username and password.",
+      "devtools": "Not a network event — the native dialog is driven by the <b>WWW-Authenticate</b> header. The browser will cache what you enter per <b>realm</b> and reuse it for matching URLs."
+    },
+    {
+      "from": "Browser", "to": "Server", "label": "Retry with Authorization: Basic", "hop": "Browser → Server", "vis": "browser",
+      "lede": "The browser retries the exact same URL, now carrying Authorization: Basic base64(username:password). The credential itself — not a token derived from it — is on the wire.",
+      "req": { "method": "GET", "url": "https://api.example.com/metrics",
+        "headers": [["host", "api.example.com"], ["authorization", "Basic YWxpY2U6czNjcjN0LXN5bnRoZXRpYw=="], ["accept", "*/*"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/plain"]],
+        "json": "requests_total 42\nerrors_total 0\n" },
+      "codeTitle": "Decode the Basic header (Console or shell)",
+      "code": "atob(\"YWxpY2U6czNjcjN0LXN5bnRoZXRpYw==\")\n// → \"alice:s3cr3t-synthetic\"\n\n// or in a terminal:\nprintf 'YWxpY2U6czNjcjN0LXN5bnRoZXRpYw==' | base64 -d\n// → alice:s3cr3t-synthetic\n\n// WARNING: base64 is ENCODING, not encryption. It is fully\n// reversible and offers zero confidentiality — treat this\n// header exactly like the plaintext password. Basic MUST be TLS-only.",
+      "devtools": "In <b>Request Headers</b> read <b>Authorization: Basic …</b>. The part after <code>Basic </code> is <code>base64(user:pass)</code>. Decode it with the snippet — one command reverses it, which is the whole point: it is <b>not</b> encryption."
+    },
+    {
+      "from": "Browser", "to": "Server", "label": "GET /metrics/detail (header replayed)", "hop": "Browser → Server", "vis": "browser",
+      "lede": "On the next request the browser re-attaches the identical Authorization header automatically. There is no session and no logout — the raw credential is sent on every call.",
+      "req": { "method": "GET", "url": "https://api.example.com/metrics/detail",
+        "headers": [["host", "api.example.com"], ["authorization", "Basic YWxpY2U6czNjcjN0LXN5bnRoZXRpYw=="], ["accept", "*/*"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/plain"]],
+        "json": "detail_metric 1\n" },
+      "devtools": "Click through several authenticated rows and confirm the <b>identical</b> <code>Authorization: Basic</code> header on each. Over plain HTTP this would expose the password repeatedly — hence Basic must be paired with TLS and HSTS."
+    },
+    {
+      "from": "Server", "to": "Browser", "label": "No logout — credentials cached per realm", "hop": "Server → Browser",
+      "lede": "Because the browser caches the credential for the realm, there is nothing to invalidate server-side. Closing the browser (or clearing the realm cache) is the only 'logout'.",
+      "devtools": "There is no <code>Set-Cookie</code>, no token, no session record — so no server-side revocation. A stolen Basic header is as good as the plaintext password until it is rotated. This is why Basic suits machine-to-machine and locked-down internal endpoints, not user sessions."
+    }
+  ]
+}

@@ -16,7 +16,11 @@ const config = {
 
   // Parse .md as CommonMark (not MDX) so prose containing { } and <...> is treated literally.
   markdown: { format: 'detect', mermaid: true },
-  themes: ['@docusaurus/theme-mermaid'],
+  themes: [
+    '@docusaurus/theme-mermaid',
+    // Offline/local full-text search (no external service).
+    ['@easyops-cn/docusaurus-search-local', { hashed: true, indexBlog: false, docsRouteBasePath: '/' }],
+  ],
 
   presets: [
     [
@@ -46,7 +50,7 @@ const config = {
           { type: 'docSidebar', sidebarId: 'main', position: 'left', label: 'Browse' },
           { to: '/LEARNING-PATH', label: 'Learning Path', position: 'left' },
           { to: '/GLOSSARY', label: 'Glossary', position: 'left' },
-          { to: '/explorer/oidc-authorization-code-pkce.html', label: 'Flow Explorer', position: 'left' },
+          { to: '/explorer/', label: 'Flow Explorer', position: 'left' },
           { href: 'https://github.com/ginoclement/diagrams', label: 'GitHub', position: 'right' },
         ],
       },

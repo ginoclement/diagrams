@@ -1,0 +1,74 @@
+{
+  "title": "OIDC CIBA (Client-Initiated Backchannel Authentication)",
+  "subtitle": "A decoupled flow: the app asks the IdP to authenticate the user out-of-band on their phone, then polls for tokens — there is essentially nothing to see in a browser Network tab.",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "User", "to": "Client", "label": "User requests service, identifies self", "hop": "User → Client",
+      "lede": "The user asks the consumption-device client for something (e.g. authorizing a payment at a call center) and identifies themselves — here by phone number. Authentication will happen on a separate device.",
+      "devtools": "DevTools gets you almost nothing here — and that is the point. <b>CIBA is decoupled and back-channel:</b> the client talks to the IdP server-to-server and the user authenticates out-of-band on their phone. To observe it you capture on the <b>client back end</b> (app HTTP logs, or an egress proxy like mitmproxy), never in the browser."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "POST /bc-authorize (back-channel)", "hop": "Client → IdP (server-to-server)",
+      "lede": "The client makes the backchannel authentication request: scope, exactly one identity hint (login_hint here), an optional human-readable binding_message, and client authentication (private_key_jwt). It gets back an auth_req_id to poll with.",
+      "req": { "method": "POST", "url": "https://idp.example.com/bc-authorize",
+        "headers": [["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["scope", "openid"], ["login_hint", "+15550001234"], ["binding_message", "PAY-4711"],
+          ["requested_expiry", "120"],
+          ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
+          ["client_assertion", "eyJ.SYNTHETIC-private-key-jwt.SIG_synthetic"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"auth_req_id\": \"1c266114-a1be-4252-8ad1-04986c5b9ac1\",\n  \"expires_in\": 120,\n  \"interval\": 5\n}" },
+      "devtools": "<b>Not in the browser.</b> Capture on the client (proxy / server logs). Exactly one of <b>login_hint</b> / <b>login_hint_token</b> / <b>id_token_hint</b> is allowed. The response <b>auth_req_id</b> is the handle you poll with; <b>interval</b> is the minimum seconds between polls."
+    },
+    {
+      "from": "IdP", "to": "App", "label": "Push challenge to the user’s phone (out-of-band)", "hop": "IdP → App (out-of-band)",
+      "lede": "The IdP pushes an authentication request to the user’s registered authenticator app, showing the client name and the binding_message. This travels the device vendor’s push channel — not HTTP you can capture.",
+      "devtools": "<b>Not an HTTP request you can see at all</b> — not in DevTools, not even in your egress proxy. The user will compare the <b>binding_message</b> (<code>PAY-4711</code>) shown on both the consumption device and the phone before approving."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "POST /token — first poll (pending)", "hop": "Client → IdP (server-to-server)",
+      "lede": "The client polls the token endpoint with the CIBA grant. The user hasn’t approved yet, so the IdP answers authorization_pending — keep polling at the given interval.",
+      "req": { "method": "POST", "url": "https://idp.example.com/token",
+        "headers": [["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["grant_type", "urn:openid:params:grant-type:ciba"], ["auth_req_id", "1c266114-a1be-4252-8ad1-04986c5b9ac1"],
+          ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
+          ["client_assertion", "eyJ.SYNTHETIC-private-key-jwt.SIG_synthetic"]] },
+      "resp": { "status": 400, "statusText": "Bad Request", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{ \"error\": \"authorization_pending\" }" },
+      "devtools": "<b>Server-side only.</b> Each poll sends <code>grant_type=urn:openid:params:grant-type:ciba</code> and <b>auth_req_id</b>. Responses to expect: <b>authorization_pending</b> (waiting), <b>slow_down</b> (polling too fast — add ~5s), then <code>200</code> on approval. Terminal errors: <b>expired_token</b>, <b>access_denied</b>, <b>transaction_failed</b>."
+    },
+    {
+      "from": "User", "to": "App", "label": "User approves on the phone (out-of-band)", "hop": "User → App (out-of-band)",
+      "lede": "The user verifies the binding_message matches, authenticates on the phone (fingerprint + OTP), and approves. The authenticator reports the result back to the IdP — all off the browser and off your proxy.",
+      "devtools": "Nothing to capture: this happens entirely on the authentication device. This decoupling is CIBA’s whole value — the device requesting access and the device authorizing it are different."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "POST /token — later poll (tokens issued)", "hop": "Client → IdP (server-to-server)",
+      "lede": "A subsequent poll now succeeds: the IdP returns the access token, refresh token, and an ID token whose auth_req_id claim ties it back to this exact backchannel request.",
+      "req": { "method": "POST", "url": "https://idp.example.com/token",
+        "headers": [["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["grant_type", "urn:openid:params:grant-type:ciba"], ["auth_req_id", "1c266114-a1be-4252-8ad1-04986c5b9ac1"],
+          ["client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
+          ["client_assertion", "eyJ.SYNTHETIC-private-key-jwt.SIG_synthetic"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"access_token\": \"SlAV32hkKG-synthetic\",\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 3600,\n  \"refresh_token\": \"8xLOxBtZp8-synthetic\",\n  \"id_token\": \"eyJhbGciOiJSUzI1Ni….eyJpc3Mi….SIG_synthetic\"\n}" },
+      "jwt": { "title": "Decoded id_token",
+        "header": "{ \"alg\": \"RS256\", \"typ\": \"JWT\", \"kid\": \"idp-key-2026\" }",
+        "payload": [
+          ["iss", "https://idp.example.com", "Issuer"],
+          ["sub", "248289761001", "Subject — the user who approved on their phone"],
+          ["aud", "s6BhdRkqt3", "The CIBA client’s client_id"],
+          ["exp", "1774003600", "Expiry (epoch)"],
+          ["auth_time", "1773999950", "When the user approved on the auth device"],
+          ["amr", "[\"fpt\", \"otp\"]", "Fingerprint + OTP on the authentication device"],
+          ["urn:openid:params:jwt:claim:auth_req_id", "1c266114-a1be-4252-8ad1-04986c5b9ac1", "Binds this id_token to THIS backchannel request — not a replay"]] },
+      "devtools": "<b>Server-side.</b> The <b>auth_req_id</b> claim in the ID token equals the value returned from <code>/bc-authorize</code>, so the client can confirm these tokens answer <i>its</i> request and not a replayed one."
+    },
+    {
+      "from": "Client", "to": "User", "label": "Transaction proceeds", "hop": "Client → User",
+      "lede": "With valid tokens in hand, the consumption device completes the action. The browser, if any is even present, saw none of the authentication.",
+      "devtools": "In <b>ping mode</b> the IdP instead POSTs the client’s <code>client_notification_endpoint</code> with <code>Authorization: Bearer &lt;client_notification_token&gt;</code> to signal completion — captured on the client’s inbound (webhook) side, again never in a browser."
+    }
+  ]
+}

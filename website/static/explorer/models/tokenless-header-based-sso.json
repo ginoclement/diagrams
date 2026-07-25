@@ -1,0 +1,64 @@
+{
+  "title": "Header-Based SSO (Proxy-Injected Identity)",
+  "subtitle": "A reverse proxy authenticates the user and injects identity headers on its upstream request; the app trusts them because only the proxy can reach it. Step through both hops and the spoofing attempt.",
+  "category": "Tokenless",
+  "steps": [
+    {
+      "from": "User", "to": "Browser", "label": "Open https://app.example.com/reports", "hop": "User → Browser",
+      "lede": "The user navigates to a protected app that sits behind an access gateway. The browser will only ever talk to the proxy, never the backend directly.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b>, enable <b>Preserve log</b>. The browser only sees the <b>browser ↔ proxy</b> hop — the interesting identity headers live on a server-to-server hop you cannot see here."
+    },
+    {
+      "from": "Browser", "to": "IdP", "label": "GET /reports (no session) → 302 to IdP", "hop": "Browser → Proxy", "vis": "browser",
+      "lede": "With no proxy session the proxy strips any inbound identity headers and redirects to the IdP. The app is never reached.",
+      "req": { "method": "GET", "url": "https://app.example.com/reports",
+        "headers": [["host", "app.example.com"]] },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://idp.example.com/authorize?client_id=proxy&redirect_uri=https%3A%2F%2Fapp.example.com%2Fcallback"]] },
+      "devtools": "On the <b>302</b> row read <b>Location</b> pointing at the IdP. The proxy <b>always strips</b> client-supplied <code>X-Forwarded-User</code> / <code>REMOTE_USER</code> before doing anything — authenticated or not. The request never reached the app."
+    },
+    {
+      "from": "Browser", "to": "IdP", "label": "Authenticate at the IdP", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "The user authenticates however the proxy is configured — form, OIDC, SAML, or Kerberos. On success the IdP returns the browser to the proxy's callback.",
+      "devtools": "You'll see the IdP's own login pages and a callback back to the proxy. The proxy then creates its <b>proxy session</b> and sets a proxy session cookie."
+    },
+    {
+      "from": "Browser", "to": "Server", "label": "GET /reports (proxy session cookie)", "hop": "Browser → Proxy", "vis": "browser",
+      "lede": "After login the browser's request carries only the proxy's own session cookie — NOT any identity header. The browser must never be able to send X-Forwarded-User.",
+      "req": { "method": "GET", "url": "https://app.example.com/reports",
+        "headers": [["host", "app.example.com"], ["cookie", "proxy_session=synthAUTH-7f3a"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"user\": \"alice\", \"via\": \"proxy\" }" },
+      "devtools": "In <b>Request Headers</b> you see only <b>Cookie: proxy_session=…</b>. There is deliberately <b>no</b> <code>X-Forwarded-User</code> here — the identity header is added by the proxy on its upstream hop, which the browser cannot observe."
+    },
+    {
+      "from": "Server", "to": "App", "label": "Proxy injects identity headers upstream", "hop": "Proxy → App", "vis": "browser",
+      "lede": "The proxy validates the session, resolves the user, and makes an upstream request injecting verified identity headers. This server-to-server hop is where the real credential lives.",
+      "req": { "method": "GET", "url": "http://orders-app.internal.svc/reports",
+        "headers": [
+          ["host", "orders-app.internal.svc"],
+          ["x-forwarded-user", "alice"],
+          ["x-auth-request-email", "alice@example.com"],
+          ["x-forwarded-groups", "reports-viewers,staff"],
+          ["x-forwarded-for", "203.0.113.7"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"]],
+        "json": "{ \"user\": \"alice\", \"via\": \"proxy\" }" },
+      "jwt": { "title": "Proxy-injected identity headers", "header": "",
+        "payload": [
+          ["X-Forwarded-User", "alice", "Authenticated username — valid ONLY because it came from the proxy, which stripped any inbound copy"],
+          ["X-Auth-Request-Email", "alice@example.com", "Verified email from the IdP — same trust boundary"],
+          ["X-Forwarded-Groups", "reports-viewers,staff", "Authorization groups the app maps to permissions"],
+          ["X-Forwarded-For", "203.0.113.7", "Original client IP — trust only because your own edge set it (RFC 5737 doc range)"]] },
+      "devtools": "This hop is <b>not</b> in the browser's Network tab — it is proxy→app, server-to-server. To observe it use the proxy access log, an upstream capture, or the app's request logging. The whole security model rests on the app being reachable <i>only</i> from the proxy (network policy, ideally mTLS on this hop)."
+    },
+    {
+      "from": "Server", "to": "App", "label": "Spoofed header direct to app → 403", "hop": "Attacker → App", "vis": "browser",
+      "lede": "An attacker who forges X-Forwarded-User straight to the app's address, bypassing the proxy, is rejected — the peer is not the proxy, so the app refuses the identity header.",
+      "req": { "method": "GET", "url": "http://orders-app.internal.svc/reports",
+        "headers": [["host", "orders-app.internal.svc"], ["x-forwarded-user", "admin"]] },
+      "resp": { "status": 403, "statusText": "Forbidden", "headers": [["content-type", "application/json"]],
+        "json": "{ \"error\": \"identity header from untrusted source\" }" },
+      "devtools": "Two defenses stop this: <b>network policy</b> (the app accepts connections only from the proxy, so the attacker's peer is rejected → <b>403</b>) and <b>inbound stripping</b> (even via the proxy, a client-supplied <code>X-Forwarded-User</code> is overwritten before the upstream request). Watch for smuggling variants — <code>X_Forwarded_User</code>, duplicate headers, HTTP/1.1 vs HTTP/2 casing."
+    }
+  ]
+}

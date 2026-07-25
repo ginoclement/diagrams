@@ -1,0 +1,64 @@
+{
+  "title": "OIDC Session Management",
+  "subtitle": "An app polls the IdP for “is the session still valid?” using postMessage between iframes — the poll is not HTTP, so it’s invisible in the Network tab; only the iframe load and silent re-auth are.",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "App", "to": "Browser", "label": "Load RP + OP check_session iframes", "hop": "App → Browser",
+      "lede": "At login the IdP returned a session_state (hash.salt) and published a check_session_iframe. The RP loads a hidden RP iframe alongside the OP’s check_session iframe to watch for session changes.",
+      "devtools": "Open DevTools (<b>F12</b>) → <b>Network</b>, enable <b>Preserve log</b>. Crucial quirk: <b>the polling itself is not on the network</b> — only the iframe <i>load</i> and the <code>prompt=none</code> re-auth are real HTTP requests."
+    },
+    {
+      "from": "Browser", "to": "IdP", "label": "OP check_session_iframe loads", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "The OP’s check_session iframe loads as a hidden frame. It reads the OP browser-state cookie that the poll will hash against.",
+      "req": { "method": "GET", "url": "https://idp.example.com/check_session",
+        "headers": [["cookie", "op_browser_state=SYNTHETIC-op-browser-state"], ["sec-fetch-dest", "iframe"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "text/html"], ["cache-control", "no-store"]] },
+      "devtools": "Filter on <b>check_session</b>. It loads as a hidden frame (<code>Sec-Fetch-Dest: iframe</code>). This is the last real network request you’ll see until something changes."
+    },
+    {
+      "from": "Browser", "to": "Browser", "label": "The poll loop (postMessage — NOT HTTP)", "hop": "Browser (local)",
+      "lede": "Every few seconds the RP iframe postMessages \"client_id session_state\" to the OP iframe, which recomputes the hash from the browser-state cookie and replies \"unchanged\", \"changed\", or \"error\". None of this is a network request.",
+      "codeTitle": "window.postMessage exchange (watch it in the Console)",
+      "code": "// RP iframe → OP iframe, every few seconds:\nopIframe.postMessage(\"s6BhdRkqt3 6f7dsynthetichash.9a2csyntheticsalt\", opOrigin)\n\n// OP iframe → RP iframe:\n//   \"unchanged\"  → steady state, keep polling\n//   \"changed\"    → OP session differs → silently re-authenticate\n//   \"error\"      → couldn't read browser-state (3rd-party cookies blocked)\n// session_state = hash.salt; the salt rotates each computation,\n// so the value changes even when the session has not.",
+      "devtools": "<b>Not in the Network tab.</b> This is <code>window.postMessage</code> — window messaging inside the browser. Watch it in the <b>Console</b>, or set a <code>window.addEventListener(\"message\", …)</code> breakpoint in <b>Sources</b>."
+    },
+    {
+      "from": "Browser", "to": "IdP", "label": "On “changed”: silent re-auth (prompt=none)", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "A \"changed\" reply triggers a silent re-authentication in a hidden iframe. prompt=none means no UI: it succeeds with a code if the user is still logged in at the OP, or errors with login_required if not.",
+      "req": { "method": "GET", "url": "https://idp.example.com/authorize", "q": [
+        ["response_type", "code"], ["client_id", "s6BhdRkqt3"], ["redirect_uri", "https://rp1.example.com/silent-cb"],
+        ["scope", "openid"], ["prompt", "none"], ["state", "sm-state-2200"], ["nonce", "sm-reauth-9931"]],
+        "headers": [["cookie", "idp_session=SYNTHETIC-idp-session-cookie"], ["sec-fetch-dest", "iframe"]] },
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://rp1.example.com/silent-cb?code=SplxlOBeZQQ&state=sm-state-2200"]] },
+      "devtools": "Filter on <b>authorize</b>. Confirm <b>prompt=none</b> plus <b>state</b> and <b>nonce</b>. Read the response <b>Location</b>: success → <code>silent-cb?code=…</code>; failure → <code>silent-cb?error=login_required</code> (user logged out at the OP → the RP ends its local session)."
+    },
+    {
+      "from": "App", "to": "IdP", "label": "Exchange code for fresh tokens", "hop": "App → IdP", "vis": "browser",
+      "lede": "On success the RP redeems the code at /token and receives a fresh id_token plus a new session_state to resume polling with.",
+      "req": { "method": "POST", "url": "https://idp.example.com/token",
+        "headers": [["content-type", "application/x-www-form-urlencoded"], ["authorization", "Basic czZCaGRSa3F0MzpTWU5USEVUSUM="]],
+        "form": [["grant_type", "authorization_code"], ["code", "SplxlOBeZQQ"], ["redirect_uri", "https://rp1.example.com/silent-cb"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"access_token\": \"SlAV32hkKG-synthetic\",\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 3600,\n  \"id_token\": \"eyJhbGciOiJSUzI1Ni….eyJpc3Mi….SIG_synthetic\",\n  \"session_state\": \"6f7dsynthetichash.9a2csyntheticsalt\"\n}" },
+      "jwt": { "title": "Decoded id_token (silent re-auth)",
+        "header": "{ \"alg\": \"RS256\", \"typ\": \"JWT\", \"kid\": \"idp-key-2026\" }",
+        "payload": [
+          ["iss", "https://idp.example.com", "Issuer — validate even on silent re-auth"],
+          ["sub", "248289761001", "Subject"],
+          ["aud", "s6BhdRkqt3", "This RP’s client_id"],
+          ["exp", "1774007200", "Fresh expiry from the re-auth"],
+          ["auth_time", "1773999900", "ORIGINAL login time — unchanged; the OP session persisted"],
+          ["nonce", "sm-reauth-9931", "Must match the nonce sent on the prompt=none request"],
+          ["sid", "abc123session", "Same session id — confirms it’s the same OP session"],
+          ["azp", "s6BhdRkqt3", "Authorized party"]] },
+      "devtools": "Filter on <b>token</b>. In the <b>Response</b> JSON, note the <b>new session_state</b> the RP stores to resume polling, and decode the <b>id_token</b>. A <i>\"changed\"</i> postMessage is only a trigger — full ID-token validation (signature, <b>iss</b>, <b>aud</b>, <b>nonce</b>) still applies. Note <b>auth_time</b> did not advance: no fresh credential prompt occurred."
+    },
+    {
+      "from": "App", "to": "App", "label": "Resume polling (or degrade)", "hop": "App (local)",
+      "lede": "The RP updates its stored session_state and resumes the postMessage loop. If the OP iframe persistently replies \"error\", detection is unreliable and the RP must fall back.",
+      "devtools": "A persistent <b>\"error\"</b> reply in the Console means the OP iframe can’t read the browser-state cookie (third-party cookie blocking / storage partitioning). Treat it as “session state unknown” and fall back to <i>front-channel</i> or <i>back-channel logout</i>."
+    }
+  ]
+}

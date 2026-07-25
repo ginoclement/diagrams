@@ -1,0 +1,78 @@
+{
+  "title": "OIDC Rich Authorization Requests (RAR, RFC 9396)",
+  "subtitle": "Instead of a coarse scope string, the client sends a structured authorization_details array — and the token response echoes the GRANTED details, which may be narrower than requested.",
+  "category": "OIDC",
+  "steps": [
+    {
+      "from": "Client", "to": "Client", "label": "Build authorization_details", "hop": "Client (local)",
+      "lede": "The client describes exactly what it wants as a JSON array. Each object has a type plus fine-grained members like locations, actions, and transaction constraints — here a single EUR 123.45 payment to a specific creditor.",
+      "codeTitle": "Requested authorization_details",
+      "code": "[\n  {\n    \"type\": \"payment_initiation\",\n    \"locations\": [\"https://api.example.com/payments\"],\n    \"actions\": [\"initiate\"],\n    \"instructedAmount\": { \"currency\": \"EUR\", \"amount\": \"123.45\" },\n    \"creditorAccount\": { \"iban\": \"DE02100100109307118603\" }\n  }\n]",
+      "devtools": "The signature of RAR is an <b>authorization_details</b> JSON array. Each object's <code>type</code> must be one the AS advertises in <code>authorization_details_types_supported</code>; the other members (amount, creditor) bind the token to an exact transaction."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "GET /authorize with authorization_details", "hop": "Browser → IdP", "vis": "browser",
+      "lede": "The browser goes to the authorization endpoint carrying the URL-encoded authorization_details alongside the usual params. In FAPI deployments this rides inside a signed request object or a PAR request_uri instead of a raw query param.",
+      "req": { "method": "GET", "url": "https://as.example.com/authorize", "q": [
+        ["client_id", "s6bhdrkqt3"], ["response_type", "code"], ["redirect_uri", "https://client.example.com/cb"],
+        ["scope", "openid"], ["state", "af0ifjsldkj"],
+        ["authorization_details", "[{\"type\":\"payment_initiation\",\"locations\":[\"https://api.example.com/payments\"],\"actions\":[\"initiate\"],\"instructedAmount\":{\"currency\":\"EUR\",\"amount\":\"123.45\"},\"creditorAccount\":{\"iban\":\"DE02100100109307118603\"}}]"]] },
+      "devtools": "Find the <b>authorization_details</b> query param and URL-decode it — it is a JSON array. Note it can be mixed with a plain <code>scope</code> (here <code>openid</code>). In FAPI you usually won't see it as a raw param: it's inside a signed <code>request</code> object or was pushed via <b>PAR</b>, leaving a <code>request_uri</code>."
+    },
+    {
+      "from": "IdP", "to": "User", "label": "Consent shows the exact details", "hop": "IdP → User", "vis": "browser",
+      "lede": "The AS validates each object against its registered type schema and renders the concrete transaction on the consent screen — the amount, the creditor, the action — not a generic scope name. The user approves.",
+      "resp": { "status": 200, "statusText": "OK", "headers": [
+        ["content-type", "text/html; charset=utf-8"], ["set-cookie", "idp_session=…; HttpOnly; Secure; SameSite=Lax"]] },
+      "devtools": "A correct RAR consent screen shows the exact <b>amount</b>, <b>creditor</b>, and <b>action</b> — if it only shows a vague scope name, the AS isn't honoring the details. An unknown or malformed <code>type</code> would instead bounce back as <code>302 …?error=invalid_authorization_details</code>."
+    },
+    {
+      "from": "IdP", "to": "Client", "label": "302 redirect with code", "hop": "IdP → Browser", "vis": "browser",
+      "lede": "On approval the AS redirects back to redirect_uri with a standard authorization code and the echoed state.",
+      "resp": { "status": 302, "statusText": "Found", "headers": [
+        ["location", "https://client.example.com/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=af0ifjsldkj"]] },
+      "devtools": "The redirect back is ordinary: <code>?code=…&state=…</code>. Verify the returned <b>state</b> equals the one you sent. The rich detail does not travel in the redirect — it comes back in the token response."
+    },
+    {
+      "from": "Client", "to": "IdP", "label": "POST /token — granted details echoed", "hop": "Client → IdP",
+      "lede": "The client redeems the code. The 200 body contains a top-level authorization_details array — the GRANTED set. Compare it field-by-field against the request; a partial grant means you got less than you asked for.",
+      "req": { "method": "POST", "url": "https://as.example.com/token",
+        "headers": [["host", "as.example.com"], ["content-type", "application/x-www-form-urlencoded"]],
+        "form": [["grant_type", "authorization_code"], ["code", "SplxlOBeZQQYbYS6WxSbIA"],
+          ["redirect_uri", "https://client.example.com/cb"], ["client_id", "s6bhdrkqt3"]] },
+      "resp": { "status": 200, "statusText": "OK", "headers": [["content-type", "application/json"], ["cache-control", "no-store"]],
+        "json": "{\n  \"access_token\": \"eyJhbGciOiJSUzI1Ni…at+jwt….SIG\",\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 3600,\n  \"authorization_details\": [\n    {\n      \"type\": \"payment_initiation\",\n      \"locations\": [\"https://api.example.com/payments\"],\n      \"actions\": [\"initiate\"],\n      \"instructedAmount\": { \"currency\": \"EUR\", \"amount\": \"123.45\" },\n      \"creditorAccount\": { \"iban\": \"DE02100100109307118603\" }\n    }\n  ]\n}" },
+      "jwt": { "title": "Decoded access_token (at+jwt)",
+        "header": "{ \"alg\": \"RS256\", \"typ\": \"at+jwt\", \"kid\": \"as-sig-2026-01\" }",
+        "payload": [
+          ["iss", "https://as.example.com", "Issuer"],
+          ["aud", "https://api.example.com", "Resource server that must enforce the details"],
+          ["sub", "248289761001", "Stable user identifier"],
+          ["client_id", "s6bhdrkqt3", "Client the token was issued to"],
+          ["authorization_details", "[{ type: payment_initiation, locations, actions, instructedAmount, creditorAccount }]", "The GRANTED fine-grained authorization, carried as a claim"],
+          ["jti", "rar-9a8b-synthetic", "Token identifier"],
+          ["iat", "1774000000", "Issued-at (epoch)"],
+          ["exp", "1774003600", "Expiry (epoch)"]] },
+      "devtools": "The <b>200</b> body's top-level <b>authorization_details</b> is the <i>granted</i> set — authoritative over what you requested. Compare it field-by-field: a subset means a <b>partial grant / downscope</b> and the client must adapt, never assume the request was granted verbatim. If the access token is a JWT, the same claim appears inside it."
+    },
+    {
+      "from": "Client", "to": "API", "label": "POST /payments within the grant → 201", "hop": "Client → API",
+      "lede": "The client calls the resource server for a payment matching the granted detail. The API checks the request falls within a granted location, action, and amount, then accepts.",
+      "req": { "method": "POST", "url": "https://api.example.com/payments",
+        "headers": [["host", "api.example.com"], ["authorization", "Bearer eyJhbGciOiJSUzI1Ni…at+jwt….SIG"], ["content-type", "application/json"]],
+        "json": "{\n  \"instructedAmount\": { \"currency\": \"EUR\", \"amount\": \"123.45\" },\n  \"creditorAccount\": { \"iban\": \"DE02100100109307118603\" }\n}" },
+      "resp": { "status": 201, "statusText": "Created", "headers": [["content-type", "application/json"]],
+        "json": "{ \"paymentId\": \"pmt-synthetic-001\", \"status\": \"ACCEPTED\" }" },
+      "devtools": "The API returns <b>201</b> because the call matches a granted detail — same <code>location</code>, <code>action</code>, and constraints like amount. The resource server enforces <code>authorization_details</code>, not just a scope."
+    },
+    {
+      "from": "Client", "to": "API", "label": "Outside the grant → 403", "hop": "Client → API",
+      "lede": "The same token is used against /accounts, which is not in the granted locations. The API refuses: the token authorizes a payment, nothing else.",
+      "req": { "method": "GET", "url": "https://api.example.com/accounts",
+        "headers": [["host", "api.example.com"], ["authorization", "Bearer eyJhbGciOiJSUzI1Ni…at+jwt….SIG"]] },
+      "resp": { "status": 403, "statusText": "Forbidden", "headers": [["content-type", "application/json"]],
+        "json": "{ \"error\": \"insufficient_authorization\" }" },
+      "devtools": "A <b>403 insufficient_authorization</b> shows enforcement of <code>locations</code>/<code>actions</code>: <code>/accounts</code> is outside the granted <code>/payments</code> location. Fine-grained authorization means the token is useless beyond exactly what was granted."
+    }
+  ]
+}
