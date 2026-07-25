@@ -17,11 +17,20 @@ function walk(dir, out = []) {
   for (const e of readdirSync(dir)) {
     if (e === '.git' || e === 'node_modules') continue;
     const p = join(dir, e);
-    (statSync(p).isDirectory()) ? walk(p, out) : (e.endsWith('.md') && out.push(p));
+    (statSync(p).isDirectory()) ? walk(p, out) : out.push(p);
   }
   return out;
 }
-const files = walk(ROOT);
+const all = walk(ROOT);
+const files = all.filter(f => f.endsWith('.md'));
+
+// --- HAR sample captures must be valid JSON ---
+let hars = 0, hFail = 0;
+for (const f of all.filter(f => f.endsWith('.har'))) {
+  hars++;
+  try { JSON.parse(readFileSync(f, 'utf8')); }
+  catch (e) { hFail++; console.error(`HAR      ${relative(ROOT, f)}: ${String(e.message || e).split('\n')[0]}`); }
+}
 
 // --- mermaid ---
 let blocks = 0, mFail = 0;
@@ -48,5 +57,5 @@ for (const f of files) {
   }
 }
 
-console.log(`\nmermaid: ${blocks - mFail}/${blocks} OK   links: ${links - lFail}/${links} OK`);
-process.exit(mFail + lFail ? 1 : 0);
+console.log(`\nmermaid: ${blocks - mFail}/${blocks} OK   links: ${links - lFail}/${links} OK   har: ${hars - hFail}/${hars} OK`);
+process.exit(mFail + lFail + hFail ? 1 : 0);
