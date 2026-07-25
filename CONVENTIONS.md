@@ -104,3 +104,18 @@ persona × flow variance matrix. A flow gets its own persona-specific diagram fo
 as a note in the base diagram and a row in the matrix. Persona names are consistent:
 `Workforce`, `Contractor`, `Partner/B2B`, `Consumer`, `Privileged`, `Guest`,
 `Workload`, `Device`, `Break-glass`, `Developer`.
+
+## Hands-on companion files (optional)
+
+Network-observable flows (things you can watch in a browser Network tab) may add:
+
+- `devtools.md` — a step-by-step "read it in the Network tab" walkthrough: which request
+  appears at each step, its method and URL, and which parameters, headers, cookies, or token
+  claims to inspect and how to decode them.
+- `snippets.md` — runnable client snippets (curl for each HTTP step, plus one SDK example).
+- `samples/` — sanitized capture artifacts: `<flow>.har` (valid HAR 1.2 JSON) and a
+  `README.md` that embeds the decoded token/assertion with each field annotated.
+
+All sample values MUST be synthetic and clearly sanitized — never real tokens, secrets, keys,
+or personal data. These files carry the same frontmatter as diagrams and are linked from the
+flow's README under a `## Hands-on` heading.
