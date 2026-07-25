@@ -32,7 +32,7 @@ use managed identity when running on the provider; use federation when running e
 ## Related diagrams
 
 - [AWS AssumeRole with Web Identity (OIDC federation)](../../cloud-iam/aws/assumerole-web-identity-oidc/README.md)
-- [Entra Managed Identity (IMDS)](../../cloud-iam/entra/managed-identity-imds/README.md)
+- Entra Managed Identity (IMDS) *(planned)*
 - [GCP Service Account Impersonation](../../cloud-iam/gcp/service-account-impersonation/README.md)
 - [GCP Workload Identity Federation](../../cloud-iam/gcp/workload-identity-federation/README.md)
 - [Workload identity (category)](../../workload-identity/README.md)

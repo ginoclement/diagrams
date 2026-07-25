@@ -19,7 +19,7 @@ max 12 hours).
 
 - An IAM user or role escalating into a task-specific role (least-privilege separation).
 - Cross-account access, where a role in account B trusts a principal in account A (see
-  [Cross-account role assumption](../cross-account-role-assumption/README.md)).
+  Cross-account role assumption *(planned)*).
 - Third-party/vendor access into your account, hardened with an `ExternalId` to defeat the
   confused-deputy problem.
 - Short-lived, auditable credentials in place of long-lived IAM user access keys.
@@ -68,11 +68,11 @@ max 12 hours).
 
 ## Related diagrams
 
-- [Cross-account role assumption](../cross-account-role-assumption/README.md) — the two-account trust hop with `ExternalId`.
+- Cross-account role assumption *(planned)* — the two-account trust hop with `ExternalId`.
 - [AssumeRoleWithWebIdentity (OIDC)](../assumerole-web-identity-oidc/README.md) — federated variant for external OIDC identities.
 - [AssumeRoleWithSAML](../assumerole-saml/README.md) — federated variant for enterprise SAML identities.
-- [IMDSv2 instance credentials](../imdsv2-instance-credentials/README.md) — how EC2 role credentials are delivered.
-- [SigV4 request signing](../sigv4-request-signing/README.md) — how the returned credentials sign API calls.
+- IMDSv2 instance credentials *(planned)* — how EC2 role credentials are delivered.
+- SigV4 request signing *(planned)* — how the returned credentials sign API calls.
 
 ## Files
 

@@ -14,9 +14,9 @@ flowchart plus a README with actors, alternates, and security notes.
 | [risk-based-adaptive-authentication](risk-based-adaptive-authentication/README.md) | ✅ Current | A risk engine scores device, location, velocity, and reputation signals at sign-in and returns allow / step-up / deny. |
 | [step-up-authentication](step-up-authentication/README.md) | ✅ Current | Mid-session step-up for a sensitive action using an authn-context / `acr_values` / claims challenge (RFC 9470). |
 | [continuous-access-evaluation](continuous-access-evaluation/README.md) | 🔵 Emerging | A long-lived session is revoked in near-real-time on a critical event via a claims challenge back to the IdP. |
-| [mfa-fatigue-number-matching](mfa-fatigue-number-matching/README.md) | ✅ Current | Push-bombing / MFA-fatigue attacks and the number-matching mitigation that defeats blind approvals. |
-| [device-posture-conditional-access](device-posture-conditional-access/README.md) | ✅ Current | Policy requires a compliant / managed device and posture signals before granting access. |
-| [impossible-travel-anomaly](impossible-travel-anomaly/README.md) | ✅ Current | Detecting impossible-travel / anomalous sessions and forcing re-auth or blocking. |
+| mfa-fatigue-number-matching *(planned)* | ✅ Current | Push-bombing / MFA-fatigue attacks and the number-matching mitigation that defeats blind approvals. |
+| device-posture-conditional-access *(planned)* | ✅ Current | Policy requires a compliant / managed device and posture signals before granting access. |
+| impossible-travel-anomaly *(planned)* | ✅ Current | Detecting impossible-travel / anomalous sessions and forcing re-auth or blocking. |
 
 ## Cross-cutting ideas
 
@@ -37,7 +37,7 @@ flowchart plus a README with actors, alternates, and security notes.
 - [cloud-iam / Entra](../cloud-iam/entra/continuous-access-evaluation/README.md) — the
   vendor-specific realisation of CAE and
   [conditional-access evaluation](../cloud-iam/entra/conditional-access-evaluation/README.md).
-- [authorization](../authorization/policy-decision-enforcement/README.md) — the PDP/PEP
+- authorization *(planned)* — the PDP/PEP
   split these flows build on, and [ABAC](../authorization/abac/README.md) for attribute-driven policy.
 - [threat-defense](../threat-defense/README.md) — the attacks (AiTM, token theft, MFA
   fatigue) these controls are designed to blunt.

@@ -60,7 +60,7 @@ risk engine can also demand step-up.
   `auth_time` in the freshly issued token, not merely remember "we prompted"; otherwise the
   elevation can be replayed or skipped.
 - **Prefer phishing-resistant step-up.** Stepping up to SMS/push can be relayed by AiTM —
-  see [AiTM MFA Phishing](../../threat-defense/aitm-mfa-phishing/README.md). Step up to
+  see AiTM MFA Phishing *(planned)*. Step up to
   FIDO2 / passkeys ([Passkey Authentication](../../tokenless/webauthn-passkey-authentication/README.md)).
 - **Scope the elevation.** A step-up token should be short-lived and, ideally, tied to the
   specific operation (transaction-bound / claims challenge) so it cannot authorise unrelated
@@ -74,9 +74,9 @@ risk engine can also demand step-up.
 
 - [Risk-Based Adaptive Authentication](../risk-based-adaptive-authentication/README.md) — the sign-in-time source of a step-up demand.
 - [Continuous Access Evaluation](../continuous-access-evaluation/README.md) — a claims challenge that similarly re-engages the IdP mid-session.
-- [MFA Fatigue / Number Matching](../mfa-fatigue-number-matching/README.md) — hardening the factor the step-up challenges with.
+- MFA Fatigue / Number Matching *(planned)* — hardening the factor the step-up challenges with.
 - [Authorization Code + PKCE](../../oidc/authorization-code-pkce/README.md) — the grant the `/authorize` step-up re-runs.
-- [Scopes, Claims, Entitlements](../../authorization/scopes-claims-entitlements/README.md) — how `acr` / `amr` claims are consumed downstream.
+- Scopes, Claims, Entitlements *(planned)* — how `acr` / `amr` claims are consumed downstream.
 
 ## Files
 

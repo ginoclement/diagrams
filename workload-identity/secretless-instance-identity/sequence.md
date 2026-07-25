@@ -31,7 +31,7 @@ sequenceDiagram
 
     alt AWS IMDSv1 (deprecated)
         WL->>IMDS: GET credentials with no session token
-        Note over WL,IMDS: Plain request/response - easier to abuse via SSRF.<br/>Disable v1; require v2.
+        Note over WL,IMDS: Plain request/response - easier to abuse via SSRF.<br/>Disable v1, require v2.
         IMDS-->>WL: Credentials (if v1 still enabled)
     else No identity attached to instance
         WL->>IMDS: GET credentials
@@ -50,5 +50,5 @@ Notes
 
 - On AWS the two-step `PUT`-then-`GET` means a naive SSRF that can only issue GETs cannot obtain the session token, so it cannot read credentials.
 - The GCP/Azure required header serves the same purpose: a simple reflected fetch that cannot set custom headers is rejected.
-- The metadata service authenticates purely by network reachability; there is no secret to present, which is exactly why SSRF is the dominant risk.
+- The metadata service authenticates purely by network reachability, there is no secret to present, which is exactly why SSRF is the dominant risk.
 </content>

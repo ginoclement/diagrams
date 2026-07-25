@@ -40,7 +40,7 @@ machine-to-machine or network-boundary cases.
 - [Tokenless — Mutual TLS](../../tokenless/mutual-tls/README.md)
 - [Tokenless — Session cookie](../../tokenless/session-cookie/README.md)
 - [Choosing an OAuth grant](../choosing-an-oauth-grant/README.md) — once you have picked OIDC.
-- [SAML to OIDC migration](../saml-to-oidc-migration/README.md)
+- SAML to OIDC migration *(planned)*
 
 ## Files
 

@@ -17,7 +17,7 @@ implementations:
   Permissions). Policies are `permit`/`forbid` statements over `principal`, `action`, `resource`,
   and `context`; Cedar is analyzable (validation, formal reasoning) and **forbid-overrides** by design.
 
-Both realize the [PEP/PDP](../policy-decision-enforcement/README.md) split: the app is the **PEP**,
+Both realize the PEP/PDP *(planned)* split: the app is the **PEP**,
 the engine is the **PDP**, bundles/entity data are the **PIP** input, and the policy repo/control
 plane is the **PAP**. PBAC can express [RBAC](../rbac/README.md), [ABAC](../abac/README.md), and
 relationship rules — it is a *mechanism*, not a distinct model.
@@ -68,7 +68,7 @@ relationship rules — it is a *mechanism*, not a distinct model.
 
 ## Related diagrams
 
-- [Policy decision and enforcement](../policy-decision-enforcement/README.md) — the generic PEP/PDP
+- Policy decision and enforcement *(planned)* — the generic PEP/PDP
   pattern this instantiates at a gateway/sidecar.
 - [XACML PDP/PEP](../xacml-pdp-pep/README.md) — the heavyweight predecessor; OPA/Cedar are the
   modern alternatives.

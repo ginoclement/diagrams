@@ -47,7 +47,7 @@ matching policies must be satisfied before a token is minted.
 ## Security notes
 
 - CA is fail-closed for block policies but only evaluates signals it has — enforce
-  device compliance and disable [legacy authentication](../../../network-security/legacy-auth-block/README.md)
+  device compliance and disable legacy authentication *(planned)*
   so password-only protocols cannot bypass MFA policies.
 - Combine with [Continuous Access Evaluation](../continuous-access-evaluation/README.md)
   so revocation is near-real-time instead of waiting for token expiry.
@@ -64,7 +64,7 @@ matching policies must be satisfied before a token is minted.
 - [Device Join and Registration](../device-join-registration/README.md) — where the compliant/joined device state comes from
 - [Windows Hello for Business](../windows-hello-for-business/README.md) — a phishing-resistant factor CA can require
 - [Authorization Code + PKCE](../../../oidc/authorization-code-pkce/README.md) — the underlying OIDC flow CA gates
-- [Adaptive / risk-based access](../../../adaptive-access/risk-based-authentication/README.md) — the broader risk-signal pattern
+- Adaptive / risk-based access *(planned)* — the broader risk-signal pattern
 
 ## Files
 

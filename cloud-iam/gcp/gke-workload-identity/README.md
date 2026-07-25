@@ -67,7 +67,7 @@ container.
 - [Workload Identity Federation](../workload-identity-federation/README.md) — the same STS exchange for non-GKE external workloads
 - [Service Account Impersonation](../service-account-impersonation/README.md) — the `generateAccessToken` leg used internally
 - [Application Default Credentials](../application-default-credentials/README.md) — how the pod's library finds the metadata server
-- [Entra Managed Identity (IMDS)](../../entra/managed-identity-imds/README.md) — Azure's metadata-server analogue
+- Entra Managed Identity (IMDS) *(planned)* — Azure's metadata-server analogue
 
 ## Files
 

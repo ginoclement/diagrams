@@ -65,7 +65,7 @@ expresses rules that would require an explosion of roles under [RBAC](../rbac/RE
 - [ReBAC / Zanzibar](../rebac-zanzibar/README.md) — relationships instead of standalone attributes.
 - [XACML PDP/PEP](../xacml-pdp-pep/README.md) — the canonical architecture that formalized ABAC.
 - [Policy engine (OPA/Cedar)](../pbac-policy-engine/README.md) — a modern way to run ABAC policies.
-- [Policy decision and enforcement](../policy-decision-enforcement/README.md) — the generic
+- Policy decision and enforcement *(planned)* — the generic
   PEP/PDP/PIP/PAP pattern at a gateway.
 
 ## Files

@@ -58,7 +58,7 @@ CA) is re-evaluated before a new token is issued. CAE tokens are also **long-liv
 - [Primary Refresh Token](../primary-refresh-token/README.md) — device-bound token also subject to revocation
 - [PIM JIT Elevation](../pim-jit-elevation/README.md) — CAE can revoke an elevated token when activation ends
 - [OIDC Authorization Code + PKCE](../../../oidc/authorization-code-pkce/README.md) — the token protocol CAE extends
-- [Adaptive / risk-based access](../../../adaptive-access/risk-based-authentication/README.md) — risk signals that become critical events
+- Adaptive / risk-based access *(planned)* — risk signals that become critical events
 
 ## Files
 

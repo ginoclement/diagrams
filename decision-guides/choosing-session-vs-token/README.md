@@ -29,7 +29,7 @@ statelessness**, plus the browser-security shape (XSS vs CSRF).
 - [Session cookie](../../tokenless/session-cookie/README.md)
 - [Authorization Code + PKCE](../../oidc/authorization-code-pkce/README.md) — issues JWT/access tokens.
 - [Authorization Code (confidential)](../../oidc/authorization-code/README.md) — server-side token handling.
-- [Scopes, claims, entitlements](../../authorization/scopes-claims-entitlements/README.md) — what a token carries.
+- Scopes, claims, entitlements *(planned)* — what a token carries.
 
 ## Files
 

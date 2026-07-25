@@ -60,7 +60,7 @@ Two trust models exist for on-prem resource access:
 - [Primary Refresh Token](../primary-refresh-token/README.md) — the gesture unlocks the key that requests the PRT
 - [Device Join and Registration](../device-join-registration/README.md) — WHfB is provisioned after the device has an identity
 - [Conditional Access Evaluation](../conditional-access-evaluation/README.md) — can require this phishing-resistant factor
-- [Kerberos authentication](../../../kerberos/kerberos-authentication/README.md) — PKINIT / Cloud Kerberos trust reaches on-prem resources
+- Kerberos authentication *(planned)* — PKINIT / Cloud Kerberos trust reaches on-prem resources
 - [WebAuthn / Passkey authentication](../../../tokenless/webauthn-passkey-authentication/README.md) — the FIDO2 cousin of this credential model
 
 ## Files

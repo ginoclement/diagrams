@@ -41,7 +41,7 @@ sequenceDiagram
 
     alt Persistent self-hosted runner reused (discouraged)
         CI->>CI: Persistent runner: prior caches,<br/>tools, credentials still present
-        Note over CI,Int: State from a previous job is visible;<br/>a poisoned cache or planted tool<br/>carries into this job.
+        Note over CI,Int: State from a previous job is visible,<br/>a poisoned cache or planted tool<br/>carries into this job.
         CI-->>Job: Runs with inherited state (risk)
     end
 
@@ -64,9 +64,9 @@ Notes
 
 - The happy path's security is the last two steps: least-privilege token plus destroy-after,
   so nothing this job touched survives it.
-- Fork PRs from outside contributors never auto-run and never receive secrets; a maintainer's
+- Fork PRs from outside contributors never auto-run and never receive secrets, a maintainer's
   "approve and run" is the gate, and even then the runner is ephemeral and secret-free.
 - The persistent-runner alternate shows the state-leak mechanism: whatever a prior job left —
   cache, tool, credential, malware — is visible to the next job.
-- The final `DANGER` branch is the explicitly discouraged pattern; the diagram depicts the
+- The final `DANGER` branch is the explicitly discouraged pattern, the diagram depicts the
   exfiltration/pivot it enables so the risk is unmistakable.

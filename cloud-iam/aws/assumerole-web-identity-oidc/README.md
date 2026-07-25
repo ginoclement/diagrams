@@ -70,7 +70,7 @@ role — replacing stored `AWS_ACCESS_KEY_ID` secrets entirely.
 ## Related diagrams
 
 - [STS AssumeRole](../sts-assumerole/README.md) — the base API and trust-policy model.
-- [IRSA on EKS](../irsa-eks/README.md) — the same web-identity mechanism using EKS projected SA tokens.
+- IRSA on EKS *(planned)* — the same web-identity mechanism using EKS projected SA tokens.
 - [Cognito identity pool](../cognito-identity-pool/README.md) — consumer-facing wrapper over web-identity federation.
 - [AssumeRoleWithSAML](../assumerole-saml/README.md) — the SAML sibling for enterprise IdPs.
 - [OIDC Authorization Code + PKCE](../../../oidc/authorization-code-pkce/README.md) — how the ID token itself is obtained in interactive flows.

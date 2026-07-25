@@ -31,7 +31,7 @@ sequenceDiagram
     else IP location outside allowed range
         Client->>Res: Call from non-allowed IP
         Res-->>Client: 401 claims challenge (location)
-        Client->>Entra: Re-authorize; CA location policy re-evaluated
+        Client->>Entra: Re-authorize, CA location policy re-evaluated
         Entra-->>Client: Block (or new token if now compliant)
     else CA policy changed mid-session
         Admin->>Entra: Tighten CA policy

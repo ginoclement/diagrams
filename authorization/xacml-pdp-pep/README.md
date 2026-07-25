@@ -69,7 +69,7 @@ Indeterminate, optionally carrying obligations and advice). Its named components
 - [Policy engine (OPA / Cedar)](../pbac-policy-engine/README.md) — the modern replacement; **use
   instead** for greenfield.
 - [ABAC](../abac/README.md) — the model XACML standardized.
-- [Policy decision and enforcement](../policy-decision-enforcement/README.md) — the generic
+- Policy decision and enforcement *(planned)* — the generic
   PEP/PDP/PIP/PAP pattern XACML named.
 
 ## Files

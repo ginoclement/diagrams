@@ -40,7 +40,7 @@ sequenceDiagram
         IdP-->>Client: Deny (no new token)
         Client-->>User: Access revoked - sign in again
     else Client not CAE-capable
-        Note over Client,API: RP cannot rely on challenge handling,<br/>falls back to short token lifetime;<br/>revocation waits for expiry.
+        Note over Client,API: RP cannot rely on challenge handling,<br/>falls back to short token lifetime,<br/>revocation waits for expiry.
     end
 ```
 
@@ -48,7 +48,7 @@ Notes
 
 - The token is honoured with **no extra round trips** until a critical event fires — CAE adds
   latency only when something actually changed.
-- The `claims` challenge is what pulls the client back to the IdP; a client that merely
+- The `claims` challenge is what pulls the client back to the IdP, a client that merely
   retries the same token would loop, so CAE-capability is negotiated up front.
 - Propagation from `Sig` to the IdP is fast but not instantaneous — CAE narrows the
   revocation window to seconds, it does not make it zero.

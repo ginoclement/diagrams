@@ -22,7 +22,7 @@ flowchart TD
     Indet --> PepDefault
     DenyDec --> PepDeny(["PEP: 403 Deny"])
 
-    PepDefault{"PEP default for<br/>NotApplicable / Indeterminate"} -->|deny (recommended)| PepDeny
+    PepDefault{"PEP default for<br/>NotApplicable / Indeterminate"} -->|"deny (recommended)"| PepDeny
 
     PermitDec --> Obl{"Permit carries<br/>obligations?"}
     Obl -->|No| Grant(["PEP: grant access"])

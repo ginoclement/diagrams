@@ -62,7 +62,7 @@ identity. This enforces access at the network edge without a VPN.
 ## Related diagrams
 
 - [IAM Policy Evaluation](../iam-policy-evaluation/README.md) — how the accessor role + conditions resolve
-- [OAuth to Google APIs](../oauth-google-apis/README.md) — the Google sign-in / consent IAP leans on
+- OAuth to Google APIs *(planned)* — the Google sign-in / consent IAP leans on
 - [Service Account Impersonation](../service-account-impersonation/README.md) — `generateIdToken` for programmatic IAP access
 - [Entra Conditional Access](../../entra/conditional-access-evaluation/README.md) — the Microsoft context-aware-access analogue
 

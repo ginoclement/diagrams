@@ -63,7 +63,7 @@ It references the base lifecycle diagrams for the mechanics and shows only the p
 - [JML Orchestration](../../user-lifecycle/jml-orchestration/README.md) — the base lifecycle this set forks
 - [Joiner Onboarding](../../user-lifecycle/joiner-onboarding/README.md) / [Mover Role Change](../../user-lifecycle/mover-role-change/README.md) / [Leaver Offboarding](../../user-lifecycle/leaver-offboarding/README.md) — the transitions in detail
 - [SCIM Provisioning](../../user-lifecycle/scim-provisioning/README.md) — the wire protocol to apps
-- [Access Review by Persona](../access-review-by-persona/README.md) — the periodic control that catches drift these events miss
+- Access Review by Persona *(planned)* — the periodic control that catches drift these events miss
 - [Personas reference](../README.md) — archetypes and variance matrix
 
 ## Files

@@ -95,7 +95,7 @@ with no static secret stored in CI. See [sequence.md](sequence.md) for the excha
 
 - [AWS AssumeRoleWithWebIdentity (OIDC)](../../cloud-iam/aws/assumerole-web-identity-oidc/README.md) — the STS exchange in detail.
 - [GCP Workload Identity Federation](../../cloud-iam/gcp/workload-identity-federation/README.md) — the GCP variant.
-- [Entra workload identity federation](../../cloud-iam/entra/workload-identity-federation/README.md) — the Azure variant.
+- Entra workload identity federation *(planned)* — the Azure variant.
 - [Secrets management in pipelines](../secrets-management-in-pipelines/README.md) — what to do when a static secret is unavoidable.
 - [Ephemeral runner isolation](../ephemeral-runner-isolation/README.md) — keeping the minted token off shared infrastructure.
 - [CI/CD security and delivery](../README.md) — category index.

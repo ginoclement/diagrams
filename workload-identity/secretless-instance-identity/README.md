@@ -54,8 +54,8 @@ just re-reads the endpoint.
 
 - [workload-identity-federation-generic](../workload-identity-federation-generic/README.md) — the cross-trust-domain counterpart when the workload is *not* on the target cloud.
 - [service-account-key-lifecycle](../service-account-key-lifecycle/README.md) — the static-key approach this removes the need for.
-- [kubernetes-serviceaccount-token](../kubernetes-serviceaccount-token/README.md) — the in-cluster identity source that layers on top of node IMDS.
-- [cloud-iam/entra/managed-identity-imds](../../cloud-iam/entra/managed-identity-imds/README.md), [cloud-iam/gcp/application-default-credentials](../../cloud-iam/gcp/application-default-credentials/README.md), [cloud-iam/aws/sts-assumerole](../../cloud-iam/aws/sts-assumerole/README.md) — vendor specifics.
+- kubernetes-serviceaccount-token *(planned)* — the in-cluster identity source that layers on top of node IMDS.
+- cloud-iam/entra/managed-identity-imds *(planned)*, [cloud-iam/gcp/application-default-credentials](../../cloud-iam/gcp/application-default-credentials/README.md), [cloud-iam/aws/sts-assumerole](../../cloud-iam/aws/sts-assumerole/README.md) — vendor specifics.
 - [network-security/reverse-proxy-waf](../../network-security/reverse-proxy-waf/README.md) — SSRF sits alongside the web-layer defenses here.
 
 ## Files

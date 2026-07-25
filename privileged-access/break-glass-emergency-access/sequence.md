@@ -33,7 +33,7 @@ sequenceDiagram
     PAM->>SIEM: Alert - break-glass session ended
     PAM->>Dir: Rotate emergency account secret
     Dir-->>PAM: Secret rotated
-    PAM->>PAM: Re-split, re-seal credential;<br/>open mandatory post-use review
+    PAM->>PAM: Re-split, re-seal credential,<br/>open mandatory post-use review
     PAM-->>User: Resealed - review ticket assigned
 
     alt Single-custodian override (true lone responder)
@@ -59,6 +59,6 @@ Notes
 - Alerting fires at the *start* of invocation, before access is granted, so responders
   and abusers alike cannot open the seal quietly.
 - The `par` block is the multi-person control: the quorum of custodian parts is what
-  reassembles the credential; one part alone never does.
-- Reseal + rotate is mandatory and gated by review; until it completes the account stays
+  reassembles the credential, one part alone never does.
+- Reseal + rotate is mandatory and gated by review, until it completes the account stays
   quarantined and cannot be invoked again.

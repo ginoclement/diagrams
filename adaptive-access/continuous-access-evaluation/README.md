@@ -31,7 +31,7 @@ IP-address enforcement, and CAE `xms_cc` client capability) is a sibling diagram
   revocation is unacceptable.
 - Reducing the value of a **stolen token**: a replayed token from a new location or after a
   revocation event triggers a challenge — see
-  [Token Theft & Replay](../../threat-defense/token-theft-replay/README.md).
+  Token Theft & Replay *(planned)*.
 - Any zero-trust posture that treats "issued" as "provisional, subject to re-check".
 
 ## Actors
@@ -67,7 +67,7 @@ IP-address enforcement, and CAE `xms_cc` client capability) is a sibling diagram
   DPoP / mTLS reduce *whether* it works elsewhere at all.
 - **Do not treat CAE as authorization.** It re-checks *authentication/session* validity;
   fine-grained entitlement decisions still belong to the
-  [PDP/PEP](../../authorization/policy-decision-enforcement/README.md).
+  PDP/PEP *(planned)*.
 
 ## Related diagrams
 
@@ -75,7 +75,7 @@ IP-address enforcement, and CAE `xms_cc` client capability) is a sibling diagram
 - [Conditional Access Evaluation (Entra)](../../cloud-iam/entra/conditional-access-evaluation/README.md) — the policy layer CAE re-checks against.
 - [Step-up Authentication](../step-up-authentication/README.md) — the same claims-challenge mechanism used to *raise* rather than *revoke* assurance.
 - [Risk-Based Adaptive Authentication](../risk-based-adaptive-authentication/README.md) — the sign-in-time score CAE continuously re-applies.
-- [Token Theft & Replay](../../threat-defense/token-theft-replay/README.md) — the attack CAE is designed to blunt.
+- Token Theft & Replay *(planned)* — the attack CAE is designed to blunt.
 - [Refresh Token](../../oidc/refresh-token/README.md) — the reauthorization path the challenge drives.
 
 ## Files

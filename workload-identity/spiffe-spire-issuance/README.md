@@ -55,10 +55,10 @@ whose `aud` names the intended service) for token-based calls.
 
 ## Related diagrams
 
-- [mutual-tls-bootstrap](../mutual-tls-bootstrap/README.md) — the generic CSR-plus-attestation bootstrap this specializes.
+- mutual-tls-bootstrap *(planned)* — the generic CSR-plus-attestation bootstrap this specializes.
 - [network-security/mtls-service-mesh](../../network-security/mtls-service-mesh/README.md) — SVIDs consumed by sidecar proxies.
 - [tokenless/mutual-tls](../../tokenless/mutual-tls/README.md) — steady-state mTLS with the issued certificate.
-- [kubernetes-serviceaccount-token](../kubernetes-serviceaccount-token/README.md) — the PSAT used as a SPIRE node/workload attestor.
+- kubernetes-serviceaccount-token *(planned)* — the PSAT used as a SPIRE node/workload attestor.
 
 ## Files
 

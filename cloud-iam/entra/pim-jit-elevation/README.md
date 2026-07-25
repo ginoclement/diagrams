@@ -57,7 +57,7 @@ is removed. This applies to Entra roles (e.g. Global Administrator), Azure resou
 - [Conditional Access Evaluation](../conditional-access-evaluation/README.md) — auth-context step-up enforced at activation
 - [Continuous Access Evaluation](../continuous-access-evaluation/README.md) — revokes the elevated token when eligibility ends
 - [Windows Hello for Business](../windows-hello-for-business/README.md) — a phishing-resistant factor for the activation MFA
-- [Privileged access workstation flows](../../../privileged-access/paw-admin-access/README.md) — where admin activation should happen
+- Privileged access workstation flows *(planned)* — where admin activation should happen
 - [OIDC Authorization Code + PKCE](../../../oidc/authorization-code-pkce/README.md) — the token flow that carries the activated role
 
 ## Files

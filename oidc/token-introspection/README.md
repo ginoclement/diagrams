@@ -55,15 +55,15 @@ JWT access tokens that a resource server validates locally against the JWKS.
   so tune the TTL against your revocation SLA — see
   [Token Revocation](../token-revocation/README.md).
 - If the AS returns a `cnf` claim, the API must additionally verify proof of possession
-  ([DPoP](../dpop/README.md) or [mTLS-bound tokens](../mtls-bound-tokens/README.md)).
+  ([DPoP](../dpop/README.md) or mTLS-bound tokens *(planned)*).
 
 ## Related diagrams
 
 - [Token Revocation](../token-revocation/README.md) — the write side of the same lifecycle.
 - [Client Credentials](../client-credentials/README.md) — how the API authenticates itself to `/introspect`.
 - [Authorization Code](../authorization-code/README.md) — where the introspected token originated.
-- [Scopes, Claims, Entitlements](../../authorization/scopes-claims-entitlements/README.md) — enforcing what introspection returns.
-- [Policy Decision / Enforcement](../../authorization/policy-decision-enforcement/README.md) — the PEP that consumes the verdict.
+- Scopes, Claims, Entitlements *(planned)* — enforcing what introspection returns.
+- Policy Decision / Enforcement *(planned)* — the PEP that consumes the verdict.
 
 ## Files
 

@@ -26,14 +26,14 @@ is a function of**: roles, attributes, relationships, or externalized policy.
 | [rebac-zanzibar](rebac-zanzibar/README.md) | Relationship-Based Access Control on the Google Zanzibar model: relation tuples, usersets, Check/Expand, and consistency zookies. |
 | [pbac-policy-engine](pbac-policy-engine/README.md) | Policy-Based Access Control with an externalized engine (OPA/Rego, AWS Cedar): PEP calls PDP, policy bundles, decision logs. |
 | [xacml-pdp-pep](xacml-pdp-pep/README.md) | The classic XACML reference architecture and request/response: PEP, PDP, PIP, PAP, obligations and advice. |
-| [scopes-claims-entitlements](scopes-claims-entitlements/README.md) | How OAuth scopes, ID-token claims, and fine-grained entitlements relate; coarse token authZ vs fine-grained runtime authZ. |
-| [policy-decision-enforcement](policy-decision-enforcement/README.md) | The generic PEP/PDP/PIP/PAP decision-and-enforcement pattern applied at an API gateway or sidecar. |
-| [oauth-consent-authorization](oauth-consent-authorization/README.md) | User consent, admin consent, and incremental/step-up consent as an authorization mechanism for delegated access. |
+| scopes-claims-entitlements *(planned)* | How OAuth scopes, ID-token claims, and fine-grained entitlements relate; coarse token authZ vs fine-grained runtime authZ. |
+| policy-decision-enforcement *(planned)* | The generic PEP/PDP/PIP/PAP decision-and-enforcement pattern applied at an API gateway or sidecar. |
+| oauth-consent-authorization *(planned)* | User consent, admin consent, and incremental/step-up consent as an authorization mechanism for delegated access. |
 
 ## Related categories
 
 - [OIDC flows](../oidc/README.md) — issues the tokens whose scopes and claims feed coarse
-  authorization; see [scopes-claims-entitlements](scopes-claims-entitlements/README.md).
+  authorization; see scopes-claims-entitlements *(planned)*.
 - [SAML flows](../saml/README.md) — assertions can carry attribute statements consumed by ABAC.
 - [User lifecycle](../user-lifecycle/README.md) — provisioning and deprovisioning of the role and
   group memberships that RBAC and ABAC read.

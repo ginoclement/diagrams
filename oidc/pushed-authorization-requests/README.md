@@ -16,8 +16,8 @@ Because the request never travels through the browser as query parameters, it
 cannot be inspected, tampered with, or bloated by URL-length limits, and the AS
 can require PAR to reject any non-pushed request. PAR is a building block of the
 FAPI 2.0 security profile and pairs naturally with
-[JAR/JARM](../jar-jarm/README.md), [PKCE](../authorization-code-pkce/README.md),
-and [RAR](../rich-authorization-requests/README.md).
+JAR/JARM *(planned)*, [PKCE](../authorization-code-pkce/README.md),
+and RAR *(planned)*.
 
 ## When it is used
 
@@ -56,10 +56,10 @@ and [RAR](../rich-authorization-requests/README.md).
 ## Related diagrams
 
 - [Authorization Code + PKCE](../authorization-code-pkce/README.md) — the base flow PAR front-ends.
-- [JAR / JARM](../jar-jarm/README.md) — signed request objects often pushed via PAR.
-- [Rich Authorization Requests](../rich-authorization-requests/README.md) — large authorization_details that motivate PAR.
+- JAR / JARM *(planned)* — signed request objects often pushed via PAR.
+- Rich Authorization Requests *(planned)* — large authorization_details that motivate PAR.
 - [DPoP](../dpop/README.md) — sender-constraining, another FAPI 2.0 building block.
-- [mTLS-Bound Tokens](../mtls-bound-tokens/README.md) — the mTLS alternative for FAPI-grade binding.
+- mTLS-Bound Tokens *(planned)* — the mTLS alternative for FAPI-grade binding.
 
 ## Files
 

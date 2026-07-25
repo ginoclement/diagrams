@@ -42,15 +42,15 @@ sequenceDiagram
 
     opt Post-incident containment
         SIEM->>IdP: Rotate token-signing key twice, re-issue metadata
-        Note over IdP,SP: Old forged assertions no longer verify;<br/>SP trust re-anchored to new certificate
+        Note over IdP,SP: Old forged assertions no longer verify,<br/>SP trust re-anchored to new certificate
     end
 ```
 
 Notes
 
 - The defining property of Golden SAML: **step "IdP login" is absent**. The SP sees a valid
-  signature and trusts it; only cross-log correlation exposes the missing authentication.
-- HSM protection (the first `alt` branch) is prevention; SIEM correlation and short
+  signature and trusts it, only cross-log correlation exposes the missing authentication.
+- HSM protection (the first `alt` branch) is prevention, SIEM correlation and short
   lifetimes are detection/containment.
 - Key rotation done **twice** flushes any platform "previous key" slot the attacker's key
   might still occupy.

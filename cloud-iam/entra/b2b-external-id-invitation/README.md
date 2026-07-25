@@ -56,8 +56,8 @@ access settings** are enforced by the resource tenant.
 ## Related diagrams
 
 - [Conditional Access Evaluation](../conditional-access-evaluation/README.md) — applied to guests in the resource tenant
-- [Workload Identity Federation](../workload-identity-federation/README.md) — federating an external IdP for workloads (contrast)
-- [Hybrid Identity Sync](../hybrid-identity-sync/README.md) — how internal identities arrive (contrast with external)
+- Workload Identity Federation *(planned)* — federating an external IdP for workloads (contrast)
+- Hybrid Identity Sync *(planned)* — how internal identities arrive (contrast with external)
 - [SAML SP-initiated SSO](../../../saml/sp-initiated-sso/README.md) — federation protocol behind SAML-based home IdPs
 - [OIDC Authorization Code + PKCE](../../../oidc/authorization-code-pkce/README.md) — the sign-in protocol at redemption
 - [Guest / external persona](../../../personas/README.md) — persona variance for external users
