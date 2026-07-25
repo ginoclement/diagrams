@@ -1,5 +1,7 @@
 # Auth0 Universal Login + Actions (Post-Login Pipeline)
 
+**Status:** ✅ Current
+
 **Auth0 Universal Login** is Auth0's hosted, centralized login page; **Actions** are
 Node.js functions Auth0 runs at defined **triggers** in a flow. This diagram covers
 the **post-login** trigger: after the user authenticates at Universal Login, Auth0

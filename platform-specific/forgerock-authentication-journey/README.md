@@ -1,5 +1,7 @@
 # ForgeRock / PingAM Authentication Journeys (Trees)
 
+**Status:** ✅ Current
+
 In **ForgeRock Access Management (PingAM)**, authentication is modeled as a **tree**
 (a "Journey" in Ping Identity Platform terms): a directed graph of **nodes** wired
 from a **Start** node to **Success** / **Failure** outcome nodes. The client drives

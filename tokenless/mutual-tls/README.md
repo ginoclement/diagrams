@@ -1,5 +1,7 @@
 # Mutual TLS (mTLS) Client-Certificate Authentication
 
+**Status:** ✅ Current
+
 Authentication performed **inside the TLS handshake** itself. In ordinary TLS only the
 server proves its identity; in mutual TLS the server additionally sends a
 `CertificateRequest`, and the client responds with its certificate plus a

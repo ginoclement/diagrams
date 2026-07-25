@@ -1,5 +1,7 @@
 # Kerberos AP Exchange (AP-REQ / AP-REP)
 
+**Status:** ✅ Current
+
 ## Purpose
 
 The Application (AP) exchange is where the client actually authenticates to a

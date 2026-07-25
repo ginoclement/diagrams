@@ -1,5 +1,7 @@
 # IdP-Initiated Web Browser SSO
 
+**Status:** ✅ Current
+
 ## Purpose
 
 SSO that starts at the Identity Provider: the user clicks an application tile on the

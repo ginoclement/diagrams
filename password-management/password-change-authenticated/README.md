@@ -1,5 +1,7 @@
 # Authenticated Password Change
 
+**Status:** ✅ Current
+
 A user who is **already logged in** deliberately changes their password from an account
 or settings page. Unlike a reset, the user knows the current password — so the flow
 **reauthenticates** by requiring the **current password** (and optionally a step-up MFA)

@@ -1,5 +1,7 @@
 # TLS 1.3 Handshake
 
+**Status:** ✅ Current
+
 How a TLS 1.3 connection is established: the client and server agree on a cipher and
 exchange Diffie-Hellman **key shares** in the very first flight, derive shared secrets,
 and switch to encryption after just **one round trip** (1-RTT). Everything after

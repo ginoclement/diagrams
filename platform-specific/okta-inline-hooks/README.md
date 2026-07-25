@@ -1,5 +1,7 @@
 # Okta Inline Hooks — Synchronous External Callouts
 
+**Status:** ✅ Current
+
 **Inline hooks** let Okta pause a flow mid-execution, make a **synchronous HTTPS
 callout** to an external service you own, and apply **commands** returned in the
 response before continuing. Because the call is *inline* (blocking, within a request

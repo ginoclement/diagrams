@@ -1,5 +1,7 @@
 # Okta FastPass — Device-Bound Passwordless Authentication
 
+**Status:** ✅ Current
+
 **Okta FastPass** is Okta Verify's phishing-resistant, passwordless factor. Instead
 of a shared secret, the enrolled device holds a **device-bound private key** (in the
 Secure Enclave / TPM / Keystore). When a user signs in, the Okta Sign-In Widget

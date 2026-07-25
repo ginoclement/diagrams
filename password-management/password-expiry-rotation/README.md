@@ -1,5 +1,7 @@
 # Password Expiry and Rotation
 
+**Status:** ✅ Current
+
 Handling a login where the password has **expired** or is flagged
 **must-change-at-next-login**. The user authenticates successfully with the old (still
 valid-for-identification) password, but before a full session is granted the system

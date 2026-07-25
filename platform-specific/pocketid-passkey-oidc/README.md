@@ -1,5 +1,7 @@
 # PocketID — Passkey-Only OIDC Provider
 
+**Status:** ✅ Current
+
 **PocketID** is a lightweight, self-hosted **OIDC provider** with a deliberately
 minimalist model: **passkeys (WebAuthn) are the only authentication method** — there
 are no passwords at all. A user authenticates to PocketID with a passkey, and PocketID

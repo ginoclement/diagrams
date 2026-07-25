@@ -1,5 +1,7 @@
 # Kerberos Unconstrained Delegation
 
+**Status:** ⛔ Deprecated
+
 ## Purpose
 
 Unconstrained delegation is the original Kerberos delegation model. A service
@@ -117,3 +119,15 @@ paths are legible.
 - [Resource-Based Constrained Delegation](../resource-based-constrained-delegation/README.md) — control moved to the resource.
 - [Cross-Realm](../cross-realm/README.md) — delegation risk when the caller comes from another realm.
 - [Zero-trust architecture](../../architecture/zero-trust-architecture/README.md) — why ambient impersonation is discouraged.
+
+## Why deprecated
+
+Unconstrained delegation lets a service impersonate a user to **any** other service,
+caching a forwardable TGT on the service host. If that host is compromised, every
+delegated user's TGT can be extracted and replayed — a well-known lateral-movement and
+privilege-escalation path.
+
+## Use instead
+
+- [Resource-based constrained delegation](../resource-based-constrained-delegation/README.md) (preferred)
+- [Constrained delegation (S4U2Proxy)](../constrained-delegation/README.md)

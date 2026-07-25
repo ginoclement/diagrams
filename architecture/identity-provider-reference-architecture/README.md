@@ -1,5 +1,7 @@
 # Identity Provider (IdP) Reference Architecture
 
+**Status:** ✅ Current
+
 ## What it shows
 
 The internal component topology of a modern Identity Provider — the system that

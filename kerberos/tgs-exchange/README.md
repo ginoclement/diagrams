@@ -1,5 +1,7 @@
 # Kerberos TGS Exchange (TGS-REQ / TGS-REP)
 
+**Status:** ✅ Current
+
 ## Purpose
 
 The Ticket-Granting Service (TGS) exchange converts a TGT (obtained in the

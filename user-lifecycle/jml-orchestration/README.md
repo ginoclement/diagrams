@@ -1,5 +1,7 @@
 # JML Orchestration — Lifecycle Overview
 
+**Status:** ✅ Current
+
 ## Purpose
 
 This is the **high-level overview** that ties the whole category together. Rather than

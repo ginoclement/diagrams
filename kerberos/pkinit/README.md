@@ -1,5 +1,7 @@
 # PKINIT (Certificate / Smart-Card Initial Authentication)
 
+**Status:** ✅ Current
+
 ## Purpose
 
 PKINIT (Public Key Cryptography for Initial Authentication, RFC 4556) replaces

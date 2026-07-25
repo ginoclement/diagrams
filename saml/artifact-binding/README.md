@@ -1,5 +1,7 @@
 # HTTP-Artifact Binding
 
+**Status:** ✅ Current
+
 ## Purpose
 
 Delivery of SAML messages **by reference** instead of by value. Rather than pushing the

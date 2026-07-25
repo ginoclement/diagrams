@@ -1,5 +1,7 @@
 # Zero Trust Architecture (NIST SP 800-207)
 
+**Status:** ✅ Current
+
 ## What it shows
 
 A NIST-style zero trust architecture: access to every resource is mediated by a

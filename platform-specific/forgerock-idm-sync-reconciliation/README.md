@@ -1,5 +1,7 @@
 # ForgeRock IDM — Sync & Reconciliation
 
+**Status:** ✅ Current
+
 **ForgeRock Identity Management (IDM)** synchronizes identities between a **repo /
 authoritative source** and **external resources** (connected systems) through
 connectors. It offers two complementary mechanisms:

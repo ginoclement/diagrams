@@ -1,5 +1,7 @@
 # Email / Phone Verification (Contact-Channel Verification)
 
+**Status:** ✅ Current
+
 Proving that a user actually controls an **email address or phone number** before the
 system treats it as verified. The server sends a proof over the channel — either a
 **one-time code (OTP)** the user types back, or a **verification link** the user clicks —

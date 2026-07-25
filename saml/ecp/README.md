@@ -1,5 +1,7 @@
 # Enhanced Client or Proxy (ECP) Profile
 
+**Status:** ✅ Current
+
 ## Purpose
 
 The SAML 2.0 profile for **non-browser clients** — desktop apps, CLI tools, mail

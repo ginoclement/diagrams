@@ -1,5 +1,7 @@
 # Auth0 Organizations — B2B Invitation & Org-Context Login
 
+**Status:** ✅ Current
+
 **Auth0 Organizations** model B2B tenancy: an **Organization** groups members,
 enabled **connections** (identity providers), and **roles**. This diagram covers the
 **invitation lifecycle** and **organization-context login**:

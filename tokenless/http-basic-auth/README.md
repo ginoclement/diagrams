@@ -1,5 +1,7 @@
 # HTTP Basic Authentication
 
+**Status:** 🟡 Legacy
+
 The oldest HTTP-native authentication scheme (RFC 7617): the server challenges with
 `401 Unauthorized` + `WWW-Authenticate: Basic realm="..."`, and the client replies with
 `Authorization: Basic base64(username:password)` — **on every subsequent request**.

@@ -1,5 +1,7 @@
 # Profile Attribute Update (Self-Service)
 
+**Status:** ✅ Current
+
 A user updates their own profile attributes. **Non-sensitive** attributes (display name,
 locale, avatar) commit immediately. **Sensitive** attributes — email, phone, recovery
 contacts, and anything security-relevant — require **step-up re-authentication** and, when

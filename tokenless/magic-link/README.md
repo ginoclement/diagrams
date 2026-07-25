@@ -1,5 +1,7 @@
 # Magic Link (Passwordless Email Login)
 
+**Status:** ✅ Current
+
 Passwordless authentication via email: the user enters only an email address, the
 server emails a **single-use, time-limited, signed link**, and clicking it proves
 control of the mailbox and establishes a normal server-side session. The link carries

@@ -1,5 +1,7 @@
 # Resource-Based Constrained Delegation (RBCD)
 
+**Status:** ✅ Current
+
 ## Purpose
 
 RBCD inverts the direction of the delegation allowlist. In classic

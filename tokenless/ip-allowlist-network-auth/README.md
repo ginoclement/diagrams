@@ -1,5 +1,7 @@
 # IP Allowlist / Network-Location Authentication
 
+**Status:** ✅ Current
+
 Access decisions based on **where the request comes from** rather than who is making
 it: source-IP allowlists, "must be on the VPN," "only reachable from the office
 range," or private-network reachability treated as implicit authentication. There is

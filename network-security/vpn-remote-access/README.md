@@ -1,5 +1,7 @@
 # Remote Access VPN
 
+**Status:** ✅ Current
+
 How a remote user's device gets an authenticated, encrypted tunnel into a private
 network. The client connects to a **VPN gateway**, authenticates (commonly
 **IKEv2/IPsec** or a **TLS/SSL VPN**) with **MFA**, the gateway runs an **endpoint

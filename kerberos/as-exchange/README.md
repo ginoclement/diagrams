@@ -1,5 +1,7 @@
 # Kerberos AS Exchange (AS-REQ / AS-REP)
 
+**Status:** ✅ Current
+
 ## Purpose
 
 The Authentication Service (AS) exchange is the initial authentication step in

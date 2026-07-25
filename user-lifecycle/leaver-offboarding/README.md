@@ -1,5 +1,7 @@
 # Leaver — Offboarding & Deprovisioning
 
+**Status:** ✅ Current
+
 ## Purpose
 
 The **leaver** flow removes access when a worker exits. A termination event from the HR

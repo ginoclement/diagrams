@@ -1,5 +1,7 @@
 # Session Cookie Authentication
 
+**Status:** ✅ Current
+
 Classic form-based login that establishes a **server-side session**. The browser never
 holds a self-contained token — only an opaque session identifier delivered in a cookie
 (`Set-Cookie: sid=...; HttpOnly; Secure; SameSite=Lax`). All authentication state lives

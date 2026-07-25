@@ -1,5 +1,7 @@
 # Device Enrollment (MDM / UEM)
 
+**Status:** ✅ Current
+
 A device is brought under **Mobile Device Management / Unified Endpoint Management**.
 The user (or an automated provisioning flow) authenticates, the MDM issues an
 **enrollment profile**, the device installs a **management profile** (with an MDM push

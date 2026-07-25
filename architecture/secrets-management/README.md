@@ -1,5 +1,7 @@
 # Secrets Management Platform (Vault-style)
 
+**Status:** ✅ Current
+
 ## What it shows
 
 The architecture of a centralized secrets platform (Vault-style): applications and CI/CD

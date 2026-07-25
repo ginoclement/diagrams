@@ -1,5 +1,7 @@
 # Kerberos Cross-Realm Authentication
 
+**Status:** ✅ Current
+
 ## Purpose
 
 Cross-realm (cross-domain) authentication lets a principal that authenticated in

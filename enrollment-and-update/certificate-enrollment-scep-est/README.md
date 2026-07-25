@@ -1,5 +1,7 @@
 # Certificate Enrollment (SCEP and EST)
 
+**Status:** ✅ Current
+
 A device or user obtains an **X.509 identity certificate** from a CA through an automated
 enrollment protocol. Two protocols are covered:
 

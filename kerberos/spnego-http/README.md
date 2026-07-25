@@ -1,5 +1,7 @@
 # SPNEGO over HTTP (HTTP Negotiate)
 
+**Status:** ✅ Current
+
 ## Purpose
 
 SPNEGO (Simple and Protected GSS-API Negotiation) lets a browser perform

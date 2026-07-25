@@ -1,5 +1,7 @@
 # WebAuthn / Passkey Authentication Ceremony
 
+**Status:** ✅ Current
+
 The FIDO2/WebAuthn **authentication** (assertion) ceremony: the server (Relying
 Party) sends a random challenge; the browser calls `navigator.credentials.get()`;
 the authenticator performs **user verification** (biometric or PIN) and signs the

@@ -1,5 +1,7 @@
 # Access Review & Certification
 
+**Status:** ✅ Current
+
 ## Purpose
 
 **Access review (recertification)** is the periodic detective control that answers "does

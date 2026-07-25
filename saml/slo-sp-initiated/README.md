@@ -1,5 +1,7 @@
 # Single Logout — SP-Initiated
 
+**Status:** ✅ Current
+
 ## Purpose
 
 SAML 2.0 Single Logout (SLO) started at a Service Provider. The user clicks "Logout"

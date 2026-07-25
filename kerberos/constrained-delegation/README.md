@@ -1,5 +1,7 @@
 # Kerberos Constrained Delegation — S4U2Self and S4U2Proxy
 
+**Status:** ✅ Current
+
 ## Purpose
 
 Constrained delegation (Microsoft's **KCD**, extensions `MS-SFU`) replaces the

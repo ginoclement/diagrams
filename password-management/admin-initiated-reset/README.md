@@ -1,5 +1,7 @@
 # Admin-Initiated Password Reset
 
+**Status:** ✅ Current
+
 A **helpdesk or administrator** resets another user's password on the user's behalf —
 the typical response to a support call ("I'm locked out and can't get the reset email").
 The admin authenticates and is authorized for the action, the system issues a

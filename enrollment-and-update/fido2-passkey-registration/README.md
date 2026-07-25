@@ -1,5 +1,7 @@
 # FIDO2 / Passkey Registration Ceremony
 
+**Status:** ✅ Current
+
 The WebAuthn **registration** (attestation) ceremony that creates a credential:
 the Relying Party (server) issues a challenge and creation options; the browser calls
 `navigator.credentials.create()`; the authenticator generates a new **public/private key

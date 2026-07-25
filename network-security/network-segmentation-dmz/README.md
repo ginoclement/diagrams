@@ -1,5 +1,7 @@
 # Network Segmentation and the DMZ
 
+**Status:** ✅ Current
+
 Classic tiered network segmentation: untrusted traffic from the **Internet** crosses an
 **edge firewall** into a **DMZ** (demilitarized zone) holding internet-facing services
 behind a reverse proxy / WAF, then an **internal firewall** gates the small set of flows

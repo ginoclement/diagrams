@@ -1,5 +1,7 @@
 # Joiner — Onboarding & Birthright Provisioning
 
+**Status:** ✅ Current
+
 ## Purpose
 
 The **joiner** flow turns a new hire recorded in the HR source of truth into a working,

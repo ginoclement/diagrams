@@ -1,5 +1,7 @@
 # API Gateway Authentication & Authorization (BFF Pattern)
 
+**Status:** ✅ Current
+
 ## What it shows
 
 The API gateway / Backend-for-Frontend (BFF) pattern as a security architecture: a single

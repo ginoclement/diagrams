@@ -1,5 +1,7 @@
 # Self-Service Password Reset (SSPR)
 
+**Status:** ✅ Current
+
 The classic **"forgot password"** flow. A user who cannot log in proves control of a
 **recovery factor** already bound to their account (email or SMS OTP, security
 questions, or a registered MFA authenticator) and then sets a new password. No

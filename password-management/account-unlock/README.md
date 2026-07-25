@@ -1,5 +1,7 @@
 # Account Unlock
 
+**Status:** ✅ Current
+
 Recovering an account that has been **locked out** after too many failed login attempts.
 Lockout is a brute-force defense; unlock restores access **without necessarily resetting
 the password**. The user proves identity (typically MFA or a recovery factor), the account

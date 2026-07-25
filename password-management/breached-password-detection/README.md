@@ -1,5 +1,7 @@
 # Breached Password Detection
 
+**Status:** ✅ Current
+
 Checking a **candidate password** — at registration, change, or reset time — against a
 corpus of **known-breached passwords**, so users cannot pick a credential that already
 appears in public dumps. The canonical implementation is the **Have I Been Pwned (HIBP)

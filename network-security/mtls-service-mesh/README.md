@@ -1,5 +1,7 @@
 # mTLS in a Service Mesh
 
+**Status:** ✅ Current
+
 Inside a service mesh (Istio, Linkerd, Consul), every workload gets a **sidecar proxy**
 that transparently wraps its traffic in mutual TLS. Each workload has a cryptographic
 identity — a **SPIFFE ID** (`spiffe://trust-domain/ns/…/sa/…`) carried in an

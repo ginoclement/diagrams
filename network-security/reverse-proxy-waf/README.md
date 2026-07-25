@@ -1,5 +1,7 @@
 # Reverse Proxy and Web Application Firewall
 
+**Status:** ✅ Current
+
 A reverse proxy sits in front of an application and is the single, hardened ingress for
 all client traffic. It **terminates TLS**, runs the request through a **Web Application
 Firewall** (WAF) that inspects it against an attack ruleset (typically the **OWASP Core

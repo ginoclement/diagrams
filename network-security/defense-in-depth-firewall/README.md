@@ -1,5 +1,7 @@
 # Defense in Depth — Layered Firewall, IDS/IPS, and Host Defenses
 
+**Status:** ✅ Current
+
 No single control catches everything, so a connection is evaluated by **layers**: a
 **stateful firewall** at the network edge (5-tuple + connection state), an
 **IDS/IPS** inspecting payloads for known-bad signatures and anomalies, a **proxy**

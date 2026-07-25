@@ -1,5 +1,7 @@
 # PKI Trust Hierarchy
 
+**Status:** ✅ Current
+
 ## What it shows
 
 A Public Key Infrastructure trust hierarchy: an **offline root CA** anchoring trust, one or

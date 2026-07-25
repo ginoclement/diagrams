@@ -1,5 +1,7 @@
 # Federation Topology (Identity Broker / Hub-and-Spoke)
 
+**Status:** ✅ Current
+
 ## What it shows
 
 A hub-and-spoke identity federation: a central **identity broker** (hub) that proxies

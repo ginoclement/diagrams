@@ -1,5 +1,7 @@
 # SCIM 2.0 Provisioning
 
+**Status:** ✅ Current
+
 ## Purpose
 
 **SCIM (System for Cross-domain Identity Management) 2.0** — RFC 7643 (schema) and RFC 7644

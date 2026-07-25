@@ -1,5 +1,7 @@
 # Single Logout — IdP-Initiated
 
+**Status:** ✅ Current
+
 ## Purpose
 
 SAML 2.0 Single Logout started **at the Identity Provider**: the user clicks "Sign out"

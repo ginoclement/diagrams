@@ -1,5 +1,7 @@
 # Mover — Role Change & Access Re-evaluation
 
+**Status:** ✅ Current
+
 ## Purpose
 
 The **mover** flow handles the hardest part of identity governance: a worker who *stays* in

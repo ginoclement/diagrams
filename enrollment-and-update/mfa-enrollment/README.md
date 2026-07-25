@@ -1,5 +1,7 @@
 # MFA Enrollment (Registering a New Authentication Factor)
 
+**Status:** ✅ Current
+
 An already-authenticated user registers a **new multi-factor authentication (MFA)
 factor** with the IdP. The canonical case is a **TOTP authenticator app** (RFC 6238):
 the server generates a per-user secret, hands it to the user as a QR code (an

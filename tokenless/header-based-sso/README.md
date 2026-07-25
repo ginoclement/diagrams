@@ -1,5 +1,7 @@
 # Header-Based SSO (Proxy-Injected Identity Headers)
 
+**Status:** ✅ Current
+
 A reverse proxy or access gateway authenticates the user (by any means — form login,
 SAML, OIDC, Kerberos, mTLS) and then forwards requests to backend applications with
 **identity headers injected**: `REMOTE_USER`, `X-Forwarded-User`, `X-Auth-Request-Email`,

@@ -1,5 +1,7 @@
 # SP-Initiated Web Browser SSO
 
+**Status:** ✅ Current
+
 ## Purpose
 
 The canonical SAML 2.0 Web Browser SSO flow. The user starts at the Service Provider
