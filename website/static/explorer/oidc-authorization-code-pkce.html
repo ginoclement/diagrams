@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OIDC Authorization Code + PKCE — Flow Explorer</title>
+<meta name="description" content="Interactive step-by-step walkthrough of the OIDC Authorization Code + PKCE flow with per-step request/response and how to read it in browser DevTools.">
+</head>
+<body>
+<style>
+  :root{
+    --bg:#f4f7fb; --panel:#ffffff; --panel-2:#eef2f8; --ink:#111823; --muted:#586576;
+    --line:#dde4ee; --brand:#3a63d8; --brand-soft:#e6edfb;
+    --get:#1f9d6b; --post:#b9821f; --redir:#3a63d8; --ok:#1f9d6b; --err:#d1495b; --back:#7a6cf0;
+    --user:#8a5cf6; --agent:#2563c9; --idp:#0f9d6b; --api:#b9821f;
+    --radius:12px; --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Cascadia Code",monospace;
+    --sans:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#0c1017; --panel:#141b26; --panel-2:#0f1621; --ink:#e8eef7; --muted:#93a1b4;
+      --line:#243040; --brand:#6f97ff; --brand-soft:#182541;
+      --get:#39c08a; --post:#e0a63f; --redir:#6f97ff; --ok:#39c08a; --err:#f0748a; --back:#a394ff;
+      --user:#b79bff; --agent:#6f97ff; --idp:#39c08a; --api:#e0a63f; }
+  }
+  :root[data-theme="light"]{ --bg:#f4f7fb; --panel:#ffffff; --panel-2:#eef2f8; --ink:#111823; --muted:#586576;
+    --line:#dde4ee; --brand:#3a63d8; --brand-soft:#e6edfb; --get:#1f9d6b; --post:#b9821f; --redir:#3a63d8;
+    --ok:#1f9d6b; --err:#d1495b; --back:#7a6cf0; --user:#8a5cf6; --agent:#2563c9; --idp:#0f9d6b; --api:#b9821f; }
+  :root[data-theme="dark"]{ --bg:#0c1017; --panel:#141b26; --panel-2:#0f1621; --ink:#e8eef7; --muted:#93a1b4;
+    --line:#243040; --brand:#6f97ff; --brand-soft:#182541; --get:#39c08a; --post:#e0a63f; --redir:#6f97ff;
+    --ok:#39c08a; --err:#f0748a; --back:#a394ff; --user:#b79bff; --agent:#6f97ff; --idp:#39c08a; --api:#e0a63f; }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;
+    -webkit-font-smoothing:antialiased;font-size:15px}
+  .wrap{max-width:1160px;margin:0 auto;padding:20px 20px 48px}
+  a{color:var(--brand)}
+  .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+
+  header.top{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;
+    border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}
+  header.top h1{font-size:22px;margin:.2em 0 0;letter-spacing:-.01em;text-wrap:balance}
+  header.top .sub{color:var(--muted);font-size:13.5px;margin-top:2px}
+  .controls{display:flex;align-items:center;gap:10px}
+  .counter{font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:13px;color:var(--muted);min-width:74px;text-align:center}
+  button.nav{font:inherit;font-size:14px;font-weight:600;color:var(--ink);background:var(--panel);
+    border:1px solid var(--line);border-radius:9px;padding:8px 14px;cursor:pointer;transition:.15s}
+  button.nav:hover:not(:disabled){border-color:var(--brand);color:var(--brand)}
+  button.nav:disabled{opacity:.4;cursor:not-allowed}
+  button.nav:focus-visible,.step:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+  .progress{height:4px;background:var(--panel-2);border-radius:99px;overflow:hidden;margin-bottom:22px}
+  .progress > i{display:block;height:100%;background:var(--brand);border-radius:99px;transition:width .3s ease}
+
+  .grid{display:grid;grid-template-columns:minmax(280px,360px) 1fr;gap:22px;align-items:start}
+  @media (max-width:820px){.grid{grid-template-columns:1fr}}
+
+  /* Timeline */
+  ol.timeline{list-style:none;margin:0;padding:0;position:relative}
+  ol.timeline::before{content:"";position:absolute;left:15px;top:6px;bottom:6px;width:2px;background:var(--line)}
+  .step{position:relative;display:block;width:100%;text-align:left;background:none;border:0;cursor:pointer;
+    padding:9px 8px 9px 42px;border-radius:9px;color:var(--ink);font:inherit}
+  .step:hover{background:var(--panel-2)}
+  .step .dot{position:absolute;left:8px;top:11px;width:16px;height:16px;border-radius:50%;
+    background:var(--panel);border:2px solid var(--line);z-index:1}
+  .step.active{background:var(--panel)}
+  .step.active .dot{border-color:var(--brand);background:var(--brand)}
+  .step.done .dot{border-color:var(--brand)}
+  .step .lbl{font-size:13.5px;font-weight:600;line-height:1.3}
+  .step.active .lbl{color:var(--brand)}
+  .step .hop{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:2px}
+  .tag{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.03em;
+    padding:1px 6px;border-radius:5px;vertical-align:middle;margin-left:6px}
+  .tag.back{color:var(--back);background:color-mix(in srgb,var(--back) 15%,transparent)}
+
+  /* Inspector */
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .panel + .panel{margin-top:16px}
+  .panel > .head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--panel-2)}
+  .panel > .head h2{font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin:0;color:var(--muted)}
+  .panel > .body{padding:14px 16px}
+  .lede{margin:0 0 4px;font-size:15.5px}
+  .actors{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:12px}
+  .chip{font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;color:#fff}
+  .chip.User{background:var(--user)} .chip.App{background:var(--agent)} .chip.IdP{background:var(--idp)} .chip.API{background:var(--api)}
+  .arrow{color:var(--muted)}
+
+  .method{font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.04em;padding:2px 8px;border-radius:6px;color:#fff}
+  .method.GET{background:var(--get)} .method.POST{background:var(--post)} .method.n3{background:var(--redir)}
+  .url{font-family:var(--mono);font-size:12.5px;word-break:break-all;color:var(--ink)}
+  .status{font-family:var(--mono);font-size:12px;font-weight:700}
+  .status.ok{color:var(--ok)} .status.redir{color:var(--redir)} .status.err{color:var(--err)}
+
+  table.kv{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px}
+  table.kv td{padding:4px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.kv td.k{color:var(--muted);white-space:nowrap;width:1%;font-weight:600}
+  table.kv td.v{word-break:break-all}
+  .scroll{overflow-x:auto}
+  pre.code{font-family:var(--mono);font-size:12.5px;background:var(--panel-2);border:1px solid var(--line);
+    border-radius:9px;padding:12px;margin:0;overflow-x:auto;line-height:1.55}
+  .cm{color:var(--muted)} .kw{color:var(--brand);font-weight:600}
+  .note{font-size:13px;color:var(--muted)}
+
+  .devtools{display:flex;gap:12px;align-items:flex-start;background:var(--brand-soft);border:1px solid color-mix(in srgb,var(--brand) 35%,transparent);
+    border-radius:10px;padding:12px 14px}
+  .devtools .ic{font-size:16px;line-height:1.2}
+  .devtools p{margin:0;font-size:13.5px}
+  .devtools b{color:var(--brand)}
+  .banner.back{background:color-mix(in srgb,var(--back) 12%,transparent);border:1px solid color-mix(in srgb,var(--back) 40%,transparent);
+    border-radius:10px;padding:10px 14px;font-size:13px;color:var(--ink);margin-bottom:14px}
+  .banner.back b{color:var(--back)}
+
+  footer.foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px;display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:space-between}
+  kbd{font-family:var(--mono);font-size:11px;background:var(--panel-2);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Flow Explorer · Authentication</div>
+      <h1>OIDC Authorization Code + PKCE</h1>
+      <div class="sub">Step through the flow and see exactly what each request carries — and how to read it in your browser's Network tab.</div>
+    </div>
+    <div class="controls">
+      <button class="nav" id="prev" aria-label="Previous step">&larr; Prev</button>
+      <span class="counter" id="counter">1 / 9</span>
+      <button class="nav" id="next" aria-label="Next step">Next &rarr;</button>
+    </div>
+  </header>
+
+  <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+
+  <div class="grid">
+    <nav aria-label="Flow steps">
+      <ol class="timeline" id="timeline"></ol>
+    </nav>
+    <section id="inspector" aria-live="polite"></section>
+  </div>
+
+  <footer class="foot">
+    <span>All values are <b>synthetic</b> — safe to share. Sanitized from the repository's sample captures.</span>
+    <span>Navigate with <kbd>&larr;</kbd> <kbd>&rarr;</kbd> or click a step.</span>
+  </footer>
+</div>
+
+<script>
+const A = (n)=>`<span class="chip ${n}">${n}</span>`;
+const STEPS = [
+  { from:"User", to:"App", label:"User taps “Sign in”", hop:"User → App",
+    lede:"The user starts sign-in in a public client (SPA or native app). Nothing has hit the network yet.",
+    devtools:"Open DevTools (<b>F12</b>) → <b>Network</b> tab, enable <b>Preserve log</b> so redirects aren't cleared, and filter on <b>Doc</b> / <b>Fetch</b>.",
+  },
+  { from:"App", to:"App", label:"Generate PKCE verifier + challenge", hop:"App (local)",
+    lede:"The client creates a random code_verifier and derives a code_challenge. The verifier never leaves the client until the token call.",
+    code:`code_verifier  = base64url(random(32 bytes))
+             = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
+code_challenge = base64url( SHA-256( code_verifier ) )
+             = "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
+method         = S256`,
+    devtools:"Not a network event — but in a real app you can watch the verifier get stored in <b>Session Storage</b> (Application tab) before the redirect.",
+  },
+  { from:"App", to:"IdP", label:"Redirect to /authorize", hop:"Browser → IdP", method:"GET", vis:"browser",
+    lede:"The browser is redirected to the authorization endpoint. Note the challenge is sent, the verifier is not.",
+    req:{ method:"GET", url:"https://idp.example.com/authorize", q:[
+      ["response_type","code"],["client_id","s6BhdRkqt3"],["redirect_uri","https://app.example.com/callback"],
+      ["scope","openid profile email"],["state","af0ifjsldkj"],["nonce","n-0S6_WzA2Mj"],
+      ["code_challenge","E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"],["code_challenge_method","S256"]]},
+    devtools:"Find the request to <b>/authorize</b>. Read the <b>query string</b> params — confirm <b>code_challenge_method=S256</b> and that no secret is present. Copy <b>state</b>; you'll match it on the way back.",
+  },
+  { from:"IdP", to:"User", label:"Login + consent screen", hop:"IdP → User", method:"GET", vis:"browser",
+    lede:"The IdP serves its login page (and consent, if required). Credentials are entered against the IdP, never the app.",
+    req:{ method:"GET", url:"https://idp.example.com/login?...", q:[] },
+    resp:{ status:200, statusText:"OK", headers:[["content-type","text/html; charset=utf-8"],["set-cookie","idp_session=…; HttpOnly; Secure; SameSite=Lax"]] },
+    devtools:"You'll see the IdP's own HTML documents and an <b>idp_session</b> cookie set with <b>HttpOnly; Secure</b>. Credentials post to the IdP's domain — verify the origin is the real IdP.",
+  },
+  { from:"IdP", to:"App", label:"Redirect back with code", hop:"IdP → Browser", method:"n3", vis:"browser",
+    lede:"On success the IdP 302-redirects back to redirect_uri with a short-lived authorization code and the echoed state.",
+    resp:{ status:302, statusText:"Found", headers:[
+      ["location","https://app.example.com/callback?code=SplxlOBeZQQYbYS6WxSbIA&state=af0ifjsldkj"]]},
+    devtools:"Find the <b>302</b> whose <b>Location</b> header points at your <b>redirect_uri</b>. The <b>code</b> is in the query string. Verify the returned <b>state</b> equals the one you sent — a mismatch means CSRF; abort.",
+  },
+  { from:"App", to:"IdP", label:"Exchange code at /token", hop:"App → IdP", method:"POST", vis:"browser",
+    lede:"The client posts the code plus the original code_verifier. The IdP recomputes SHA-256(verifier) and checks it equals the stored challenge — this is what defeats a stolen code.",
+    req:{ method:"POST", url:"https://idp.example.com/token",
+      headers:[["content-type","application/x-www-form-urlencoded"]],
+      form:[["grant_type","authorization_code"],["code","SplxlOBeZQQYbYS6WxSbIA"],
+        ["redirect_uri","https://app.example.com/callback"],["client_id","s6BhdRkqt3"],
+        ["code_verifier","dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"]]},
+    devtools:"Filter for <b>token</b>. Open the <b>Payload</b> tab: confirm <b>code_verifier</b> is present and there is <b>no client_secret</b> (public client). If this were a confidential client, the secret would be server-side and this call would <i>not</i> appear in the browser.",
+  },
+  { from:"IdP", to:"App", label:"Tokens returned", hop:"IdP → App", method:"n3", vis:"browser",
+    lede:"The IdP returns an access token, an ID token (a JWT about the user), and often a rotating refresh token.",
+    resp:{ status:200, statusText:"OK", headers:[["content-type","application/json"],["cache-control","no-store"]],
+      json:`{
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "access_token": "AT.aB3…synthetic…9Zq",
+  "id_token": "eyJhbGciOiJSUzI1Ni….eyJpc3Mi….SIG",
+  "refresh_token": "RT.f7…synthetic…k2",
+  "scope": "openid profile email"
+}` },
+    jwt:{ title:"Decoded id_token",
+      header:`{ "alg": "RS256", "kid": "idp-2026-a", "typ": "JWT" }`,
+      payload:[
+        ["iss","https://idp.example.com","Issuer — must equal your IdP"],
+        ["aud","s6BhdRkqt3","Audience — must equal your client_id"],
+        ["sub","248289761001","Stable user identifier"],
+        ["email","ada@example.com","Claim from the profile/email scope"],
+        ["nonce","n-0S6_WzA2Mj","Must equal the nonce you sent in /authorize"],
+        ["iat","1919251200","Issued-at (epoch)"],
+        ["exp","1919254800","Expiry (epoch) — reject if past"]]},
+    devtools:"In the <b>token</b> response → <b>Response</b> tab, copy the <b>id_token</b>. It's a JWT: three base64url parts split by <code>.</code>. Base64url-decode the first two for header and claims (or paste into jwt.io / use the Auth Inspector extension). <b>Never</b> trust a JWT you haven't verified server-side.",
+  },
+  { from:"App", to:"API", label:"Call the API with the token", hop:"App → API", method:"GET", vis:"browser",
+    lede:"The client calls a resource server, presenting the access token as a Bearer credential.",
+    req:{ method:"GET", url:"https://api.example.com/me",
+      headers:[["authorization","Bearer AT.aB3…synthetic…9Zq"]]},
+    resp:{ status:200, statusText:"OK", headers:[["content-type","application/json"]],
+      json:`{ "sub": "248289761001", "name": "Ada Lovelace", "email": "ada@example.com" }` },
+    devtools:"Find the API request and read the <b>Authorization: Bearer</b> request header. On the resource server this token is validated (signature via JWKS, <b>iss</b>, <b>aud</b>, <b>exp</b>, scopes) before the data is returned.",
+  },
+  { from:"App", to:"App", label:"Signed in", hop:"App (local)",
+    lede:"The client establishes its session from the validated tokens and shows the authenticated UI. The verifier, code, and any secrets are discarded.",
+    devtools:"Nothing further on the wire for sign-in. A stolen authorization code from step 5 is now <b>useless</b> to an attacker: without the matching <b>code_verifier</b>, step 6 fails with <code>invalid_grant</code>. That is PKCE.",
+  },
+];
+
+const tl = document.getElementById('timeline');
+const insp = document.getElementById('inspector');
+const bar = document.getElementById('bar');
+const counter = document.getElementById('counter');
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+let i = 0;
+
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+function timeline(){
+  tl.innerHTML = STEPS.map((s,ix)=>`
+    <li>
+      <button class="step ${ix===i?'active':''} ${ix<i?'done':''}" data-ix="${ix}" ${ix===i?'aria-current="step"':''}>
+        <span class="dot"></span>
+        <span class="lbl">${esc(s.label)}${s.vis==='browser'?'':(s.method?'':'')}${(s.from!==s.to&&s.vis!=='browser')?'<span class="tag back">SERVER</span>':''}</span>
+        <span class="hop">${esc(s.hop)}</span>
+      </button>
+    </li>`).join('');
+  tl.querySelectorAll('.step').forEach(b=>b.onclick=()=>{i=+b.dataset.ix;render();});
+}
+
+function reqCard(s){
+  if(!s.req) return '';
+  const q = (s.req.q&&s.req.q.length)?`<div class="scroll"><table class="kv">${s.req.q.map(([k,v])=>`<tr><td class="k">${esc(k)}</td><td class="v">${esc(v)}</td></tr>`).join('')}</table></div>`:'';
+  const h = (s.req.headers)?`<div class="note" style="margin:10px 0 4px">Headers</div><div class="scroll"><table class="kv">${s.req.headers.map(([k,v])=>`<tr><td class="k">${esc(k)}</td><td class="v">${esc(v)}</td></tr>`).join('')}</table></div>`:'';
+  const f = (s.req.form)?`<div class="note" style="margin:10px 0 4px">Form body (application/x-www-form-urlencoded)</div><div class="scroll"><table class="kv">${s.req.form.map(([k,v])=>`<tr><td class="k">${esc(k)}</td><td class="v">${esc(v)}</td></tr>`).join('')}</table></div>`:'';
+  const ql = (s.req.q&&s.req.q.length)?`<div class="note" style="margin:2px 0 4px">Query string</div>`:'';
+  return `<div class="panel"><div class="head"><span class="method ${s.req.method}">${s.req.method}</span><span class="url">${esc(s.req.url)}</span></div><div class="body">${ql}${q}${h}${f}</div></div>`;
+}
+function respCard(s){
+  if(!s.resp) return '';
+  const cls = s.resp.status<300?'ok':(s.resp.status<400?'redir':'err');
+  const h = (s.resp.headers)?`<div class="scroll"><table class="kv">${s.resp.headers.map(([k,v])=>`<tr><td class="k">${esc(k)}</td><td class="v">${esc(v)}</td></tr>`).join('')}</table></div>`:'';
+  const j = (s.resp.json)?`<div class="note" style="margin:10px 0 4px">Body</div><pre class="code">${esc(s.resp.json)}</pre>`:'';
+  return `<div class="panel"><div class="head"><h2>Response</h2><span class="status ${cls}">${s.resp.status} ${esc(s.resp.statusText)}</span></div><div class="body">${h}${j}</div></div>`;
+}
+function jwtCard(s){
+  if(!s.jwt) return '';
+  const rows = s.jwt.payload.map(([k,v,note])=>`<tr><td class="k">${esc(k)}</td><td class="v">${esc(v)}<div class="cm">${esc(note)}</div></td></tr>`).join('');
+  return `<div class="panel"><div class="head"><h2>${esc(s.jwt.title)}</h2></div><div class="body">
+    <div class="note" style="margin-bottom:4px">Header</div><pre class="code">${esc(s.jwt.header)}</pre>
+    <div class="note" style="margin:12px 0 4px">Payload claims</div><div class="scroll"><table class="kv">${rows}</table></div></div></div>`;
+}
+function codeCard(s){
+  if(!s.code) return '';
+  return `<div class="panel"><div class="head"><h2>Computed locally</h2></div><div class="body"><pre class="code">${esc(s.code)}</pre></div></div>`;
+}
+
+function render(){
+  const s = STEPS[i];
+  timeline();
+  counter.textContent = `${i+1} / ${STEPS.length}`;
+  bar.style.width = ((i+1)/STEPS.length*100)+'%';
+  prevBtn.disabled = i===0; nextBtn.disabled = i===STEPS.length-1;
+  const back = (s.from!==s.to && s.vis!=='browser') ?
+    `<div class="banner back"><b>Back-channel step.</b> This exchange is server-to-server (or local) and generally does <b>not</b> appear in the browser Network tab — inspect it with server logs or a proxy like mitmproxy instead.</div>` : '';
+  insp.innerHTML = `
+    <div class="actors">${A(s.from)} <span class="arrow">&rarr;</span> ${A(s.to)}</div>
+    <p class="lede">${esc(s.lede)}</p>
+    ${back}
+    ${codeCard(s)}
+    ${reqCard(s)}
+    ${respCard(s)}
+    ${jwtCard(s)}
+    <div class="panel"><div class="head"><h2>In DevTools</h2></div><div class="body"><div class="devtools"><span class="ic">🔎</span><p>${s.devtools}</p></div></div></div>
+  `;
+}
+prevBtn.onclick=()=>{ if(i>0){i--;render();} };
+nextBtn.onclick=()=>{ if(i<STEPS.length-1){i++;render();} };
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft'&&i>0){i--;render();}
+  if(e.key==='ArrowRight'&&i<STEPS.length-1){i++;render();}
+});
+render();
+</script>
+</body>
+</html>

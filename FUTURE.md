@@ -13,15 +13,43 @@ walkthroughs**, and **client snippets** for the network-observable authenticatio
 
 ## A. Interactive website
 
-- **Phase 1 — publish the repo as a site.** Docusaurus (`@docusaurus/theme-mermaid`) or MkDocs
-  Material on GitHub Pages. Renders the existing mermaid, adds search and navigation, and
-  surfaces `LEARNING-PATH.md`. Low effort, high value.
-- **Phase 2 — "Flow Explorer".** An interactive step-through player driven by a structured
-  JSON model per flow (`steps[] = {actor, request, response, token, devtoolsHint}`). The same
-  JSON generates the mermaid **and** powers the player: each step highlights the diagram node,
-  shows the sanitized request/response, decodes the token inline, and gives the "find this in
-  DevTools" callout. Reuse existing decoders (jwt.io/jwt.ms/samltool) and link out to the
-  Auth Inspector / SAML Tracer extensions for live capture rather than rebuilding them.
+- **Phase 1 — DONE.** The repo is published as a Docusaurus site (`website/`) with mermaid
+  rendering, search, sidebar nav, the Learning Path, and a GitHub Pages deploy workflow.
+- **Phase 2 — Flow Explorer — STARTED.** A working interactive step-through player ships for
+  OIDC Authorization Code + PKCE (`website/static/explorer/oidc-authorization-code-pkce.html`):
+  step forward/back, per-step request/response, decoded `id_token`, and a "read it in DevTools"
+  callout, back-channel steps flagged. Next: drive it from a structured JSON model per flow
+  (`steps[] = {actor, request, response, token, devtoolsHint}`) — the same JSON generates the
+  mermaid **and** powers the player — then generate an Explorer for every hands-on flow from the
+  `samples/*.har` + `devtools.md` we already have. Reuse jwt.io/jwt.ms/samltool decoders and
+  link to the Auth Inspector / SAML Tracer extensions for live capture.
+
+## A2. Embedding on your website & web-driven features
+
+Ways to put this on your own site (pick per surface):
+
+- **Whole knowledge base:** host the built `website/` (static output) at `docs.yourdomain.com`
+  or reverse-proxy it under `yourdomain.com/diagrams` (set `url`/`baseUrl` to match). Or keep it
+  on GitHub Pages and link to it.
+- **Single pages / diagrams:** `<iframe>` any site page, or embed a specific Flow Explorer
+  (`.../explorer/<flow>.html`) — the Explorer is a self-contained file that iframes cleanly and
+  is theme-aware.
+- **Diagrams inside your own CMS:** the mermaid source is portable — render it with a mermaid
+  script tag, or export SVG/PNG at build time for static embedding.
+
+Web-driven features worth adding (in rough priority):
+
+1. **Search** — Docusaurus local search (`@easyops-cn/docusaurus-search-local`) or Algolia DocSearch.
+2. **Explorer for every flow** — generate from the JSON model above; the accelerator payoff.
+3. **Interactive decision wizard** — turn `reference/decision-guides/` trees into a
+   click-through "answer 3 questions → recommended flow" component.
+4. **Copy-as-code** — one-click copy on every `snippets.md` block; "open in Explorer" buttons.
+5. **Progress & training mode** — mark diagrams reviewed/learned (localStorage), a guided
+   Learning-Path track, and short end-of-stage quizzes.
+6. **Threat overlay toggle** — on a flow, highlight the steps an attack abuses (links to
+   `threat-defense/`).
+7. **Deep links & embed snippets** — per-diagram "Embed" button that emits an `<iframe>`.
+8. **Versioning** — Docusaurus docs versioning if you snapshot the catalog over time.
 
 ## B. Runnable lab (idea 2)
 

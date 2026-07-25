@@ -46,6 +46,7 @@ const config = {
           { type: 'docSidebar', sidebarId: 'main', position: 'left', label: 'Browse' },
           { to: '/LEARNING-PATH', label: 'Learning Path', position: 'left' },
           { to: '/GLOSSARY', label: 'Glossary', position: 'left' },
+          { to: '/explorer/oidc-authorization-code-pkce.html', label: 'Flow Explorer', position: 'left' },
           { href: 'https://github.com/ginoclement/diagrams', label: 'GitHub', position: 'right' },
         ],
       },
