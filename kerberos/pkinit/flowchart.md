@@ -1,3 +1,12 @@
+---
+title: "PKINIT — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 4556"
+---
+
 # PKINIT — Decision Flowchart
 
 KDC-side decision logic for a PA-PK-AS-REQ, with explicit error terminals.

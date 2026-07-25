@@ -1,3 +1,11 @@
+---
+title: "Just-In-Time Privilege Elevation — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Just-In-Time Privilege Elevation — Sequence Diagram
 
 Happy path first (approval-required activation, use, auto-revoke), then alternates:

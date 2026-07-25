@@ -1,3 +1,12 @@
+---
+title: "SCIM 2.0 Provisioning"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7643, RFC 7644"
+---
+
 # SCIM 2.0 Provisioning
 
 **Status:** ✅ Current

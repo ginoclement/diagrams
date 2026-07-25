@@ -1,3 +1,11 @@
+---
+title: "Implicit Flow — Decision Flowchart (Deprecated)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: true
+---
+
 # Implicit Flow — Decision Flowchart (Deprecated)
 
 Client-side validation branches, plus the decision every team should hit first:

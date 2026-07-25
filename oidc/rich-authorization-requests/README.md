@@ -1,3 +1,12 @@
+---
+title: "Rich Authorization Requests (RAR, RFC 9396)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9396"
+---
+
 # Rich Authorization Requests (RAR, RFC 9396)
 
 **Status:** 🔵 Emerging

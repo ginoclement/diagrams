@@ -1,3 +1,12 @@
+---
+title: "ROPC — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: true
+rfc: "RFC 6749"
+---
+
 # ROPC — Decision Flowchart
 
 From the client collecting a password through credential and MFA checks, with

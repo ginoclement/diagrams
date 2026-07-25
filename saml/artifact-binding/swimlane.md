@@ -1,3 +1,11 @@
+---
+title: "HTTP-Artifact Binding — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # HTTP-Artifact Binding — Swimlane Diagram
 
 Lanes for User, Browser, SP, IdP. The IdP lane contains both the SSO endpoint and the

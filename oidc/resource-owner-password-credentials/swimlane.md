@@ -1,3 +1,12 @@
+---
+title: "ROPC — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: true
+rfc: "RFC 6749"
+---
+
 # ROPC — Swimlane
 
 The Client collects the raw password (the anti-pattern) and posts it to `/token`; the

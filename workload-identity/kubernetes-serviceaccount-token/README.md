@@ -1,3 +1,11 @@
+---
+title: "Kubernetes Projected ServiceAccount Token"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Kubernetes Projected ServiceAccount Token
 
 **Status:** 🔵 Emerging

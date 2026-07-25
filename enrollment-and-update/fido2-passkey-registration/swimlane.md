@@ -1,3 +1,11 @@
+---
+title: "FIDO2 / Passkey Registration — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # FIDO2 / Passkey Registration — Swimlane
 
 Lanes for User, Browser, Authenticator, and RP Server. The key pair is generated inside

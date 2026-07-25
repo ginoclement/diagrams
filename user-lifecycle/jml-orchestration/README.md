@@ -1,3 +1,11 @@
+---
+title: "JML Orchestration — Lifecycle Overview"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # JML Orchestration — Lifecycle Overview
 
 **Status:** ✅ Current

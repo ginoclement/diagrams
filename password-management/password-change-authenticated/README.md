@@ -1,3 +1,11 @@
+---
+title: "Authenticated Password Change"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Authenticated Password Change
 
 **Status:** ✅ Current

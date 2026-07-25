@@ -1,3 +1,11 @@
+---
+title: "Group Membership Sync — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Group Membership Sync — Swimlane Diagram
 
 One lane per actor. The Directory lane is authoritative; the Sync lane flattens and diffs;

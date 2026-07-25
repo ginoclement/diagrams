@@ -1,3 +1,11 @@
+---
+title: "Scopes, Claims, Entitlements — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Scopes, Claims, Entitlements — Swimlane Diagram
 
 One lane per actor. The IdP stamps scopes and claims at token time; the gateway does the coarse

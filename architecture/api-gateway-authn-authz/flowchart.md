@@ -1,3 +1,11 @@
+---
+title: "API Gateway AuthN/AuthZ — Token Validation Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # API Gateway AuthN/AuthZ — Token Validation Decision Flowchart
 
 The gateway's decision path for one request: rate limit, then token validation (JWT or

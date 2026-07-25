@@ -1,3 +1,11 @@
+---
+title: "RP-Initiated Logout — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # RP-Initiated Logout — Decision Flowchart
 
 IdP-side decision logic for a request to the `end_session_endpoint`, with the

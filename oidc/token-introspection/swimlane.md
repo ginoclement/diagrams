@@ -1,3 +1,12 @@
+---
+title: "Token Introspection — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7662"
+---
+
 # Token Introspection — Swimlane
 
 The API lane does the introspection call and the enforcement; the IdP lane owns

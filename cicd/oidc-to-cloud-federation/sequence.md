@@ -1,3 +1,11 @@
+---
+title: "OIDC to Cloud Federation — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OIDC to Cloud Federation — Sequence Diagram
 
 Happy path first (GitHub Actions → AWS `AssumeRoleWithWebIdentity`), then the GCP and Azure

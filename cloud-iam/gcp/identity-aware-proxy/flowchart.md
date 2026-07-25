@@ -1,3 +1,11 @@
+---
+title: "Identity-Aware Proxy — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Identity-Aware Proxy — Decision Flowchart
 
 The authentication, IAM, access-level, and backend-verification gates. Every denial terminates

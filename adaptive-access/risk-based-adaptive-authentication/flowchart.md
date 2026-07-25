@@ -1,3 +1,11 @@
+---
+title: "Risk-Based Adaptive Authentication — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Risk-Based Adaptive Authentication — Decision Flowchart
 
 How signals become a risk level and how the level maps to allow / step-up / deny. Hard

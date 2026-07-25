@@ -1,3 +1,11 @@
+---
+title: "XACML — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # XACML — Decision Flowchart
 
 Policy evaluation from Target matching through the combining algorithm to the four XACML decisions,

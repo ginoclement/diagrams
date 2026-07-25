@@ -1,3 +1,11 @@
+---
+title: "JML Orchestration — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # JML Orchestration — Sequence Diagram
 
 High-level view: one HR event stream drives IGA, which routes to the joiner, mover, or

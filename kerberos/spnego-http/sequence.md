@@ -1,3 +1,11 @@
+---
+title: "SPNEGO over HTTP — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SPNEGO over HTTP — Sequence Diagram
 
 Happy path first (Kerberos Negotiate SSO), then NTLM fallback, SPN mismatch,

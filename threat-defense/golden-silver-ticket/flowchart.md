@@ -1,3 +1,11 @@
+---
+title: "Golden & Silver Ticket — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Golden & Silver Ticket — Decision Flowchart
 
 Where krbtgt rotation, PAC validation, and log correlation force **deny** or **detect**

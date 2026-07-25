@@ -1,3 +1,11 @@
+---
+title: "Magic Link — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Magic Link — Decision Flowchart
 
 Two phases: issuing the link (with enumeration protection) and verifying it

@@ -1,3 +1,11 @@
+---
+title: "Credential Recovery by Persona — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Credential Recovery by Persona — Sequence Diagram
 
 The persona is resolved first, then each `alt` branch shows how that persona recovers access.

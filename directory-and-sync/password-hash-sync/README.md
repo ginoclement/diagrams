@@ -1,3 +1,11 @@
+---
+title: "Password Hash Synchronization (PHS)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Password Hash Synchronization (PHS)
 
 **Status:** ✅ Current

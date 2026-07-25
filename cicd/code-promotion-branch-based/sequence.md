@@ -1,3 +1,11 @@
+---
+title: "Branch-Based Code Promotion — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Branch-Based Code Promotion — Sequence Diagram
 
 Happy path first: the trunk-based flow (short branch, PR, review, CI, merge to `main`,

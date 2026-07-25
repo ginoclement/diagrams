@@ -1,3 +1,12 @@
+---
+title: "Resource Owner Password Credentials (ROPC) Grant"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: true
+rfc: "RFC 6749"
+---
+
 # Resource Owner Password Credentials (ROPC) Grant
 
 **Status:** ⛔ Deprecated

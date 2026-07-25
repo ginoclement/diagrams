@@ -1,3 +1,11 @@
+---
+title: "Authorization Code Flow — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Authorization Code Flow — Swimlane
 
 One lane per actor. Front-channel steps pass through the Browser lane; the code redemption

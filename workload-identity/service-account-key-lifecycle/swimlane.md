@@ -1,3 +1,11 @@
+---
+title: "Service-Account Key Lifecycle — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Service-Account Key Lifecycle — Swimlane Diagram
 
 One lane per actor across the issue / store / use / rotate / revoke loop.

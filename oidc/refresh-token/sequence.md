@@ -1,3 +1,11 @@
+---
+title: "Refresh Token Grant — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Refresh Token Grant — Sequence Diagram
 
 Initial issuance with `offline_access`, rotation on refresh, then reuse detection

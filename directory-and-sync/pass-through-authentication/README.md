@@ -1,3 +1,11 @@
+---
+title: "Pass-Through Authentication (PTA)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Pass-Through Authentication (PTA)
 
 **Status:** ✅ Current

@@ -1,3 +1,11 @@
+---
+title: "Constrained Delegation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Constrained Delegation — Decision Flowchart
 
 Two KDC decisions decide everything: whether S4U2Self may return a **forwardable**

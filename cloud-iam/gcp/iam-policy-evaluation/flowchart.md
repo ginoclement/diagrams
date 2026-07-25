@@ -1,3 +1,11 @@
+---
+title: "IAM Allow-Policy Evaluation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IAM Allow-Policy Evaluation — Decision Flowchart
 
 Deny-then-allow logic with inheritance and conditions. Every deny path terminates explicitly.

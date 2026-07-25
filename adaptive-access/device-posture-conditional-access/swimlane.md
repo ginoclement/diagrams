@@ -1,3 +1,11 @@
+---
+title: "Device Posture Conditional Access — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Device Posture Conditional Access — Swimlane Diagram
 
 One lane per actor. The PDP lane holds the decision; the Device and Compliance lanes supply

@@ -1,3 +1,11 @@
+---
+title: "Cognito Identity Pool — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Cognito Identity Pool — Sequence Diagram
 
 Happy path first: enhanced flow exchanging a user-pool ID token for AWS credentials.

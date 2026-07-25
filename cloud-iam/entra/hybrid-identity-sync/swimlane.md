@@ -1,3 +1,11 @@
+---
+title: "Hybrid Identity Sync — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Hybrid Identity Sync — Swimlane Diagram
 
 One lane per actor. The three sign-in methods diverge at Entra: PHS validates in the Entra lane,

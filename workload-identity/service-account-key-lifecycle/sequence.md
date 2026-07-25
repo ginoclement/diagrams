@@ -1,3 +1,11 @@
+---
+title: "Service-Account Key Lifecycle — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Service-Account Key Lifecycle — Sequence Diagram
 
 Happy path first: issue, store, and use a key. Alternates: scheduled rotation with an

@@ -1,3 +1,11 @@
+---
+title: "Identity-Aware Proxy (IAP)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Identity-Aware Proxy (IAP)
 
 **Status:** ✅ Current

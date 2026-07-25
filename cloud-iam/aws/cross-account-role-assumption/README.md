@@ -1,3 +1,11 @@
+---
+title: "AWS Cross-Account Role Assumption"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # AWS Cross-Account Role Assumption
 
 **Status:** ✅ Current

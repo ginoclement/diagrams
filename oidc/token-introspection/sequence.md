@@ -1,3 +1,12 @@
+---
+title: "Token Introspection — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7662"
+---
+
 # Token Introspection — Sequence Diagram
 
 Happy path (active token) first, then inactive token, an unauthorized caller,

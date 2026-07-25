@@ -1,3 +1,12 @@
+---
+title: "PKINIT (Certificate / Smart-Card Initial Authentication)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 4556"
+---
+
 # PKINIT (Certificate / Smart-Card Initial Authentication)
 
 **Status:** ✅ Current

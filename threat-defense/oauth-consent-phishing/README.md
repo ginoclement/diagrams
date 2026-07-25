@@ -1,3 +1,11 @@
+---
+title: "OAuth Consent Phishing (Illicit Consent Grant)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OAuth Consent Phishing (Illicit Consent Grant)
 
 **Status:** ✅ Current (active threat; defenses current)

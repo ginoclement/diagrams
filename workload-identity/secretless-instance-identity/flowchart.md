@@ -1,3 +1,11 @@
+---
+title: "Secretless Instance Identity — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Secretless Instance Identity — Decision Flowchart
 
 Request validation and SSRF-defense gates, from the metadata call to credential use, with

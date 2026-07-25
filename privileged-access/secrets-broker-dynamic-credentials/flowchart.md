@@ -1,3 +1,11 @@
+---
+title: "Secrets Broker with Dynamic Credentials — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Secrets Broker with Dynamic Credentials — Decision Flowchart
 
 From a workload's request to a leased credential, and the lease lifecycle that ends in

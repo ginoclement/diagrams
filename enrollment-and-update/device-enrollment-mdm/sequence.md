@@ -1,3 +1,11 @@
+---
+title: "Device Enrollment (MDM) — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Device Enrollment (MDM) — Sequence Diagram
 
 Happy path: user authenticates, MDM issues an enrollment profile, the device installs the

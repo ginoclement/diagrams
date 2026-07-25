@@ -1,3 +1,11 @@
+---
+title: "IdP-Initiated SSO — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IdP-Initiated SSO — Decision Flowchart
 
 SP-side acceptance policy and validation for an unsolicited `Response`. The

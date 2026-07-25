@@ -1,3 +1,11 @@
+---
+title: "SSH Bastion / Jump Host with Short-Lived Certificates"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SSH Bastion / Jump Host with Short-Lived Certificates
 
 **Status:** ✅ Current

@@ -1,3 +1,11 @@
+---
+title: "Branch-Based Code Promotion (GitFlow vs Trunk-Based)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Branch-Based Code Promotion (GitFlow vs Trunk-Based)
 
 **Status:** ✅ Current

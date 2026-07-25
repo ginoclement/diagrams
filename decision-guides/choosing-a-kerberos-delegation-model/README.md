@@ -1,3 +1,11 @@
+---
+title: "Choosing a Kerberos Delegation Model"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Choosing a Kerberos Delegation Model
 
 **Status:** ✅ Current

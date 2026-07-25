@@ -1,3 +1,11 @@
+---
+title: "Defense in Depth — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Defense in Depth — Decision Flowchart
 
 A connection is evaluated layer by layer. Each layer can allow-and-log or deny; the last

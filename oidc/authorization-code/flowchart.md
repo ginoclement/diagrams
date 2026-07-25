@@ -1,3 +1,11 @@
+---
+title: "Authorization Code Flow — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Authorization Code Flow — Decision Flowchart
 
 Validation and error branches from the client and IdP perspective.

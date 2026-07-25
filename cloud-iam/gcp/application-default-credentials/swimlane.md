@@ -1,3 +1,11 @@
+---
+title: "Application Default Credentials — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Application Default Credentials — Swimlane Diagram
 
 One lane per credential source. The ADC lane walks the sources in fixed order.

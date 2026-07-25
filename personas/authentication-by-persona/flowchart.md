@@ -1,3 +1,11 @@
+---
+title: "Authentication by Persona — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Authentication by Persona — Decision Flowchart
 
 Branch on principal type first, then on the persona-specific decisions each path must make.

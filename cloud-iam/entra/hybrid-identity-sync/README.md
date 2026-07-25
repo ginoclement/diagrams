@@ -1,3 +1,11 @@
+---
+title: "Entra Hybrid Identity Sync (PHS vs PTA vs Federation)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Entra Hybrid Identity Sync (PHS vs PTA vs Federation)
 
 **Status:** ✅ Current

@@ -1,3 +1,11 @@
+---
+title: "Adaptive / Risk-Based / Continuous Access"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Adaptive / Risk-Based / Continuous Access
 
 Flows where an authorization decision is **not** a one-time yes/no at the front door but a

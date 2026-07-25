@@ -1,3 +1,12 @@
+---
+title: "Rich Authorization Requests — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9396"
+---
+
 # Rich Authorization Requests — Decision Flowchart
 
 From building `authorization_details` through validation, consent, grant, and

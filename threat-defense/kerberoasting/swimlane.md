@@ -1,3 +1,11 @@
+---
+title: "Kerberoasting — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Kerberoasting — Swimlane Diagram
 
 Lanes for Attacker, Victim (service account), KDC, and Defender controls. Dashed arrows are

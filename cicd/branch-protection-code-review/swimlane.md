@@ -1,3 +1,11 @@
+---
+title: "Branch Protection and Code Review — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Branch Protection and Code Review — Swimlane Diagram
 
 One lane per actor / component. Cross-lane arrows are the handoffs from opening a PR through

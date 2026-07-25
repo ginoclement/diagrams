@@ -1,3 +1,11 @@
+---
+title: "Service Account Impersonation"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Service Account Impersonation
 
 **Status:** ✅ Current

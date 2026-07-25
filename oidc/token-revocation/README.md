@@ -1,3 +1,12 @@
+---
+title: "OAuth 2.0 Token Revocation (RFC 7009)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7009"
+---
+
 # OAuth 2.0 Token Revocation (RFC 7009)
 
 **Status:** ✅ Current

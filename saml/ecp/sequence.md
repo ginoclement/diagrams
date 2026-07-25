@@ -1,3 +1,11 @@
+---
+title: "ECP Profile — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # ECP Profile — Sequence Diagram
 
 Happy path: an ECP-capable client fetches a protected SP resource via the reverse-SOAP

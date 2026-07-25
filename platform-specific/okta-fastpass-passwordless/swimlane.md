@@ -1,3 +1,11 @@
+---
+title: "Okta FastPass — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Okta FastPass — Swimlane
 
 ```mermaid

@@ -1,3 +1,11 @@
+---
+title: "AssumeRoleWithSAML (Enterprise SAML to AWS)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # AssumeRoleWithSAML (Enterprise SAML to AWS)
 
 **Status:** ✅ Current

@@ -1,3 +1,11 @@
+---
+title: "Mutual TLS Identity Bootstrap"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Mutual TLS Identity Bootstrap
 
 **Status:** ✅ Current

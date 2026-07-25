@@ -1,3 +1,11 @@
+---
+title: "Hybrid Flow (code id_token) — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Hybrid Flow (code id_token) — Sequence Diagram
 
 Happy path with c_hash validation, then the c_hash-mismatch and cross-token

@@ -1,3 +1,11 @@
+---
+title: "GKE Workload Identity — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # GKE Workload Identity — Swimlane Diagram
 
 One lane per actor. The Metadata lane hides the STS + IAM Credentials work from the pod.

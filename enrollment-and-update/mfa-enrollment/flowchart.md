@@ -1,3 +1,12 @@
+---
+title: "MFA Enrollment — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 6238"
+---
+
 # MFA Enrollment — Decision Flowchart
 
 Decision logic from the enrollment request through the step-up gate, secret

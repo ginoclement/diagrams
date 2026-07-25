@@ -1,3 +1,11 @@
+---
+title: "Workload Identity Federation — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Workload Identity Federation — Swimlane Diagram
 
 One lane per actor. The Pool lane performs issuer/audience/condition validation and mapping.

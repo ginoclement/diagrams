@@ -1,3 +1,12 @@
+---
+title: "TLS 1.3 Handshake — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 8446"
+---
+
 # TLS 1.3 Handshake — Decision Flowchart
 
 Server-side decision logic from receiving `ClientHello` to application data, with

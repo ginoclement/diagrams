@@ -1,3 +1,12 @@
+---
+title: "MFA Enrollment — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 6238"
+---
+
 # MFA Enrollment — Sequence Diagram
 
 Happy path: an authenticated user adds a TOTP authenticator — secret provisioning via

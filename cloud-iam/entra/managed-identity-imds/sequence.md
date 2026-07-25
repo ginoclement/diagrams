@@ -1,3 +1,11 @@
+---
+title: "Managed Identity via IMDS — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Managed Identity via IMDS — Sequence Diagram
 
 Happy path first (a VM with a system-assigned identity gets a token and calls Key Vault), then

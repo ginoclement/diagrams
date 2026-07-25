@@ -1,3 +1,11 @@
+---
+title: "Device Join and Registration — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Device Join and Registration — Decision Flowchart
 
 Choosing the join type and passing the trust gates. Failure paths terminate explicitly.

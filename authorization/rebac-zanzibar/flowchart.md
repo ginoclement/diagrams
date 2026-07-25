@@ -1,3 +1,11 @@
+---
+title: "ReBAC / Zanzibar — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # ReBAC / Zanzibar — Decision Flowchart
 
 How a single Check(object, relation, user) is evaluated: direct tuple, userset rewrites, group

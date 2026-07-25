@@ -1,3 +1,11 @@
+---
+title: "Device Join and Registration — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Device Join and Registration — Swimlane
 
 One lane per component. The on-prem AD lane participates only in the Hybrid Join branch.

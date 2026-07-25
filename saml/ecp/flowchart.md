@@ -1,3 +1,11 @@
+---
+title: "ECP Profile — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # ECP Profile — Decision Flowchart
 
 Decision gates across all three parties: SP capability negotiation, IdP authentication

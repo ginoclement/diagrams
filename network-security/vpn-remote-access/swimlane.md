@@ -1,3 +1,11 @@
+---
+title: "Remote Access VPN — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Remote Access VPN — Swimlane
 
 Zones from the untrusted endpoint through the gateway into the trusted network. The

@@ -1,3 +1,11 @@
+---
+title: "SAML-to-OIDC Migration — Decision Tree"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SAML-to-OIDC Migration — Decision Tree
 
 Leaves name the recommended path; SAML is 🟡 legacy with OIDC as the target.

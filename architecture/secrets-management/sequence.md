@@ -1,3 +1,11 @@
+---
+title: "Secrets Management — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Secrets Management — Sequence Diagram
 
 A representative runtime flow: an application authenticates to the secret store with its

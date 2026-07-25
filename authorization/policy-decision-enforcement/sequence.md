@@ -1,3 +1,11 @@
+---
+title: "Policy Decision and Enforcement — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Policy Decision and Enforcement — Sequence Diagram
 
 Happy path first: the PEP builds a decision request, the PDP fetches a missing attribute from a PIP,

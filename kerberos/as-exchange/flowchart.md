@@ -1,3 +1,11 @@
+---
+title: "AS Exchange — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # AS Exchange — Decision Flowchart
 
 KDC-side decision logic for an AS-REQ, with explicit error terminals.

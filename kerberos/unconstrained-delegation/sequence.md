@@ -1,3 +1,11 @@
+---
+title: "Unconstrained Delegation — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: true
+---
+
 # Unconstrained Delegation — Sequence Diagram
 
 Happy path: the user authenticates to a front-end service that is flagged

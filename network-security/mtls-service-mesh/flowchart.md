@@ -1,3 +1,11 @@
+---
+title: "mTLS in a Service Mesh — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # mTLS in a Service Mesh — Decision Flowchart
 
 How a receiving sidecar decides whether to accept an inbound connection, from mode

@@ -1,3 +1,11 @@
+---
+title: "Pipeline Access Control — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Pipeline Access Control — Swimlane Diagram
 
 One lane per actor/component. Arrows crossing lanes are handoffs: role resolution at the

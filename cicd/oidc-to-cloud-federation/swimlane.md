@@ -1,3 +1,11 @@
+---
+title: "OIDC to Cloud Federation — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OIDC to Cloud Federation — Swimlane Diagram
 
 One lane per component. Cross-lane arrows are the token request, the exchange, and the deploy.

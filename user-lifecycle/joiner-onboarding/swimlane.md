@@ -1,3 +1,11 @@
+---
+title: "Joiner — Onboarding Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Joiner — Onboarding Swimlane Diagram
 
 One lane per actor. The HR event flows left-to-right through IGA into the IdP and apps,

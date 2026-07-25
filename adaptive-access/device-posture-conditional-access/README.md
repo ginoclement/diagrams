@@ -1,3 +1,11 @@
+---
+title: "Device Posture Conditional Access"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Device Posture Conditional Access
 
 **Status:** ✅ Current

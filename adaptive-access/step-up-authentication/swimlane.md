@@ -1,3 +1,12 @@
+---
+title: "Step-Up Authentication — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9470"
+---
+
 # Step-Up Authentication — Swimlane Diagram
 
 One lane per actor. The API lane issues the challenge; the IdP lane raises assurance.

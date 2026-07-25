@@ -1,3 +1,11 @@
+---
+title: "3-Legged OAuth to Google APIs — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # 3-Legged OAuth to Google APIs — Swimlane Diagram
 
 One lane per actor. Front-channel handoffs pass through the User; the code exchange and refresh

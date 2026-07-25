@@ -1,3 +1,11 @@
+---
+title: "STS AssumeRole — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # STS AssumeRole — Swimlane Diagram
 
 One lane per actor. The two policy evaluations live in the IAM lane; the credential mint

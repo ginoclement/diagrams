@@ -1,3 +1,12 @@
+---
+title: "Device Code Phishing — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 8628"
+---
+
 # Device Code Phishing — Decision Flowchart
 
 Where each control forces a **deny** (prevention) or **detect** terminal. The verification page

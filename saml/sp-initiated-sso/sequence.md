@@ -1,3 +1,11 @@
+---
+title: "SP-Initiated SSO — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SP-Initiated SSO — Sequence Diagram
 
 Happy path first (fresh IdP login), then alternates: seamless SSO with an existing IdP

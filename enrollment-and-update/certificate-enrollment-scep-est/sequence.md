@@ -1,3 +1,12 @@
+---
+title: "Certificate Enrollment (SCEP / EST) — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 8894, RFC 7030"
+---
+
 # Certificate Enrollment (SCEP / EST) — Sequence Diagram
 
 Happy path shown for **SCEP**: capability discovery, CA cert retrieval, then a

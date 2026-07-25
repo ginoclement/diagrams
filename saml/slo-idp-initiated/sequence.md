@@ -1,3 +1,11 @@
+---
+title: "IdP-Initiated Single Logout — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IdP-Initiated Single Logout — Sequence Diagram
 
 Happy path: user signs out at the IdP portal; the IdP fans out `LogoutRequest`s to both

@@ -1,3 +1,12 @@
+---
+title: "Step-Up Authentication — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9470"
+---
+
 # Step-Up Authentication — Decision Flowchart
 
 The assurance comparison a resource server and IdP jointly make: does the current session

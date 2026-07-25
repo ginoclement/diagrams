@@ -1,3 +1,11 @@
+---
+title: "OpenID Connect Session Management 1.0"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OpenID Connect Session Management 1.0
 
 **Status:** 🟡 Legacy

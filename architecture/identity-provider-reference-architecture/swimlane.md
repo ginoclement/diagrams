@@ -1,3 +1,11 @@
+---
+title: "IdP Reference Architecture — Component / Zone Topology"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IdP Reference Architecture — Component / Zone Topology
 
 Components placed in their trust zone. Arrows show the only allowed flows across each

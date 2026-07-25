@@ -1,3 +1,11 @@
+---
+title: "Pass-the-Hash / Pass-the-Ticket — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Pass-the-Hash / Pass-the-Ticket — Decision Flowchart
 
 Where theft prevention, admin tiering, and replay detection force **deny**/**detect**

@@ -1,3 +1,11 @@
+---
+title: "Reverse Proxy and WAF — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Reverse Proxy and WAF — Sequence Diagram
 
 Happy path: TLS termination, WAF inspection, rate check, re-encrypted routing to origin,

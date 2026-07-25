@@ -1,3 +1,12 @@
+---
+title: "Pushed Authorization Requests — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9126"
+---
+
 # Pushed Authorization Requests — Swimlane
 
 The Client pushes on the back channel; the Browser only ever carries the short

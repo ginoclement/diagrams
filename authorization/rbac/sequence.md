@@ -1,3 +1,11 @@
+---
+title: "RBAC — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # RBAC — Sequence Diagram
 
 Happy path first (a role grants the permission), then alternates: permission inherited through

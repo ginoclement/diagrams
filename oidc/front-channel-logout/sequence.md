@@ -1,3 +1,11 @@
+---
+title: "Front-Channel Logout — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Front-Channel Logout — Sequence Diagram
 
 Happy path with two RPs logged out via iframes, then the partial-logout

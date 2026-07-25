@@ -1,3 +1,11 @@
+---
+title: "Defense in Depth — Layered Firewall, IDS/IPS, and Host Defenses"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Defense in Depth — Layered Firewall, IDS/IPS, and Host Defenses
 
 **Status:** ✅ Current

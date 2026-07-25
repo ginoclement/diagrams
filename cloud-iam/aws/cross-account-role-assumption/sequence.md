@@ -1,3 +1,11 @@
+---
+title: "Cross-Account Role Assumption — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Cross-Account Role Assumption — Sequence Diagram
 
 Happy path first (a principal in account A assumes a role in account B and calls an account-B

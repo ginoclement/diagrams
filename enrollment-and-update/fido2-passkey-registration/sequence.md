@@ -1,3 +1,11 @@
+---
+title: "FIDO2 / Passkey Registration — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # FIDO2 / Passkey Registration — Sequence Diagram
 
 Happy path: the RP issues creation options with a challenge, the browser calls

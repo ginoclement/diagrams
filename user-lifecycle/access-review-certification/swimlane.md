@@ -1,3 +1,11 @@
+---
+title: "Access Review & Certification — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Access Review & Certification — Swimlane Diagram
 
 One lane per actor. The IGA lane runs the campaign and remediation; the reviewer lane makes

@@ -1,3 +1,12 @@
+---
+title: "Pushed Authorization Requests (PAR, RFC 9126)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9126"
+---
+
 # Pushed Authorization Requests (PAR, RFC 9126)
 
 **Status:** 🔵 Emerging

@@ -1,3 +1,11 @@
+---
+title: "Admin-Initiated Password Reset — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Admin-Initiated Password Reset — Sequence Diagram
 
 Happy path: admin authenticates, verifies the caller out-of-band, issues a

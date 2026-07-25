@@ -1,3 +1,11 @@
+---
+title: "Application Default Credentials — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Application Default Credentials — Decision Flowchart
 
 The ordered source-selection logic with explicit error terminals.

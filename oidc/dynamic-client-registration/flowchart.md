@@ -1,3 +1,12 @@
+---
+title: "Dynamic Client Registration — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7591, RFC 7592"
+---
+
 # Dynamic Client Registration — Decision Flowchart
 
 From a registration attempt through authorization, metadata validation, and

@@ -1,3 +1,11 @@
+---
+title: "WebAuthn / Passkey Authentication — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # WebAuthn / Passkey Authentication — Sequence Diagram
 
 Happy path: challenge, `navigator.credentials.get()`, user verification, signed

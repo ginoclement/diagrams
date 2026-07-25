@@ -1,3 +1,12 @@
+---
+title: "Token Revocation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7009"
+---
+
 # Token Revocation — Decision Flowchart
 
 The authorization server's handling of a `/revoke` request, including the

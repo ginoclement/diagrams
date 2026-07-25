@@ -1,3 +1,11 @@
+---
+title: "Okta FastPass — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Okta FastPass — Decision Flowchart
 
 Transport selection (loopback vs universal link) followed by the server-side

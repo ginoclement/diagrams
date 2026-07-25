@@ -1,3 +1,11 @@
+---
+title: "Cross-Realm Authentication — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Cross-Realm Authentication — Sequence Diagram
 
 Happy path first: a client in `REALM-A` reaches a service in `REALM-B` through a

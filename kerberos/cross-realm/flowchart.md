@@ -1,3 +1,11 @@
+---
+title: "Cross-Realm Authentication — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Cross-Realm Authentication — Decision Flowchart
 
 The referral loop: the client keeps exchanging TGTs until it reaches the KDC that

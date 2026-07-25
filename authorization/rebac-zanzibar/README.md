@@ -1,3 +1,11 @@
+---
+title: "Relationship-Based Access Control (ReBAC) — Google Zanzibar Model"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Relationship-Based Access Control (ReBAC) — Google Zanzibar Model
 
 **Status:** 🔵 Emerging

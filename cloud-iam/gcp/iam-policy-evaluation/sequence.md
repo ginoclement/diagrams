@@ -1,3 +1,11 @@
+---
+title: "IAM Allow-Policy Evaluation — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IAM Allow-Policy Evaluation — Sequence Diagram
 
 Happy path first (permission inherited and allowed), then alternates: deny policy override,

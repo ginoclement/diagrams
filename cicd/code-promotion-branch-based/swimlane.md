@@ -1,3 +1,11 @@
+---
+title: "Branch-Based Code Promotion — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Branch-Based Code Promotion — Swimlane Diagram
 
 One lane per actor. The main path is the trunk-based flow; the GitFlow release and

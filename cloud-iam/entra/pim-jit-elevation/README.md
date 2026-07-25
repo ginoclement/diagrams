@@ -1,3 +1,11 @@
+---
+title: "PIM Just-in-Time Role Elevation"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # PIM Just-in-Time Role Elevation
 
 **Status:** ✅ Current

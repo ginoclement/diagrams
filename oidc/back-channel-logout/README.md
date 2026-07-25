@@ -1,3 +1,11 @@
+---
+title: "Back-Channel Logout"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Back-Channel Logout
 
 **Status:** ✅ Current

@@ -1,3 +1,12 @@
+---
+title: "JAR / JARM — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9101"
+---
+
 # JAR / JARM — Decision Flowchart
 
 Request-object delivery and verification, then JARM response verification, with

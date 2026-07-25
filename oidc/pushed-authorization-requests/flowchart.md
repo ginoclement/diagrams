@@ -1,3 +1,12 @@
+---
+title: "Pushed Authorization Requests — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9126"
+---
+
 # Pushed Authorization Requests — Decision Flowchart
 
 The two AS decision points: validating the push at `/par`, and resolving the

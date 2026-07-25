@@ -1,3 +1,11 @@
+---
+title: "Reverse Proxy and WAF — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Reverse Proxy and WAF — Swimlane
 
 Zones: the untrusted client, the DMZ edge (proxy + WAF + rate limiter), and the internal

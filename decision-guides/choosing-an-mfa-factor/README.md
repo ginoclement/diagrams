@@ -1,3 +1,11 @@
+---
+title: "Choosing an MFA Factor"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Choosing an MFA Factor
 
 **Status:** ✅ Current

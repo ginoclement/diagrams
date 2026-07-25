@@ -1,3 +1,11 @@
+---
+title: "SPNEGO over HTTP (HTTP Negotiate)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SPNEGO over HTTP (HTTP Negotiate)
 
 **Status:** ✅ Current

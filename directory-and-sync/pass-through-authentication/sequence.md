@@ -1,3 +1,11 @@
+---
+title: "Pass-Through Authentication — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Pass-Through Authentication — Sequence Diagram
 
 Happy path first (cloud encrypts, on-prem agent validates against the DC), then wrong

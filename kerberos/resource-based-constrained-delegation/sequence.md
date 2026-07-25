@@ -1,3 +1,11 @@
+---
+title: "Resource-Based Constrained Delegation — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Resource-Based Constrained Delegation — Sequence Diagram
 
 Happy path: the front end performs S4U2Self, then S4U2Proxy for the back-end SPN,

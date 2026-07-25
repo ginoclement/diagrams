@@ -1,3 +1,12 @@
+---
+title: "Authorization Code + PKCE — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7636"
+---
+
 # Authorization Code + PKCE — Sequence Diagram
 
 Happy path first; then the interception attack shown as thwarted, the plain-method

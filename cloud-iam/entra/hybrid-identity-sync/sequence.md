@@ -1,3 +1,11 @@
+---
+title: "Hybrid Identity Sync — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Hybrid Identity Sync — Sequence Diagram
 
 Happy path first (Password Hash Sync: Entra validates the password itself), then alternates:

@@ -1,3 +1,11 @@
+---
+title: "SSH Bastion / Jump Host — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SSH Bastion / Jump Host — Sequence Diagram
 
 Happy path first (authenticate to CA, sign short-lived cert, jump through the bastion to

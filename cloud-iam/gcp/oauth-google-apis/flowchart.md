@@ -1,3 +1,11 @@
+---
+title: "3-Legged OAuth to Google APIs — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # 3-Legged OAuth to Google APIs — Decision Flowchart
 
 Consent, offline-token, and refresh decision logic with explicit error terminals.

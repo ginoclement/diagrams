@@ -1,3 +1,11 @@
+---
+title: "ABAC — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # ABAC — Sequence Diagram
 
 Happy path first (all attributes present, policy permits), then alternates: an attribute fetched

@@ -1,3 +1,11 @@
+---
+title: "Defense in Depth — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Defense in Depth — Swimlane
 
 Zones are the successive defensive layers from the Internet down to the host process.

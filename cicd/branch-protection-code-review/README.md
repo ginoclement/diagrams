@@ -1,3 +1,11 @@
+---
+title: "Branch Protection and Code Review"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Branch Protection and Code Review
 
 **Status:** ✅ Current

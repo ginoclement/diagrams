@@ -1,3 +1,11 @@
+---
+title: "IdP Reference Architecture — Authentication Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IdP Reference Architecture — Authentication Decision Flowchart
 
 The decision path a request follows inside the IdP, from edge admission through

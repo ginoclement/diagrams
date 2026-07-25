@@ -1,3 +1,11 @@
+---
+title: "Environment Protection and Approvals — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Environment Protection and Approvals — Swimlane Diagram
 
 One lane per actor. Arrows crossing lanes show the handoffs from build, through the

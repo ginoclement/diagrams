@@ -1,3 +1,11 @@
+---
+title: "Account Unlock — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Account Unlock — Sequence Diagram
 
 Happy path: a locked-out user proves identity with MFA, the account is unlocked, and

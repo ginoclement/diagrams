@@ -1,3 +1,11 @@
+---
+title: "XACML — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # XACML — Swimlane Diagram
 
 One lane per XACML component. The Context Handler sits between the PEP and PDP; the PAP feeds

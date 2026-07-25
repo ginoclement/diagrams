@@ -1,3 +1,11 @@
+---
+title: "MFA Fatigue and Number Matching — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # MFA Fatigue and Number Matching — Swimlane Diagram
 
 One lane per actor. The key asymmetry is visual: the number is generated in the IdP lane

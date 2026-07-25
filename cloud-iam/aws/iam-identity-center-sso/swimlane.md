@@ -1,3 +1,11 @@
+---
+title: "IAM Identity Center SSO — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IAM Identity Center SSO — Swimlane Diagram
 
 One lane per actor. Identity Center authenticates and orchestrates the STS assume into the

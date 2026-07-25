@@ -1,3 +1,11 @@
+---
+title: "JML Lifecycle by Persona — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # JML Lifecycle by Persona — Decision Flowchart
 
 Route on **who masters the identity**, then follow each mastering model to its guaranteed end

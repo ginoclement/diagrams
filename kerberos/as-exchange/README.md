@@ -1,3 +1,11 @@
+---
+title: "Kerberos AS Exchange (AS-REQ / AS-REP)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Kerberos AS Exchange (AS-REQ / AS-REP)
 
 **Status:** ✅ Current

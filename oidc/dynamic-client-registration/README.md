@@ -1,3 +1,12 @@
+---
+title: "OAuth 2.0 Dynamic Client Registration (RFC 7591 / RFC 7592)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7591, RFC 7592"
+---
+
 # OAuth 2.0 Dynamic Client Registration (RFC 7591 / RFC 7592)
 
 **Status:** ✅ Current

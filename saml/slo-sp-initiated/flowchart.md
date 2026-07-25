@@ -1,3 +1,11 @@
+---
+title: "SP-Initiated Single Logout — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SP-Initiated Single Logout — Decision Flowchart
 
 Focus: IdP-side validation, the propagation loop over session participants, binding

@@ -1,3 +1,11 @@
+---
+title: "Self-Service Password Reset — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Self-Service Password Reset — Decision Flowchart
 
 Branch-focused view: enumeration guard on request, reset-token validity, recovery

@@ -1,3 +1,11 @@
+---
+title: "RP-Initiated Logout — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # RP-Initiated Logout — Swimlane Diagram
 
 One lane per actor; the propagation hand-off to other RPs is shown as a dashed

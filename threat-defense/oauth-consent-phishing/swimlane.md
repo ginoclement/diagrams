@@ -1,3 +1,11 @@
+---
+title: "OAuth Consent Phishing — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OAuth Consent Phishing — Swimlane Diagram
 
 Lanes for Attacker, Victim, IdP, and Defender controls. Solid arrows are the phishing/consent

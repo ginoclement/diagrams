@@ -1,3 +1,11 @@
+---
+title: "OAuth Consent — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OAuth Consent — Swimlane Diagram
 
 One lane per actor. The IdP renders consent and records the grant; the consent store decides whether

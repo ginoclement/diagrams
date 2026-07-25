@@ -1,3 +1,11 @@
+---
+title: "Risk-Based Adaptive Authentication"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Risk-Based Adaptive Authentication
 
 **Status:** ✅ Current

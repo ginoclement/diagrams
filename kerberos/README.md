@@ -1,3 +1,11 @@
+---
+title: "Kerberos"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Kerberos
 
 Diagrams for the Kerberos v5 protocol: the three core exchanges (AS, TGS, AP),

@@ -1,3 +1,11 @@
+---
+title: "Unconstrained Delegation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: true
+---
+
 # Unconstrained Delegation — Decision Flowchart
 
 Delegation only happens when every gate below opens. The diagram doubles as the

@@ -1,3 +1,12 @@
+---
+title: "JAR / JARM — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9101"
+---
+
 # JAR / JARM — Sequence Diagram
 
 Happy path (signed request object by value, JARM signed response) first, then JAR by

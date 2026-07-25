@@ -1,3 +1,11 @@
+---
+title: "Break-Glass Emergency Access — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Break-Glass Emergency Access — Decision Flowchart
 
 The authorization, alerting, and mandatory-reseal gates, with explicit deny and

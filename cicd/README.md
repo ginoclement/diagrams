@@ -1,3 +1,11 @@
+---
+title: "CI/CD Security and Delivery"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # CI/CD Security and Delivery
 
 Continuous integration and continuous delivery (CI/CD) is where source code becomes a

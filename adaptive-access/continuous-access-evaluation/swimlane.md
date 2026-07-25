@@ -1,3 +1,11 @@
+---
+title: "Continuous Access Evaluation — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Continuous Access Evaluation — Swimlane Diagram
 
 One lane per actor. Signal sources publish the critical event; the API turns it into a

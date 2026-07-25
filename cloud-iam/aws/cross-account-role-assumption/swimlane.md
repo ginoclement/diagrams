@@ -1,3 +1,11 @@
+---
+title: "Cross-Account Role Assumption — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Cross-Account Role Assumption — Swimlane Diagram
 
 One lane per actor. The caller-side gate is in the STS lane, the resource-side gate is in the

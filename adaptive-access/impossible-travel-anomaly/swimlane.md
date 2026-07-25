@@ -1,3 +1,11 @@
+---
+title: "Impossible Travel / Anomalous Session — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Impossible Travel / Anomalous Session — Swimlane Diagram
 
 One lane per actor. The Detection lane computes the velocity anomaly from GeoIP data; the

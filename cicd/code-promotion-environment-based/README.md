@@ -1,3 +1,11 @@
+---
+title: "Environment-Based Code Promotion (Build Once, Promote the Same Artifact)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Environment-Based Code Promotion (Build Once, Promote the Same Artifact)
 
 **Status:** ✅ Current

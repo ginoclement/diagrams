@@ -1,3 +1,11 @@
+---
+title: "Secretless Instance Identity (IMDS / Metadata Server)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Secretless Instance Identity (IMDS / Metadata Server)
 
 **Status:** ✅ Current

@@ -1,3 +1,11 @@
+---
+title: "Password Hash Sync — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Password Hash Sync — Sequence Diagram
 
 Two phases: the background hash synchronization, then a cloud-only sign-in. Alternates cover

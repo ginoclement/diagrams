@@ -1,3 +1,11 @@
+---
+title: "HTTP-Artifact Binding — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # HTTP-Artifact Binding — Decision Flowchart
 
 Two decision clusters: the ARS deciding whether to release the stored message, and the

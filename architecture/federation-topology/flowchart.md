@@ -1,3 +1,11 @@
+---
+title: "Federation Topology — Home-Realm Discovery Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Federation Topology — Home-Realm Discovery Decision Flowchart
 
 How the broker decides which upstream IdP (if any) authenticates a given user, and how

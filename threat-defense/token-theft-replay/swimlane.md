@@ -1,3 +1,11 @@
+---
+title: "Token Theft & Replay — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Token Theft & Replay — Swimlane Diagram
 
 Lanes for Attacker, Victim, IdP, and Defender controls. Solid arrows are the replay path; dashed

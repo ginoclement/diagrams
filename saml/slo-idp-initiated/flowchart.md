@@ -1,3 +1,11 @@
+---
+title: "IdP-Initiated Single Logout — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IdP-Initiated Single Logout — Decision Flowchart
 
 IdP-side logic: session lookup, mandatory self-termination first, per-SP binding

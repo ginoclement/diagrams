@@ -1,3 +1,12 @@
+---
+title: "Authorization Code + PKCE — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7636"
+---
+
 # Authorization Code + PKCE — Decision Flowchart
 
 Challenge-method policy, verifier check, and the resulting error terminals.

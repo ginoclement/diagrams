@@ -1,3 +1,11 @@
+---
+title: "Artifact Signing and Provenance — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Artifact Signing and Provenance — Sequence Diagram
 
 Happy path first (keyless build-time sign + attest, then verify at admission), followed by the

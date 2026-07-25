@@ -1,3 +1,11 @@
+---
+title: "Reverse Proxy and Web Application Firewall"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Reverse Proxy and Web Application Firewall
 
 **Status:** ✅ Current

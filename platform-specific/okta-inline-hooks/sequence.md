@@ -1,3 +1,11 @@
+---
+title: "Okta Inline Hooks — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Okta Inline Hooks — Sequence Diagram
 
 Happy path (token inline hook): a token is about to be issued via the standard

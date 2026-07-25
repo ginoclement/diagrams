@@ -1,3 +1,11 @@
+---
+title: "SSH Bastion / Jump Host — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SSH Bastion / Jump Host — Decision Flowchart
 
 From an access request to an authenticated shell, showing the certificate-issuance gate,

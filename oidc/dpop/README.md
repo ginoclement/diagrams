@@ -1,3 +1,12 @@
+---
+title: "DPoP — Demonstrating Proof of Possession (RFC 9449)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9449"
+---
+
 # DPoP — Demonstrating Proof of Possession (RFC 9449)
 
 **Status:** 🔵 Emerging

@@ -1,3 +1,11 @@
+---
+title: "OIDC Implicit Flow (Legacy — Deprecated)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: true
+---
+
 # OIDC Implicit Flow (Legacy — Deprecated)
 
 **Status:** ⛔ Deprecated

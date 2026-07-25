@@ -1,3 +1,11 @@
+---
+title: "Zero Trust Architecture (NIST SP 800-207)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Zero Trust Architecture (NIST SP 800-207)
 
 **Status:** ✅ Current

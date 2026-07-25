@@ -1,3 +1,11 @@
+---
+title: "Access Review & Certification — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Access Review & Certification — Decision Flowchart
 
 Per-item decision logic from assignment through the deadline, with explicit terminals for

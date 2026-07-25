@@ -1,3 +1,11 @@
+---
+title: "Kubernetes Projected ServiceAccount Token — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Kubernetes Projected ServiceAccount Token — Sequence Diagram
 
 Happy path first: the kubelet mints a projected token via TokenRequest, the workload reads

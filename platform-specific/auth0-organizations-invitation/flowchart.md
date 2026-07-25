@@ -1,3 +1,11 @@
+---
+title: "Auth0 Organizations Invitation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Auth0 Organizations Invitation — Decision Flowchart
 
 Invitation acceptance and org-context login: ticket validation, existing vs new

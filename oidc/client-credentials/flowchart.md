@@ -1,3 +1,11 @@
+---
+title: "Client Credentials Grant — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Client Credentials Grant — Decision Flowchart
 
 Token caching, auth-method selection, and bounded retry logic.

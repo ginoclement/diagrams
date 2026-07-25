@@ -1,3 +1,11 @@
+---
+title: "SP-Initiated Single Logout — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SP-Initiated Single Logout — Sequence Diagram
 
 Happy path: logout at SP1, IdP propagates to SP2 over the front channel, everything

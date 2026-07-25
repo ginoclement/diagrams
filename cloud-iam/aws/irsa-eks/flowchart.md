@@ -1,3 +1,11 @@
+---
+title: "IRSA on EKS — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IRSA on EKS — Decision Flowchart
 
 Every gate between a pod and temporary AWS credentials, with explicit denial terminals.

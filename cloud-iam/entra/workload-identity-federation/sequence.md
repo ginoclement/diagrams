@@ -1,3 +1,11 @@
+---
+title: "Entra Workload Identity Federation — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Entra Workload Identity Federation — Sequence Diagram
 
 Happy path first (a GitHub Actions job mints an OIDC token and exchanges it for an Entra access

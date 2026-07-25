@@ -1,3 +1,11 @@
+---
+title: "Token Theft & Replay — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Token Theft & Replay — Decision Flowchart
 
 Where each control forces a **deny** (prevention) or **detect** terminal. A valid signature alone

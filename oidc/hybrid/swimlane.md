@@ -1,3 +1,11 @@
+---
+title: "Hybrid Flow (code id_token) — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Hybrid Flow (code id_token) — Swimlane
 
 The Client lane splits visibly into front-channel work (immediate session from the

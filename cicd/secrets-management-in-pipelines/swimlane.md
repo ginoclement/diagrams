@@ -1,3 +1,11 @@
+---
+title: "Secrets Management in Pipelines — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Secrets Management in Pipelines — Swimlane Diagram
 
 One lane per actor/component. Arrows crossing lanes show the secret's journey: request from

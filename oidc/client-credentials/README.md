@@ -1,3 +1,11 @@
+---
+title: "OAuth 2.0 Client Credentials Grant (Machine-to-Machine)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OAuth 2.0 Client Credentials Grant (Machine-to-Machine)
 
 **Status:** ✅ Current

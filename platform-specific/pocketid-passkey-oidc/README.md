@@ -1,3 +1,11 @@
+---
+title: "PocketID — Passkey-Only OIDC Provider"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # PocketID — Passkey-Only OIDC Provider
 
 **Status:** ✅ Current

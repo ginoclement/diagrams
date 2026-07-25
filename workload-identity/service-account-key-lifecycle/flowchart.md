@@ -1,3 +1,11 @@
+---
+title: "Service-Account Key Lifecycle — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Service-Account Key Lifecycle — Decision Flowchart
 
 The lifecycle as a decision loop, with the rotation-order outage and compromise paths as

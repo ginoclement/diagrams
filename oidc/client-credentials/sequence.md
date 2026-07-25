@@ -1,3 +1,11 @@
+---
+title: "Client Credentials Grant — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Client Credentials Grant — Sequence Diagram
 
 Happy path with `client_secret_basic`, then `private_key_jwt` and mTLS alternates,

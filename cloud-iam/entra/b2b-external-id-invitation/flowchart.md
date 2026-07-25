@@ -1,3 +1,11 @@
+---
+title: "B2B Guest Invitation and Redemption — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # B2B Guest Invitation and Redemption — Decision Flowchart
 
 Selecting the redemption path and passing cross-tenant + Conditional Access gates. Deny

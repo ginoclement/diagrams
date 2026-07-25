@@ -1,3 +1,11 @@
+---
+title: "Risk-Based Adaptive Authentication — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Risk-Based Adaptive Authentication — Swimlane Diagram
 
 One lane per actor. The decision lives in the Risk engine lane; the IdP lane enforces it.

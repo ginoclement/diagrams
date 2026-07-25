@@ -1,3 +1,11 @@
+---
+title: "Windows Hello for Business — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Windows Hello for Business — Swimlane
 
 One lane per component. The DC lane participates only for on-prem resource access.

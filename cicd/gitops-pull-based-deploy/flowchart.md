@@ -1,3 +1,11 @@
+---
+title: "GitOps Pull-Based Deploy — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # GitOps Pull-Based Deploy — Decision Flowchart
 
 The continuous reconciliation loop: detect the desired state in Git, verify it, diff against

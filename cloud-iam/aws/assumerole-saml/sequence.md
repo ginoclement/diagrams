@@ -1,3 +1,11 @@
+---
+title: "AssumeRoleWithSAML — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # AssumeRoleWithSAML — Sequence Diagram
 
 Happy path first: SP-initiated SSO where AWS is the SP, ending in temporary credentials

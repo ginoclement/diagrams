@@ -1,3 +1,11 @@
+---
+title: "Mover — Role Change & Access Re-evaluation"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Mover — Role Change & Access Re-evaluation
 
 **Status:** ✅ Current

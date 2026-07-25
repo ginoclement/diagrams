@@ -1,3 +1,11 @@
+---
+title: "Choosing an Authorization Model — Decision Tree"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Choosing an Authorization Model — Decision Tree
 
 Leaves name the recommended model; the legacy standard is 🟡 with its replacement.

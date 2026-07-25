@@ -1,3 +1,11 @@
+---
+title: "Hybrid Identity Sync — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Hybrid Identity Sync — Decision Flowchart
 
 Choosing and executing a sign-in method, with per-method failure terminals.

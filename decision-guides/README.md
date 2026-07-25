@@ -1,3 +1,11 @@
+---
+title: "Decision Guides"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Decision Guides
 
 Selection guides that answer **"which mechanism should I choose, and why?"** Each guide

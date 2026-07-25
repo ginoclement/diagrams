@@ -1,3 +1,11 @@
+---
+title: "Auth0 Organizations — B2B Invitation & Org-Context Login"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Auth0 Organizations — B2B Invitation & Org-Context Login
 
 **Status:** ✅ Current

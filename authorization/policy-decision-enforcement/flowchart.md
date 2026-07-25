@@ -1,3 +1,11 @@
+---
+title: "Policy Decision and Enforcement — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Policy Decision and Enforcement — Decision Flowchart
 
 Evaluation from intercepted request to enforced outcome, covering PDP availability, attribute

@@ -1,3 +1,11 @@
+---
+title: "Device Enrollment (MDM) — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Device Enrollment (MDM) — Swimlane
 
 Lanes for User, Device, MDM Server, CA, and IdP Server. The device generates its own key

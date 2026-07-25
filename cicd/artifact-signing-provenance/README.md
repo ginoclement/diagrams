@@ -1,3 +1,11 @@
+---
+title: "Artifact Signing and Provenance (Verify on Deploy)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Artifact Signing and Provenance (Verify on Deploy)
 
 **Status:** 🔵 Emerging

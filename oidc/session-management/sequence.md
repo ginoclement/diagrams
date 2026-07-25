@@ -1,3 +1,11 @@
+---
+title: "OIDC Session Management — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OIDC Session Management — Sequence Diagram
 
 Happy poll (unchanged) first, then session-changed with successful silent re-auth,

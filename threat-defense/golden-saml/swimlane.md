@@ -1,3 +1,11 @@
+---
+title: "Golden SAML — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Golden SAML — Swimlane Diagram
 
 Lanes for Attacker, Victim, IdP, and Defender controls. The dashed arrows into the Defender

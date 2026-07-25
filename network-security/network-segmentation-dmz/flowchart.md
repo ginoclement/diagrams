@@ -1,3 +1,11 @@
+---
+title: "Network Segmentation and the DMZ — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Network Segmentation and the DMZ — Decision Flowchart
 
 How a packet is evaluated as it tries to cross each boundary. Every boundary is

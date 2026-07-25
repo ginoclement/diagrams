@@ -1,3 +1,11 @@
+---
+title: "OIDC Hybrid Flow (response_type=code id_token)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OIDC Hybrid Flow (response_type=code id_token)
 
 **Status:** ✅ Current

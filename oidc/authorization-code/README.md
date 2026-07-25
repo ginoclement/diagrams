@@ -1,3 +1,11 @@
+---
+title: "OIDC Authorization Code Flow (Confidential Client)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OIDC Authorization Code Flow (Confidential Client)
 
 **Status:** ✅ Current

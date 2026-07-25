@@ -1,3 +1,11 @@
+---
+title: "Workload Cloud Authentication — Comparison"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Workload Cloud Authentication — Comparison
 
 | Option | Status | When to use | When NOT to use | Key tradeoffs | Security notes |

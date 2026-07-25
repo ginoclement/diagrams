@@ -1,3 +1,12 @@
+---
+title: "mTLS Client Auth and Certificate-Bound Tokens — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 8705"
+---
+
 # mTLS Client Auth and Certificate-Bound Tokens — Sequence Diagram
 
 Happy path (mTLS auth then bound-token use) first, then a replay on an unbound

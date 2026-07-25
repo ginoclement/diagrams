@@ -1,3 +1,11 @@
+---
+title: "Cognito User Pool Sign-In — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Cognito User Pool Sign-In — Swimlane Diagram
 
 One lane per actor. The Hosted UI fronts the user pool's OAuth2 endpoints; the app

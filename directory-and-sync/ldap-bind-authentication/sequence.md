@@ -1,3 +1,11 @@
+---
+title: "LDAP Bind Authentication — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # LDAP Bind Authentication — Sequence Diagram
 
 Happy path first (search-then-bind over StartTLS), then a SASL GSSAPI bind, an invalid

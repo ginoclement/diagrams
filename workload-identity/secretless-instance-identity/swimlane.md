@@ -1,3 +1,11 @@
+---
+title: "Secretless Instance Identity — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Secretless Instance Identity — Swimlane Diagram
 
 One lane per actor. The credential handoff never leaves the instance boundary except as

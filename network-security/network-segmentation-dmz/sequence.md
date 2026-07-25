@@ -1,3 +1,11 @@
+---
+title: "Network Segmentation and the DMZ — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Network Segmentation and the DMZ — Sequence Diagram
 
 Happy path: a legitimate north-south request traverses the tiers. Alternates: blocked

@@ -1,3 +1,11 @@
+---
+title: "Cross-Account Role Assumption — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Cross-Account Role Assumption — Decision Flowchart
 
 Every gate applied to a cross-account `AssumeRole`, with explicit deny terminals.

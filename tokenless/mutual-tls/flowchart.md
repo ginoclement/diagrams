@@ -1,3 +1,11 @@
+---
+title: "Mutual TLS — Validation Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Mutual TLS — Validation Flowchart
 
 Server-side certificate validation pipeline with explicit failure terminals.

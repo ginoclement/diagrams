@@ -1,3 +1,11 @@
+---
+title: "MFA Fatigue (Push Bombing) and Number Matching"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # MFA Fatigue (Push Bombing) and Number Matching
 
 **Status:** ✅ Current

@@ -1,3 +1,11 @@
+---
+title: "Secrets Management in Pipelines"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Secrets Management in Pipelines
 
 **Status:** ✅ Current

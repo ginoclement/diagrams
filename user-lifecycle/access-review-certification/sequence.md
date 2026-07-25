@@ -1,3 +1,11 @@
+---
+title: "Access Review & Certification — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Access Review & Certification — Sequence Diagram
 
 Happy path first (campaign generated, reviewer decides per item, revocations remediated),

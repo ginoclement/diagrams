@@ -1,3 +1,12 @@
+---
+title: "HTTP Basic Authentication — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7617, RFC 7616"
+---
+
 # HTTP Basic Authentication — Sequence Diagram
 
 Happy path: 401 challenge, credentials replayed on every request. Alternates:

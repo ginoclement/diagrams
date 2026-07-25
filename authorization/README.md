@@ -1,3 +1,11 @@
+---
+title: "Authorization Models"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Authorization Models
 
 Authentication answers **"who are you?"**; authorization answers **"what are you allowed to

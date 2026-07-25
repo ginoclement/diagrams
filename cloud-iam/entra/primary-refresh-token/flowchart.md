@@ -1,3 +1,11 @@
+---
+title: "Primary Refresh Token — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Primary Refresh Token — Decision Flowchart
 
 Whether the endpoint can serve an app token silently from a PRT, or must fall back to

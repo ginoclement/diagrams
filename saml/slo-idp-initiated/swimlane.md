@@ -1,3 +1,11 @@
+---
+title: "IdP-Initiated Single Logout — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IdP-Initiated Single Logout — Swimlane Diagram
 
 Lanes for User, Browser, IdP, SP1, SP2. Front-channel fan-out shown solid; the

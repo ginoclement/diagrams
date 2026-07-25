@@ -1,3 +1,11 @@
+---
+title: "PIM JIT Elevation — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # PIM JIT Elevation — Swimlane
 
 One lane per actor. The Approver lane participates only when the role requires approval.

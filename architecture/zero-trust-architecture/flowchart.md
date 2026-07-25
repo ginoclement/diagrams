@@ -1,3 +1,11 @@
+---
+title: "Zero Trust Architecture — PDP Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Zero Trust Architecture — PDP Decision Flowchart
 
 The Policy Engine's allow/deny logic for a single request, evaluating identity, device

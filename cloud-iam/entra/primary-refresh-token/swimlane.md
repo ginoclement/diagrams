@@ -1,3 +1,11 @@
+---
+title: "Primary Refresh Token — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Primary Refresh Token — Swimlane
 
 One lane per component. The TPM lane holds device and session keys; token requests are

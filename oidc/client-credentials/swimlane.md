@@ -1,3 +1,11 @@
+---
+title: "Client Credentials Grant — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Client Credentials Grant — Swimlane
 
 Three lanes only: there is no User or Browser in this flow.

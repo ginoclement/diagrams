@@ -1,3 +1,11 @@
+---
+title: "Pipeline Access Control — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Pipeline Access Control — Decision Flowchart
 
 Every gate between "a run is requested" and "code executes with an identity": who may

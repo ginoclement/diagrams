@@ -1,3 +1,11 @@
+---
+title: "Environment-Based Promotion — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Environment-Based Promotion — Swimlane Diagram
 
 One lane per component. The single digest built by CI flows left to right; each cross-lane

@@ -1,3 +1,11 @@
+---
+title: "Kerberoasting — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Kerberoasting — Decision Flowchart
 
 Where password strength, encryption type, and monitoring force a **detect** or **deny**

@@ -1,3 +1,12 @@
+---
+title: "Certificate Enrollment (SCEP / EST) — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 8894, RFC 7030"
+---
+
 # Certificate Enrollment (SCEP / EST) — Swimlane
 
 Lanes for Client/Device, RA (Registration Authority), and CA. The client generates the

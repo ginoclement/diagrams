@@ -1,3 +1,11 @@
+---
+title: "Auth0 Organizations Invitation — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Auth0 Organizations Invitation — Sequence Diagram
 
 Happy path: admin invites a member, Auth0 emails an invitation ticket, the invitee

@@ -1,3 +1,11 @@
+---
+title: "SPIFFE Identity Issuance with SPIRE"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SPIFFE Identity Issuance with SPIRE
 
 **Status:** 🔵 Emerging

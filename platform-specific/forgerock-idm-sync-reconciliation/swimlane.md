@@ -1,3 +1,11 @@
+---
+title: "ForgeRock IDM — Sync & Reconciliation Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # ForgeRock IDM — Sync & Reconciliation Swimlane
 
 ```mermaid

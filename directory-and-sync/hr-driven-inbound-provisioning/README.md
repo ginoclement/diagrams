@@ -1,3 +1,11 @@
+---
+title: "HR-Driven Inbound Provisioning"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # HR-Driven Inbound Provisioning
 
 **Status:** ✅ Current

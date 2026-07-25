@@ -1,3 +1,11 @@
+---
+title: "Branch Protection and Code Review — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Branch Protection and Code Review — Decision Flowchart
 
 Every gate between "PR opened" and "merged to a protected branch": required reviews,

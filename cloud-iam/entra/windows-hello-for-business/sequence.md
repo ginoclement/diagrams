@@ -1,3 +1,11 @@
+---
+title: "Windows Hello for Business — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Windows Hello for Business — Sequence Diagram
 
 Happy path first (provisioning, then gesture logon), followed by on-prem access via the

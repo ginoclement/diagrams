@@ -1,3 +1,11 @@
+---
+title: "API Gateway AuthN/AuthZ — Tier Topology Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # API Gateway AuthN/AuthZ — Tier Topology Diagram
 
 The gateway is the only component in the DMZ; microservices live in the application tier

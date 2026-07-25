@@ -1,3 +1,12 @@
+---
+title: "DPoP — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9449"
+---
+
 # DPoP — Swimlane
 
 The App signs a fresh proof per request; the IdP binds the token to the key

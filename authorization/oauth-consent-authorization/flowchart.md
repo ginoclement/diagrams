@@ -1,3 +1,11 @@
+---
+title: "OAuth Consent — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OAuth Consent — Decision Flowchart
 
 The consent decision from an authorization request to a scoped token or a refusal. Covers prior

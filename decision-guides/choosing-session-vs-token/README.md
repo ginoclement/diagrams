@@ -1,3 +1,11 @@
+---
+title: "Choosing Session vs Token"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Choosing Session vs Token
 
 **Status:** ✅ Current

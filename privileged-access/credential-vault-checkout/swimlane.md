@@ -1,3 +1,11 @@
+---
+title: "Credential Vault Check-Out / Check-In — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Credential Vault Check-Out / Check-In — Swimlane Diagram
 
 One lane per actor. The brokered path keeps the secret on the PAM-to-Target hop only.

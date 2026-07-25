@@ -1,3 +1,11 @@
+---
+title: "XACML — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # XACML — Sequence Diagram
 
 Happy path first (Permit with a fulfilled obligation), then alternates: an attribute resolved via a

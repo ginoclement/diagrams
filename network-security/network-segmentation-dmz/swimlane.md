@@ -1,3 +1,11 @@
+---
+title: "Network Segmentation and the DMZ — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Network Segmentation and the DMZ — Swimlane
 
 Each subgraph is a **zone**. Solid arrows are allowed flows; the dashed arrows marked

@@ -1,3 +1,11 @@
+---
+title: "Continuous Access Evaluation — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Continuous Access Evaluation — Sequence Diagram
 
 Happy path first (long-lived CAE token used normally), then a critical event triggering a

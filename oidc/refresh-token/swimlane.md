@@ -1,3 +1,11 @@
+---
+title: "Refresh Token Grant — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Refresh Token Grant — Swimlane
 
 User appears only for the initial consent and the forced re-auth after a family

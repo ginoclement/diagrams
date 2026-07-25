@@ -1,3 +1,11 @@
+---
+title: "Application Default Credentials — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Application Default Credentials — Sequence Diagram
 
 Happy path first (metadata server on GCP), then alternates: env-var config, invalid env-var

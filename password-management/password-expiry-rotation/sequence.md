@@ -1,3 +1,11 @@
+---
+title: "Password Expiry and Rotation — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Password Expiry and Rotation — Sequence Diagram
 
 Happy path: the user logs in, the IdP detects an expired / must-change credential,

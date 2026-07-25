@@ -1,3 +1,11 @@
+---
+title: "ForgeRock / PingAM Authentication Journey — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # ForgeRock / PingAM Authentication Journey — Decision Flowchart
 
 Node-by-node tree traversal driven by the `authId` + callbacks loop, with per-node

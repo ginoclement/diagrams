@@ -1,3 +1,11 @@
+---
+title: "Email / Phone Verification (Contact-Channel Verification)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Email / Phone Verification (Contact-Channel Verification)
 
 **Status:** ✅ Current

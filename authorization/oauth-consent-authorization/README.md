@@ -1,3 +1,11 @@
+---
+title: "OAuth Consent as an Authorization Mechanism"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OAuth Consent as an Authorization Mechanism
 
 **Status:** ✅ Current

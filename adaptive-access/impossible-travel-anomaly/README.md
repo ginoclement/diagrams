@@ -1,3 +1,11 @@
+---
+title: "Impossible Travel / Anomalous Session Detection"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Impossible Travel / Anomalous Session Detection
 
 **Status:** ✅ Current

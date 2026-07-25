@@ -1,3 +1,11 @@
+---
+title: "Environment-Based Promotion — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Environment-Based Promotion — Sequence Diagram
 
 Happy path first: build the artifact once, then promote the **same digest** through dev,

@@ -1,3 +1,11 @@
+---
+title: "Environment-Based Promotion — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Environment-Based Promotion — Decision Flowchart
 
 The promotion logic: build once, then at every hop check the gate and re-verify provenance

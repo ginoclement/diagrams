@@ -1,3 +1,11 @@
+---
+title: "OAuth Consent Phishing — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OAuth Consent Phishing — Sequence Diagram
 
 The attack path (luring a victim to consent to a malicious OAuth app), then the defenses

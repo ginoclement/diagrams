@@ -1,3 +1,11 @@
+---
+title: "Okta FastPass — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Okta FastPass — Sequence Diagram
 
 Happy path: Okta challenges FastPass, the Sign-In Widget probes the local Okta Verify

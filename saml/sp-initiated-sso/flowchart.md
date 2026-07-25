@@ -1,3 +1,11 @@
+---
+title: "SP-Initiated SSO — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SP-Initiated SSO — Decision Flowchart
 
 SP-side logic with every validation gate the ACS endpoint must apply, plus the IdP-side

@@ -1,3 +1,12 @@
+---
+title: "Device Code Phishing — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 8628"
+---
+
 # Device Code Phishing — Swimlane Diagram
 
 Lanes for Attacker, Victim, IdP, and Defender controls. Solid arrows are the attack path; dashed

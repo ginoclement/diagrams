@@ -1,3 +1,11 @@
+---
+title: "Ephemeral Runner Isolation — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Ephemeral Runner Isolation — Swimlane Diagram
 
 One lane per component. Cross-lane arrows are the schedule, the provision, and the destroy.

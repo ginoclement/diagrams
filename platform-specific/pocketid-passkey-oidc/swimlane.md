@@ -1,3 +1,11 @@
+---
+title: "PocketID — Passkey Login + OIDC Issuance Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # PocketID — Passkey Login + OIDC Issuance Swimlane
 
 ```mermaid

@@ -1,3 +1,11 @@
+---
+title: "Reverse Proxy and WAF — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Reverse Proxy and WAF — Decision Flowchart
 
 Edge evaluation order for an inbound request, from TLS handshake to routing, with

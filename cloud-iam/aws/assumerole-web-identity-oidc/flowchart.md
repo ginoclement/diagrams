@@ -1,3 +1,11 @@
+---
+title: "AssumeRoleWithWebIdentity — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # AssumeRoleWithWebIdentity — Decision Flowchart
 
 Token validation and trust-policy claim gates, ending in credentials or explicit denials.

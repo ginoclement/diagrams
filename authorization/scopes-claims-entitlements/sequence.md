@@ -1,3 +1,11 @@
+---
+title: "Scopes, Claims, Entitlements — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Scopes, Claims, Entitlements — Sequence Diagram
 
 Happy path first: the client obtains a token stamped with scopes and claims (coarse, token-time),

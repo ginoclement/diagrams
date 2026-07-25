@@ -1,3 +1,11 @@
+---
+title: "HTTP-Artifact Binding — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # HTTP-Artifact Binding — Sequence Diagram
 
 Happy path: SP-initiated SSO where the IdP returns an artifact by redirect and the SP

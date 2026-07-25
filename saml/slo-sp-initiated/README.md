@@ -1,3 +1,11 @@
+---
+title: "Single Logout — SP-Initiated"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Single Logout — SP-Initiated
 
 **Status:** ✅ Current

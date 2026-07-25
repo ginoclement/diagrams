@@ -1,3 +1,11 @@
+---
+title: "Secrets Management — Zone Topology Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Secrets Management — Zone Topology Diagram
 
 Consumers on the left authenticate into the store's control plane, which drives the secret

@@ -1,3 +1,12 @@
+---
+title: "Token Exchange — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 8693"
+---
+
 # Token Exchange — Decision Flowchart
 
 The STS's handling of a token-exchange request: subject/actor validation, the

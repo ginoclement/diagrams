@@ -1,3 +1,11 @@
+---
+title: "STS AssumeRole — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # STS AssumeRole — Sequence Diagram
 
 Happy path first (a caller assumes a role and calls an API with the temporary

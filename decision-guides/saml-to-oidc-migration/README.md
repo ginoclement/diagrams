@@ -1,3 +1,11 @@
+---
+title: "SAML-to-OIDC Migration"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SAML-to-OIDC Migration
 
 **Status:** ✅ Current

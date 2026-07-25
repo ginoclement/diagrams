@@ -1,3 +1,11 @@
+---
+title: "Cognito Identity Pool — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Cognito Identity Pool — Decision Flowchart
 
 Role selection from an incoming request to issued AWS credentials, with deny terminals.

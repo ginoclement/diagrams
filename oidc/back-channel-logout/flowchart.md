@@ -1,3 +1,11 @@
+---
+title: "Back-Channel Logout — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Back-Channel Logout — Decision Flowchart
 
 Two decision chains: the IdP's delivery/retry loop, and the RP's logout token

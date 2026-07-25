@@ -1,3 +1,11 @@
+---
+title: "Impossible Travel / Anomalous Session — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Impossible Travel / Anomalous Session — Decision Flowchart
 
 From a pair of authentication events to an outcome. Feasible travel passes; infeasible

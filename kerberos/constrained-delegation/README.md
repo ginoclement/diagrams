@@ -1,3 +1,11 @@
+---
+title: "Kerberos Constrained Delegation — S4U2Self and S4U2Proxy"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Kerberos Constrained Delegation — S4U2Self and S4U2Proxy
 
 **Status:** ✅ Current

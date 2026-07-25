@@ -1,3 +1,11 @@
+---
+title: "Environment Protection and Approvals — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Environment Protection and Approvals — Decision Flowchart
 
 Every gate the protected environment applies between a successful build and a live

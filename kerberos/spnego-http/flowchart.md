@@ -1,3 +1,11 @@
+---
+title: "SPNEGO over HTTP — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SPNEGO over HTTP — Decision Flowchart
 
 Browser-side decision logic for a Negotiate challenge, with explicit outcomes.

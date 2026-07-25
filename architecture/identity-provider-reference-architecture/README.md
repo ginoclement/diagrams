@@ -1,3 +1,11 @@
+---
+title: "Identity Provider (IdP) Reference Architecture"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Identity Provider (IdP) Reference Architecture
 
 **Status:** ✅ Current

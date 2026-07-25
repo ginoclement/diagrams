@@ -1,3 +1,11 @@
+---
+title: "Device Enrollment (MDM) — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Device Enrollment (MDM) — Decision Flowchart
 
 Decision logic from enrollment type through user authentication, profile install,

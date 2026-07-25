@@ -1,3 +1,11 @@
+---
+title: "IMDSv2 Instance Credentials — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IMDSv2 Instance Credentials — Sequence Diagram
 
 Happy path first (PUT a session token, GET the credentials, then sign an API call), then

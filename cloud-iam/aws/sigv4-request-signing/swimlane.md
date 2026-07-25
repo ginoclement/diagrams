@@ -1,3 +1,11 @@
+---
+title: "SigV4 Request Signing — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SigV4 Request Signing — Swimlane Diagram
 
 One lane per actor. The signing pipeline lives in the Client lane; verification lives in the

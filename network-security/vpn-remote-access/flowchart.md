@@ -1,3 +1,11 @@
+---
+title: "Remote Access VPN — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Remote Access VPN — Decision Flowchart
 
 Gateway decision logic for a connection attempt, from authentication through posture to

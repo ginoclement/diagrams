@@ -1,3 +1,11 @@
+---
+title: "Okta Inline Hooks — Synchronous External Callouts"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Okta Inline Hooks — Synchronous External Callouts
 
 **Status:** ✅ Current

@@ -1,3 +1,12 @@
+---
+title: "Rich Authorization Requests — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9396"
+---
+
 # Rich Authorization Requests — Sequence Diagram
 
 Happy path (full grant) first, then partial grant/downscoping, mixing with scope,

@@ -1,3 +1,11 @@
+---
+title: "Tokenless Authentication Patterns"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Tokenless Authentication Patterns
 
 "Tokenless" here means authentication patterns that do **not** rely on an issued bearer

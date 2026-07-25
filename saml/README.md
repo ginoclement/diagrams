@@ -1,3 +1,11 @@
+---
+title: "SAML 2.0 Diagrams"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SAML 2.0 Diagrams
 
 Reference diagrams for the SAML 2.0 Web Browser SSO profile, Single Logout profile,

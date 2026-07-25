@@ -1,3 +1,11 @@
+---
+title: "Mutual TLS Bootstrap — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Mutual TLS Bootstrap — Swimlane Diagram
 
 One lane per actor. Attestation precedes the CSR; the CA gates issuance; the workload then

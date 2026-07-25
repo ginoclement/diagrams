@@ -1,3 +1,11 @@
+---
+title: "Group Membership Sync — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Group Membership Sync — Decision Flowchart
 
 Per-member decision logic from source group to downstream entitlement, with explicit error

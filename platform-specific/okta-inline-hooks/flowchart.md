@@ -1,3 +1,11 @@
+---
+title: "Okta Inline Hooks — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Okta Inline Hooks — Decision Flowchart
 
 How Okta handles the synchronous hook response: command application, deny/error

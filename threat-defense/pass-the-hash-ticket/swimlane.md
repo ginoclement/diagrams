@@ -1,3 +1,11 @@
+---
+title: "Pass-the-Hash / Pass-the-Ticket — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Pass-the-Hash / Pass-the-Ticket — Swimlane Diagram
 
 Lanes for Attacker, Victim, IdP/servers (KDC and target systems), and Defender controls.

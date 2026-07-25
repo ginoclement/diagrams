@@ -1,3 +1,11 @@
+---
+title: "B2B Guest Invitation and Redemption (Entra External ID)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # B2B Guest Invitation and Redemption (Entra External ID)
 
 **Status:** ✅ Current

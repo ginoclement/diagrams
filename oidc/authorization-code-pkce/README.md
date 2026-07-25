@@ -1,3 +1,12 @@
+---
+title: "OIDC Authorization Code Flow with PKCE (Public Client)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7636"
+---
+
 # OIDC Authorization Code Flow with PKCE (Public Client)
 
 **Status:** ✅ Current

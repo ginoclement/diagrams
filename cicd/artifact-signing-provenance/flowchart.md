@@ -1,3 +1,11 @@
+---
+title: "Artifact Signing and Provenance — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Artifact Signing and Provenance — Decision Flowchart
 
 The admission-time verification gates, in order. Every failure terminates in an explicit deny

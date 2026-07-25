@@ -1,3 +1,11 @@
+---
+title: "Password Hash Sync — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Password Hash Sync — Swimlane Diagram
 
 One lane per actor. The Agent bridges on-prem and cloud; sign-in stays entirely in the IdP

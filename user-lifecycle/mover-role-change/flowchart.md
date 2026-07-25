@@ -1,3 +1,11 @@
+---
+title: "Mover — Role Change Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Mover — Role Change Decision Flowchart
 
 Grant/revoke decision logic centered on the diff and the SoD gate, with explicit terminals

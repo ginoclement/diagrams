@@ -1,3 +1,11 @@
+---
+title: "Credential Vault Check-Out / Check-In — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Credential Vault Check-Out / Check-In — Decision Flowchart
 
 Every gate between "admin wants the credential" and "credential rotated", with explicit

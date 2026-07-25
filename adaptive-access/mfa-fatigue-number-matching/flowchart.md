@@ -1,3 +1,11 @@
+---
+title: "MFA Fatigue and Number Matching — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # MFA Fatigue and Number Matching — Decision Flowchart
 
 The approval decision under number matching, showing why a push-bombing attacker cannot

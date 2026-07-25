@@ -1,3 +1,11 @@
+---
+title: "IdP Reference Architecture — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IdP Reference Architecture — Sequence Diagram
 
 A representative runtime flow: an interactive login that traverses the IdP's internal

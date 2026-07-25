@@ -1,3 +1,11 @@
+---
+title: "PIM JIT Elevation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # PIM JIT Elevation — Decision Flowchart
 
 Every activation gate from eligibility to expiry. Deny and expiry paths terminate

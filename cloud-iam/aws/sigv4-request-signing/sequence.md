@@ -1,3 +1,11 @@
+---
+title: "SigV4 Request Signing — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SigV4 Request Signing — Sequence Diagram
 
 Happy path first (build canonical request, derive the key chain, sign, and let the service

@@ -1,3 +1,11 @@
+---
+title: "Primary Refresh Token (PRT)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Primary Refresh Token (PRT)
 
 **Status:** ✅ Current

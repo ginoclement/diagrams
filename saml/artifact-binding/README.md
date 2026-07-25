@@ -1,3 +1,11 @@
+---
+title: "HTTP-Artifact Binding"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # HTTP-Artifact Binding
 
 **Status:** ✅ Current

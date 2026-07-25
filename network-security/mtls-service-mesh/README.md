@@ -1,3 +1,11 @@
+---
+title: "mTLS in a Service Mesh"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # mTLS in a Service Mesh
 
 **Status:** ✅ Current

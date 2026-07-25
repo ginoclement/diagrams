@@ -1,3 +1,12 @@
+---
+title: "JWT-Secured Authorization Request (JAR, RFC 9101) and Response Mode (JARM)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9101"
+---
+
 # JWT-Secured Authorization Request (JAR, RFC 9101) and Response Mode (JARM)
 
 **Status:** 🔵 Emerging

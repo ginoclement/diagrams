@@ -1,3 +1,11 @@
+---
+title: "Secrets Management in Pipelines — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Secrets Management in Pipelines — Decision Flowchart
 
 The gates between "a job asks for a secret" and "the secret is safely used": is the context

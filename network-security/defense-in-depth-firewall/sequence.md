@@ -1,3 +1,11 @@
+---
+title: "Defense in Depth — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Defense in Depth — Sequence Diagram
 
 Happy path: an inbound connection is evaluated and logged at each layer, then reaches the

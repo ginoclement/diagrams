@@ -1,3 +1,11 @@
+---
+title: "Email / Phone Verification — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Email / Phone Verification — Decision Flowchart
 
 Decision logic for issuing and validating a verification token, including link vs OTP,

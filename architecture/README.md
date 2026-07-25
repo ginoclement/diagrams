@@ -1,3 +1,11 @@
+---
+title: "Architecture Diagrams"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Architecture Diagrams
 
 Higher-level **architecture** diagrams — system/component topology and trust boundaries —

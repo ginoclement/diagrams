@@ -1,3 +1,11 @@
+---
+title: "JML Lifecycle by Persona — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # JML Lifecycle by Persona — Sequence Diagram
 
 The mastering authority differs per persona, so each `alt` branch starts from a different

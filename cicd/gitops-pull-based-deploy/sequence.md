@@ -1,3 +1,11 @@
+---
+title: "GitOps Pull-Based Deploy — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # GitOps Pull-Based Deploy — Sequence Diagram
 
 Happy path first: a merge to the config repo is pulled by the in-cluster reconciler, diffed

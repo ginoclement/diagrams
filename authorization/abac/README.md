@@ -1,3 +1,11 @@
+---
+title: "Attribute-Based Access Control (ABAC)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Attribute-Based Access Control (ABAC)
 
 **Status:** ✅ Current

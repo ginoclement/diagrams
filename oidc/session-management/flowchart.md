@@ -1,3 +1,11 @@
+---
+title: "OIDC Session Management — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OIDC Session Management — Decision Flowchart
 
 From an iframe poll through the `postMessage` result and silent re-auth outcome,

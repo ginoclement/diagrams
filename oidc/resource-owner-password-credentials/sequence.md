@@ -1,3 +1,12 @@
+---
+title: "ROPC — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: true
+rfc: "RFC 6749"
+---
+
 # ROPC — Sequence Diagram
 
 Happy path first, then invalid credentials, an MFA-required case the grant cannot

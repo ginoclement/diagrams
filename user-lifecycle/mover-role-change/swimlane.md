@@ -1,3 +1,11 @@
+---
+title: "Mover — Role Change Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Mover — Role Change Swimlane Diagram
 
 One lane per actor. The IGA lane carries the re-evaluation and SoD logic; adds and revokes

@@ -1,3 +1,11 @@
+---
+title: "Device Join and Registration — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Device Join and Registration — Sequence Diagram
 
 Happy path first (Entra Join with TPM attestation), then Entra Registered (BYOD), Hybrid

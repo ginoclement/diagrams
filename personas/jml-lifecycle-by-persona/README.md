@@ -1,3 +1,11 @@
+---
+title: "JML Lifecycle by Persona"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # JML Lifecycle by Persona
 
 **Status:** ✅ Current

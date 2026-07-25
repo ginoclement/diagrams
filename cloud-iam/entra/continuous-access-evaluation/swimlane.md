@@ -1,3 +1,11 @@
+---
+title: "Continuous Access Evaluation — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Continuous Access Evaluation — Swimlane
 
 One lane per actor. The Admin lane triggers the critical events that drive re-evaluation.

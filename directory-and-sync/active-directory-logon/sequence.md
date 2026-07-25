@@ -1,3 +1,11 @@
+---
+title: "Active Directory Interactive Logon — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Active Directory Interactive Logon — Sequence Diagram
 
 Happy path first (Kerberos AS/TGS/AP via Negotiate), then NTLM fallback, cached domain

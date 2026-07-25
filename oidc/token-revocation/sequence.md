@@ -1,3 +1,12 @@
+---
+title: "Token Revocation — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7009"
+---
+
 # Token Revocation — Sequence Diagram
 
 Happy path revokes a refresh token and cascades; then access-token-only,

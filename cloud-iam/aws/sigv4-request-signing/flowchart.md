@@ -1,3 +1,11 @@
+---
+title: "SigV4 Request Signing — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SigV4 Request Signing — Decision Flowchart
 
 The signing pipeline and every verification gate the service applies, with explicit error

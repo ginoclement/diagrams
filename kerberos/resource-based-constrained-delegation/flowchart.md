@@ -1,3 +1,11 @@
+---
+title: "Resource-Based Constrained Delegation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Resource-Based Constrained Delegation — Decision Flowchart
 
 The protocol decisions, then the abuse path that the same decisions permit when

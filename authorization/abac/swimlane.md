@@ -1,3 +1,11 @@
+---
+title: "ABAC — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # ABAC — Swimlane Diagram
 
 One lane per component. The PDP evaluates policy against attributes gathered from the request, the

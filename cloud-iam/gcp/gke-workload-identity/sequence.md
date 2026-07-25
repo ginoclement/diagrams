@@ -1,3 +1,11 @@
+---
+title: "GKE Workload Identity — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # GKE Workload Identity — Sequence Diagram
 
 Happy path first (pod obtains a GSA token via the metadata server), then alternates: missing

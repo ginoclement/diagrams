@@ -1,3 +1,11 @@
+---
+title: "Deployment Environment Protection and Approvals"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Deployment Environment Protection and Approvals
 
 **Status:** ✅ Current

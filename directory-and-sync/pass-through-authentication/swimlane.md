@@ -1,3 +1,11 @@
+---
+title: "Pass-Through Authentication — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Pass-Through Authentication — Swimlane Diagram
 
 One lane per actor. The password is encrypted in the Cloud lane and only decrypted in the

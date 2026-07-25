@@ -1,3 +1,11 @@
+---
+title: "Credential Recovery by Persona — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Credential Recovery by Persona — Swimlane Diagram
 
 A router lane resolves the persona; each persona then flows through its own recovery path.

@@ -1,3 +1,11 @@
+---
+title: "HR-Driven Inbound Provisioning — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # HR-Driven Inbound Provisioning — Sequence Diagram
 
 Happy path first (new worker becomes a created account), then Mover updates, Leaver

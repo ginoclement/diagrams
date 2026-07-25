@@ -1,3 +1,11 @@
+---
+title: "Unconstrained Delegation — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: true
+---
+
 # Unconstrained Delegation — Swimlane Diagram
 
 Lanes follow the credential: it starts in the KDC, passes through the client, and

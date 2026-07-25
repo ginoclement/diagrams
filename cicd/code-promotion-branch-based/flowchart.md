@@ -1,3 +1,11 @@
+---
+title: "Branch-Based Code Promotion — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Branch-Based Code Promotion — Decision Flowchart
 
 Choosing a model, then the gates each promotion must clear. Blocked promotions

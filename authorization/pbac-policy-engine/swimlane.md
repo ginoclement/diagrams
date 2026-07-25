@@ -1,3 +1,11 @@
+---
+title: "PBAC Policy Engine (OPA / Cedar) — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # PBAC Policy Engine (OPA / Cedar) — Swimlane Diagram
 
 One lane per component. The app is the enforcement point; the engine evaluates policy pulled from

@@ -1,3 +1,11 @@
+---
+title: "AssumeRoleWithSAML — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # AssumeRoleWithSAML — Decision Flowchart
 
 Assertion validation and trust-policy gates STS applies, with explicit deny terminals.

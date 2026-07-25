@@ -1,3 +1,11 @@
+---
+title: "MFA Fatigue and Number Matching — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # MFA Fatigue and Number Matching — Sequence Diagram
 
 Happy path first (legitimate sign-in with number matching), then the push-bombing attack

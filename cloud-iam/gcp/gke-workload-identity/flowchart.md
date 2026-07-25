@@ -1,3 +1,11 @@
+---
+title: "GKE Workload Identity — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # GKE Workload Identity — Decision Flowchart
 
 Annotation, binding, and token-exchange decisions with explicit failure terminals.

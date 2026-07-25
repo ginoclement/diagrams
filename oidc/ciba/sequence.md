@@ -1,3 +1,11 @@
+---
+title: "CIBA — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # CIBA — Sequence Diagram
 
 Happy path in **poll mode**, then the ping and push delivery modes and the

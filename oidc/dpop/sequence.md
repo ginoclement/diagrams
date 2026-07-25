@@ -1,3 +1,12 @@
+---
+title: "DPoP — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9449"
+---
+
 # DPoP — Sequence Diagram
 
 Happy path: DPoP proof at `/token` binds the access token to the key, then a proof

@@ -1,3 +1,11 @@
+---
+title: "Email / Phone Verification — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Email / Phone Verification — Swimlane
 
 Lanes for User, Browser, IdP Server, and Verification Service. The IdP owns the token

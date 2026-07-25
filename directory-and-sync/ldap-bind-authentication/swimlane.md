@@ -1,3 +1,11 @@
+---
+title: "LDAP Bind Authentication — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # LDAP Bind Authentication — Swimlane Diagram
 
 One lane per actor. The search-then-bind pattern spans two round trips into the Directory.

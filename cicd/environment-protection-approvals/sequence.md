@@ -1,3 +1,11 @@
+---
+title: "Environment Protection and Approvals — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Environment Protection and Approvals — Sequence Diagram
 
 Happy path first: build succeeds, the deploy job targets a protected environment,

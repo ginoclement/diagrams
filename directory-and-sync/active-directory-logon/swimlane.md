@@ -1,3 +1,11 @@
+---
+title: "Active Directory Interactive Logon — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Active Directory Interactive Logon — Swimlane Diagram
 
 One lane per actor. The Negotiate SSP in the Client lane decides Kerberos vs NTLM.

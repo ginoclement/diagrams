@@ -1,3 +1,11 @@
+---
+title: "Ephemeral Runner Isolation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Ephemeral Runner Isolation — Decision Flowchart
 
 Every gate between "a job is queued" and "it executes somewhere": is the context trusted, does a

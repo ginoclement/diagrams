@@ -1,3 +1,12 @@
+---
+title: "DPoP — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9449"
+---
+
 # DPoP — Decision Flowchart
 
 Proof verification at the resource server: signature, HTTP binding, freshness,

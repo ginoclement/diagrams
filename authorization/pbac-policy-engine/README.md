@@ -1,3 +1,11 @@
+---
+title: "Policy-Based Access Control with an External Policy Engine (OPA / Cedar)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Policy-Based Access Control with an External Policy Engine (OPA / Cedar)
 
 **Status:** 🔵 Emerging

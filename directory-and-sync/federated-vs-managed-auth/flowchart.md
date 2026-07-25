@@ -1,3 +1,11 @@
+---
+title: "Federated vs Managed Authentication — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Federated vs Managed Authentication — Decision Flowchart
 
 The per-domain routing decision and each path's validation gates, with explicit error

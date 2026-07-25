@@ -1,3 +1,11 @@
+---
+title: "WebAuthn / Passkey Authentication — Verification Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # WebAuthn / Passkey Authentication — Verification Flowchart
 
 Client-side branching (credential discovery, user verification, hybrid

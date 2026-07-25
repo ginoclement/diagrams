@@ -1,3 +1,12 @@
+---
+title: "HTTP Basic Authentication — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7617, RFC 7616"
+---
+
 # HTTP Basic Authentication — Decision Flowchart
 
 Server-side decision logic, including the TLS gate that makes Basic safe to use

@@ -1,3 +1,11 @@
+---
+title: "AssumeRoleWithSAML — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # AssumeRoleWithSAML — Swimlane Diagram
 
 One lane per actor. The signed assertion crosses from the IdP through the browser to STS.

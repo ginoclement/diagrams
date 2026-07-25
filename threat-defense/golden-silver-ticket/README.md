@@ -1,3 +1,11 @@
+---
+title: "Golden & Silver Ticket"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Golden & Silver Ticket
 
 **Status:** ✅ Current (active threat; defenses current)

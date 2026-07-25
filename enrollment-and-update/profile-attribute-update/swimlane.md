@@ -1,3 +1,11 @@
+---
+title: "Profile Attribute Update — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Profile Attribute Update — Swimlane
 
 Lanes for User, Browser, IdP Server, Directory, and Verification Service. The IdP

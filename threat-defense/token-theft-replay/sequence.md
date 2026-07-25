@@ -1,3 +1,11 @@
+---
+title: "Token Theft & Replay — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Token Theft & Replay — Sequence Diagram
 
 The attack path (replaying a stolen access token, then a stolen refresh token from another host),

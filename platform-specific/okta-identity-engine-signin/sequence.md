@@ -1,3 +1,11 @@
+---
+title: "Okta Identity Engine Sign-In — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Okta Identity Engine Sign-In — Sequence Diagram
 
 Happy path: app redirects to Okta `/authorize`, the Identity Engine runs the `/idx`

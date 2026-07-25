@@ -1,3 +1,11 @@
+---
+title: "Deprecated & Legacy Mechanisms"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Deprecated & Legacy Mechanisms
 
 This repository catalogs **every option**, including obsolete ones — kept for reference and

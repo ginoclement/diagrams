@@ -1,3 +1,11 @@
+---
+title: "Windows Hello for Business (WHfB)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Windows Hello for Business (WHfB)
 
 **Status:** ✅ Current

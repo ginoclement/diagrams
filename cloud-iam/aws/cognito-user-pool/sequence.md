@@ -1,3 +1,11 @@
+---
+title: "Cognito User Pool Sign-In — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Cognito User Pool Sign-In — Sequence Diagram
 
 Happy path first: Hosted UI Authorization Code + PKCE producing pool JWTs, then API use.

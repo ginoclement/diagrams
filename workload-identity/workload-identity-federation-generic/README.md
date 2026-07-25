@@ -1,3 +1,11 @@
+---
+title: "Workload Identity Federation (Generic Pattern)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Workload Identity Federation (Generic Pattern)
 
 **Status:** 🔵 Emerging

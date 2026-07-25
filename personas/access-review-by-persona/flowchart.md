@@ -1,3 +1,11 @@
+---
+title: "Access Review by Persona — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Access Review by Persona — Decision Flowchart
 
 Branch on principal type first, then on the cadence and approver decisions each path makes.

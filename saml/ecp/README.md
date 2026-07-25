@@ -1,3 +1,11 @@
+---
+title: "Enhanced Client or Proxy (ECP) Profile"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Enhanced Client or Proxy (ECP) Profile
 
 **Status:** ✅ Current

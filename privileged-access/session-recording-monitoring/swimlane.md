@@ -1,3 +1,11 @@
+---
+title: "Privileged Session Recording and Monitoring — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Privileged Session Recording and Monitoring — Swimlane Diagram
 
 One lane per actor. The Proxy lane is the inline broker: everything the User does reaches

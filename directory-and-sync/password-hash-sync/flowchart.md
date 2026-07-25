@@ -1,3 +1,11 @@
+---
+title: "Password Hash Sync — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Password Hash Sync — Decision Flowchart
 
 Two decision domains: the sync pipeline that populates the cloud verifier, and the cloud-only

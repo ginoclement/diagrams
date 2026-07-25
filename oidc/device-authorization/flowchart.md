@@ -1,3 +1,12 @@
+---
+title: "Device Authorization Grant — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 8628"
+---
+
 # Device Authorization Grant — Decision Flowchart
 
 Decision logic on the device side, including every RFC 8628 token-endpoint

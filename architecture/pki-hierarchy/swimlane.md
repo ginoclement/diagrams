@@ -1,3 +1,11 @@
+---
+title: "PKI Hierarchy — Trust Tier Topology Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # PKI Hierarchy — Trust Tier Topology Diagram
 
 The hierarchy top-down: the air-gapped root anchors trust, issuing CAs (with their RA and

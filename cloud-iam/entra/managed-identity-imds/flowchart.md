@@ -1,3 +1,11 @@
+---
+title: "Managed Identity via IMDS — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Managed Identity via IMDS — Decision Flowchart
 
 The identity-selection and validation gates on the token path, with explicit error terminals.

@@ -1,3 +1,11 @@
+---
+title: "Header-Based SSO — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Header-Based SSO — Swimlane
 
 The Proxy-to-App handoff is the trust boundary: the app must be unreachable

@@ -1,3 +1,11 @@
+---
+title: "Choosing an OAuth 2.0 Grant"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Choosing an OAuth 2.0 Grant
 
 **Status:** ✅ Current

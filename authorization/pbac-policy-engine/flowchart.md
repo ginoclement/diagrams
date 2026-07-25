@@ -1,3 +1,11 @@
+---
+title: "PBAC Policy Engine (OPA / Cedar) — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # PBAC Policy Engine (OPA / Cedar) — Decision Flowchart
 
 Evaluation logic from request to decision, including engine availability, bundle integrity,

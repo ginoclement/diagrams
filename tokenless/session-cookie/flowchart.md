@@ -1,3 +1,11 @@
+---
+title: "Session Cookie Authentication — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Session Cookie Authentication — Decision Flowchart
 
 Branch-focused view: credential validation with lockout, session validation on

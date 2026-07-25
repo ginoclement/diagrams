@@ -1,3 +1,11 @@
+---
+title: "Continuous Access Evaluation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Continuous Access Evaluation — Decision Flowchart
 
 Whether a CAE-capable resource accepts a token or issues a claims challenge, and how

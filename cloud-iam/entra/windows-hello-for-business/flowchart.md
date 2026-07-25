@@ -1,3 +1,11 @@
+---
+title: "Windows Hello for Business — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Windows Hello for Business — Decision Flowchart
 
 Provisioning eligibility, then the logon gesture and trust-model decisions. Deny paths

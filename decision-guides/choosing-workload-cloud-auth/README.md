@@ -1,3 +1,11 @@
+---
+title: "Choosing Workload Cloud Authentication"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Choosing Workload Cloud Authentication
 
 **Status:** ✅ Current

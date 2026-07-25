@@ -1,3 +1,11 @@
+---
+title: "Implicit Flow — Sequence Diagram (Deprecated)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: true
+---
+
 # Implicit Flow — Sequence Diagram (Deprecated)
 
 Happy path first, then the fragment-interception alternate showing why the flow is

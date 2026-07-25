@@ -1,3 +1,11 @@
+---
+title: "Network Security Diagrams"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Network Security Diagrams
 
 Transport, segmentation, perimeter, and service-to-service controls — the network-layer

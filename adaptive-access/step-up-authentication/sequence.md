@@ -1,3 +1,12 @@
+---
+title: "Step-Up Authentication — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9470"
+---
+
 # Step-Up Authentication — Sequence Diagram
 
 Happy path first (sensitive action triggers step-up, user satisfies it), then the

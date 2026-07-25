@@ -1,3 +1,11 @@
+---
+title: "Service Account Impersonation — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Service Account Impersonation — Sequence Diagram
 
 Happy path first (`generateAccessToken` with the Token Creator role), then alternates:

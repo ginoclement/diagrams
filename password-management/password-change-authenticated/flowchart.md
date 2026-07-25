@@ -1,3 +1,11 @@
+---
+title: "Authenticated Password Change — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Authenticated Password Change — Decision Flowchart
 
 Branch-focused view: reauthentication with the current password, optional step-up

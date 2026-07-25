@@ -1,3 +1,11 @@
+---
+title: "PIM JIT Elevation — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # PIM JIT Elevation — Sequence Diagram
 
 Happy path first (self-activation with MFA + justification), then the approval-required,

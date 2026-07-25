@@ -1,3 +1,11 @@
+---
+title: "Cognito Identity Pool — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Cognito Identity Pool — Swimlane Diagram
 
 One lane per actor. The identity pool turns a provider token into AWS credentials, choosing

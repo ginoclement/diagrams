@@ -1,3 +1,11 @@
+---
+title: "Artifact Signing and Provenance — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Artifact Signing and Provenance — Swimlane Diagram
 
 One lane per component. Build-time signing/attesting is on the left; verify-on-deploy handoffs

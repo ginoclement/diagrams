@@ -1,3 +1,11 @@
+---
+title: "Leaver — Offboarding Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Leaver — Offboarding Decision Flowchart
 
 Teardown decision logic with the for-cause fast path, the rehire branch, and the retention

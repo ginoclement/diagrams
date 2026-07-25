@@ -1,3 +1,11 @@
+---
+title: "Password Management"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Password Management
 
 Diagrams for the **lifecycle of a password credential** after it exists: recovering it

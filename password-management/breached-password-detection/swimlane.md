@@ -1,3 +1,11 @@
+---
+title: "Breached Password Detection — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Breached Password Detection — Swimlane
 
 One lane per actor. Steps sit in the lane of the actor performing them; arrows

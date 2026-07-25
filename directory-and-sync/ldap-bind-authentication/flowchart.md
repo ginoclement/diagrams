@@ -1,3 +1,11 @@
+---
+title: "LDAP Bind Authentication — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # LDAP Bind Authentication — Decision Flowchart
 
 Client and server decision logic for a bind, with the transport-security gate first and

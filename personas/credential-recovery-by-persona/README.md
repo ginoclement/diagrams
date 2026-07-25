@@ -1,3 +1,11 @@
+---
+title: "Credential Recovery by Persona"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Credential Recovery by Persona
 
 **Status:** ✅ Current

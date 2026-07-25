@@ -1,3 +1,11 @@
+---
+title: "Resource-Based Constrained Delegation — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Resource-Based Constrained Delegation — Swimlane Diagram
 
 The `Backend` lane now owns the authorization data. Note that the `Directory`

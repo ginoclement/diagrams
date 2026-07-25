@@ -1,3 +1,11 @@
+---
+title: "IP Allowlist / Network-Location Authentication — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IP Allowlist / Network-Location Authentication — Sequence Diagram
 
 Happy path: request from an allowlisted source reaches the app. Alternates:

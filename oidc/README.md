@@ -1,3 +1,11 @@
+---
+title: "OIDC Flows"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OIDC Flows
 
 OpenID Connect (and underlying OAuth 2.0) grant and logout flows. Each folder contains a

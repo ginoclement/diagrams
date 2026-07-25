@@ -1,3 +1,11 @@
+---
+title: "Front-Channel Logout — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Front-Channel Logout — Swimlane Diagram
 
 One lane per actor. Both RP lanes receive iframe loads from the browser; the

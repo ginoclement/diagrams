@@ -1,3 +1,11 @@
+---
+title: "Diagram Conventions"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Diagram Conventions
 
 All diagrams in this repository follow these conventions so they stay consistent,

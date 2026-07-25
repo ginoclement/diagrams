@@ -1,3 +1,11 @@
+---
+title: "Breached Password Detection — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Breached Password Detection — Decision Flowchart
 
 Branch-focused view: the k-anonymity range query, local suffix match, the

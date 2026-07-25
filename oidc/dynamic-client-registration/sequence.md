@@ -1,3 +1,12 @@
+---
+title: "Dynamic Client Registration — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7591, RFC 7592"
+---
+
 # Dynamic Client Registration — Sequence Diagram
 
 Happy path (open registration) first, then the protected / software-statement

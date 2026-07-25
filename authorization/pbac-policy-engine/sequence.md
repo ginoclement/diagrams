@@ -1,3 +1,11 @@
+---
+title: "PBAC Policy Engine (OPA / Cedar) — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # PBAC Policy Engine (OPA / Cedar) — Sequence Diagram
 
 Happy path first (allow decision from a local engine), then alternates: default-deny, forbid

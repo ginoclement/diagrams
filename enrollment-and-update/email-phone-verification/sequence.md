@@ -1,3 +1,11 @@
+---
+title: "Email / Phone Verification — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Email / Phone Verification — Sequence Diagram
 
 Happy path: the server issues a proof, delivers it over the channel, and marks the

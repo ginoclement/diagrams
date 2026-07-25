@@ -1,3 +1,11 @@
+---
+title: "Conditional Access Evaluation — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Conditional Access Evaluation — Sequence Diagram
 
 Happy path first (policy satisfied, token issued), then alternates: MFA interrupt,

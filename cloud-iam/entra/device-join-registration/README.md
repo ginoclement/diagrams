@@ -1,3 +1,11 @@
+---
+title: "Device Join and Registration (Entra Join / Hybrid Join / Registered)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Device Join and Registration (Entra Join / Hybrid Join / Registered)
 
 **Status:** ✅ Current

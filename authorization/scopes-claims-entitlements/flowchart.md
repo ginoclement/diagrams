@@ -1,3 +1,11 @@
+---
+title: "Scopes, Claims, Entitlements — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Scopes, Claims, Entitlements — Decision Flowchart
 
 The layered decision: validate the token, check the coarse **scope** at the gateway, then resolve

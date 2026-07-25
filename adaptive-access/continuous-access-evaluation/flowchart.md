@@ -1,3 +1,11 @@
+---
+title: "Continuous Access Evaluation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Continuous Access Evaluation — Decision Flowchart
 
 What happens on each API call once a CAE-capable token exists: honour it, or challenge and

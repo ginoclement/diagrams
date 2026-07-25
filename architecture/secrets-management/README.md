@@ -1,3 +1,11 @@
+---
+title: "Secrets Management Platform (Vault-style)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Secrets Management Platform (Vault-style)
 
 **Status:** ✅ Current

@@ -1,3 +1,11 @@
+---
+title: "HR-Driven Inbound Provisioning — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # HR-Driven Inbound Provisioning — Swimlane Diagram
 
 One lane per actor. HR authoritatively supplies records; the Provisioning lane decides the

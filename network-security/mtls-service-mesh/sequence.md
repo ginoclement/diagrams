@@ -1,3 +1,11 @@
+---
+title: "mTLS in a Service Mesh — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # mTLS in a Service Mesh — Sequence Diagram
 
 Happy path: workload attestation, SVID issuance, then a sidecar-to-sidecar mutual-TLS

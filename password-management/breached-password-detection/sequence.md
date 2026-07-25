@@ -1,3 +1,11 @@
+---
+title: "Breached Password Detection — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Breached Password Detection — Sequence Diagram
 
 Happy path: the auth server hashes the candidate with SHA-1, sends only the 5-char

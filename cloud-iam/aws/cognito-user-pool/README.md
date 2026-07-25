@@ -1,3 +1,11 @@
+---
+title: "Amazon Cognito User Pool Sign-In"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Amazon Cognito User Pool Sign-In
 
 **Status:** ✅ Current

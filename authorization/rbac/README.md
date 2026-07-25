@@ -1,3 +1,11 @@
+---
+title: "Role-Based Access Control (RBAC)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Role-Based Access Control (RBAC)
 
 **Status:** ✅ Current

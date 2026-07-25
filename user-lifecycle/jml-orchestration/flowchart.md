@@ -1,3 +1,11 @@
+---
+title: "JML Orchestration — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # JML Orchestration — Decision Flowchart
 
 Event-routing logic: how the IGA engine classifies an HR event and dispatches it to the

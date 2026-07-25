@@ -1,3 +1,11 @@
+---
+title: "IRSA — IAM Roles for Service Accounts (EKS)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IRSA — IAM Roles for Service Accounts (EKS)
 
 **Status:** ✅ Current

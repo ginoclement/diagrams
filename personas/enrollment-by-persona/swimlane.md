@@ -1,3 +1,11 @@
+---
+title: "Enrollment by Persona — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Enrollment by Persona — Swimlane Diagram
 
 The initiator differs per persona: IT pushes for workforce, the user pulls for consumer, the

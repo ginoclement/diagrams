@@ -1,3 +1,11 @@
+---
+title: "Account Unlock"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Account Unlock
 
 **Status:** ✅ Current

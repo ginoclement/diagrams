@@ -1,3 +1,11 @@
+---
+title: "Privileged Session Recording and Monitoring — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Privileged Session Recording and Monitoring — Decision Flowchart
 
 The gates between an operator and a target, and the per-command loop that can block or

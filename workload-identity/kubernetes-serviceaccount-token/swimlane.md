@@ -1,3 +1,11 @@
+---
+title: "Kubernetes Projected ServiceAccount Token — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Kubernetes Projected ServiceAccount Token — Swimlane Diagram
 
 One lane per actor. The kubelet mints and projects the token; the workload exchanges it; the

@@ -1,3 +1,11 @@
+---
+title: "Constrained Delegation — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Constrained Delegation — Swimlane Diagram
 
 Lanes show who holds which secret: the front end owns the `PA-FOR-USER` checksum

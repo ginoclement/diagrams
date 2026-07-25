@@ -1,3 +1,11 @@
+---
+title: "OIDC to Cloud Federation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OIDC to Cloud Federation — Decision Flowchart
 
 Every gate the cloud STS applies before handing back credentials, plus the deprecated

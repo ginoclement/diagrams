@@ -1,3 +1,11 @@
+---
+title: "TGS Exchange — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # TGS Exchange — Decision Flowchart
 
 TGS-side decision logic for a TGS-REQ, with explicit error terminals.

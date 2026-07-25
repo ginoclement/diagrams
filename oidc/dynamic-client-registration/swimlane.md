@@ -1,3 +1,12 @@
+---
+title: "Dynamic Client Registration — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7591, RFC 7592"
+---
+
 # Dynamic Client Registration — Swimlane
 
 The Client drives registration and self-management; the Directory issues software

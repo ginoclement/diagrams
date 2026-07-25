@@ -1,3 +1,11 @@
+---
+title: "Magic Link — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Magic Link — Swimlane
 
 ```mermaid

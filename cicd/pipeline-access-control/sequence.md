@@ -1,3 +1,11 @@
+---
+title: "Pipeline Access Control — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Pipeline Access Control — Sequence Diagram
 
 Happy path first (trusted contributor triggers a run with a least-privilege job token),

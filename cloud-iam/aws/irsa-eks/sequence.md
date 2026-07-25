@@ -1,3 +1,11 @@
+---
+title: "IRSA on EKS — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IRSA on EKS — Sequence Diagram
 
 Happy path first (pod assumes its role via a projected OIDC token), then token rotation,

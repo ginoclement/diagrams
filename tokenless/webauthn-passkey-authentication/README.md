@@ -1,3 +1,11 @@
+---
+title: "WebAuthn / Passkey Authentication Ceremony"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # WebAuthn / Passkey Authentication Ceremony
 
 **Status:** ✅ Current

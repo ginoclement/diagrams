@@ -1,3 +1,12 @@
+---
+title: "mTLS Client Auth and Certificate-Bound Tokens — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 8705"
+---
+
 # mTLS Client Auth and Certificate-Bound Tokens — Decision Flowchart
 
 From client authentication method through token binding and the resource-server

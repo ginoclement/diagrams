@@ -1,3 +1,11 @@
+---
+title: "Choosing Workload Cloud Authentication — Decision Tree"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Choosing Workload Cloud Authentication — Decision Tree
 
 Leaves name the recommended mechanism. Long-lived static keys are ⛔ with their replacement.

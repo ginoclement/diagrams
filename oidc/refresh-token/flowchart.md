@@ -1,3 +1,11 @@
+---
+title: "Refresh Token Grant — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Refresh Token Grant — Decision Flowchart
 
 The authorization server's view: rotation, reuse detection, and the sliding vs

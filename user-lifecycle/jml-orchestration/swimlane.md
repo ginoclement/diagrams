@@ -1,3 +1,11 @@
+---
+title: "JML Orchestration — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # JML Orchestration — Swimlane Diagram
 
 One lane per actor across the whole lifecycle. The IGA lane is the hub that classifies each

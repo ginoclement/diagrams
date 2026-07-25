@@ -1,3 +1,11 @@
+---
+title: "Identity-Aware Proxy — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Identity-Aware Proxy — Swimlane Diagram
 
 One lane per actor. The IAP lane gates every request before the Backend lane is reached.

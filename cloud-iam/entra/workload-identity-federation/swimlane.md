@@ -1,3 +1,11 @@
+---
+title: "Entra Workload Identity Federation — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Entra Workload Identity Federation — Swimlane Diagram
 
 One lane per actor. The assertion is minted in the ExtIdP lane and verified in the Entra lane;

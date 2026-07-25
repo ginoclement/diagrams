@@ -1,3 +1,11 @@
+---
+title: "Secretless Instance Identity — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Secretless Instance Identity — Sequence Diagram
 
 Happy path first: AWS IMDSv2 session token then credentials, and the GCP/Azure header

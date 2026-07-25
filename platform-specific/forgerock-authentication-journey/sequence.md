@@ -1,3 +1,11 @@
+---
+title: "ForgeRock / PingAM Authentication Journey — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # ForgeRock / PingAM Authentication Journey — Sequence Diagram
 
 Happy path: the client POSTs to `/authenticate`, AM returns `authId` + callbacks per

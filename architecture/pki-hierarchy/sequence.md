@@ -1,3 +1,11 @@
+---
+title: "PKI Hierarchy — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # PKI Hierarchy — Sequence Diagram
 
 Two linked runtime flows: (1) an end entity enrolls and the issuing CA signs a leaf

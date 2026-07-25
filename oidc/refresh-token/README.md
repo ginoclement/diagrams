@@ -1,3 +1,11 @@
+---
+title: "OAuth 2.0 / OIDC Refresh Token Grant"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OAuth 2.0 / OIDC Refresh Token Grant
 
 **Status:** ✅ Current

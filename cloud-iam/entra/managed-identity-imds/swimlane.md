@@ -1,3 +1,11 @@
+---
+title: "Managed Identity via IMDS — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Managed Identity via IMDS — Swimlane Diagram
 
 One lane per actor. Token acquisition spans the App and IMDS lanes; issuance is in the Entra lane.

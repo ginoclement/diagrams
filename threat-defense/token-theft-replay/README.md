@@ -1,3 +1,11 @@
+---
+title: "Token Theft & Replay"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Token Theft & Replay
 
 **Status:** ✅ Current (active threat; defenses current)

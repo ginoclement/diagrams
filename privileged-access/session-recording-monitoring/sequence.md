@@ -1,3 +1,11 @@
+---
+title: "Privileged Session Recording and Monitoring — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Privileged Session Recording and Monitoring — Sequence Diagram
 
 Happy path first (brokered session, per-command policy, sealed recording), then the

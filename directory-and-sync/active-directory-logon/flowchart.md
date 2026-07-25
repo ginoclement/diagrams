@@ -1,3 +1,11 @@
+---
+title: "Active Directory Interactive Logon — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Active Directory Interactive Logon — Decision Flowchart
 
 Logon-stack decision logic: choose Kerberos, fall back to NTLM (Legacy), or cached logon,

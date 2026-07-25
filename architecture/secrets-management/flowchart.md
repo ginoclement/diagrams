@@ -1,3 +1,11 @@
+---
+title: "Secrets Management — Access Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Secrets Management — Access Decision Flowchart
 
 The store's decision path for a secret request: seal state, caller authentication, policy

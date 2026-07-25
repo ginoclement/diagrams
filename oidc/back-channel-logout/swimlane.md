@@ -1,3 +1,11 @@
+---
+title: "Back-Channel Logout — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Back-Channel Logout — Swimlane Diagram
 
 One lane per actor. Note the browser lane goes quiet after triggering logout —

@@ -1,3 +1,11 @@
+---
+title: "Workload Identity Federation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Workload Identity Federation — Decision Flowchart
 
 Provider validation, attribute mapping, and the federate-then-impersonate decision. Rejections

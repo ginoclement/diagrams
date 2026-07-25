@@ -1,3 +1,11 @@
+---
+title: "AWS IAM Identity Center SSO (formerly AWS SSO)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # AWS IAM Identity Center SSO (formerly AWS SSO)
 
 **Status:** ✅ Current

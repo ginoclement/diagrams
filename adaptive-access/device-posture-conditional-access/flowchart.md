@@ -1,3 +1,11 @@
+---
+title: "Device Posture Conditional Access — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Device Posture Conditional Access — Decision Flowchart
 
 Identity plus device conditions mapped to grant / limited / block. The device gates sit

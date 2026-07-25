@@ -1,3 +1,11 @@
+---
+title: "IdP-Initiated SSO — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IdP-Initiated SSO — Swimlane Diagram
 
 Lanes for User, Browser, IdP, SP. The flow begins in the IdP lane (portal), the

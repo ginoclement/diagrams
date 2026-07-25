@@ -1,3 +1,11 @@
+---
+title: "Back-Channel Logout — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Back-Channel Logout — Sequence Diagram
 
 Happy path: IdP POSTs a logout token to each RP in the terminated session; RPs

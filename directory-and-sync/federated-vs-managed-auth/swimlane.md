@@ -1,3 +1,11 @@
+---
+title: "Federated vs Managed Authentication — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Federated vs Managed Authentication — Swimlane Diagram
 
 One lane per actor. The Cloud lane's routing decision sends the flow either fully cloud-side

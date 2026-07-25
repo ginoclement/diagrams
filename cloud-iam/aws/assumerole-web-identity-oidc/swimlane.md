@@ -1,3 +1,11 @@
+---
+title: "AssumeRoleWithWebIdentity — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # AssumeRoleWithWebIdentity — Swimlane Diagram
 
 One lane per actor. The JWT crosses from the IdP through the workload to STS; STS pulls

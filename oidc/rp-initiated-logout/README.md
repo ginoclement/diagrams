@@ -1,3 +1,11 @@
+---
+title: "RP-Initiated Logout"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # RP-Initiated Logout
 
 **Status:** ✅ Current

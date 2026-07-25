@@ -1,3 +1,11 @@
+---
+title: "Workload Identity Federation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Workload Identity Federation — Decision Flowchart
 
 The STS validation gates in order, from token receipt to credential issuance, with each

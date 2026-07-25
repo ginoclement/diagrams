@@ -1,3 +1,11 @@
+---
+title: "Group Membership Sync — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Group Membership Sync — Sequence Diagram
 
 Happy path first (flatten, diff, grant and revoke), then circular nesting, member not yet

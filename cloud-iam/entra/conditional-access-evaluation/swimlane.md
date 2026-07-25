@@ -1,3 +1,11 @@
+---
+title: "Conditional Access Evaluation — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Conditional Access Evaluation — Swimlane
 
 One lane per actor. The Entra lane hosts the policy engine; interrupts cross back to the

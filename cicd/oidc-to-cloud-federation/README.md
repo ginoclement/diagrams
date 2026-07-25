@@ -1,3 +1,11 @@
+---
+title: "OIDC Federation from CI to Cloud (Keyless Deploy)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OIDC Federation from CI to Cloud (Keyless Deploy)
 
 **Status:** 🔵 Emerging

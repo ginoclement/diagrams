@@ -1,3 +1,11 @@
+---
+title: "Magic Link — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Magic Link — Sequence Diagram
 
 Happy path: request link, receive email, click, session established. Alternates:

@@ -1,3 +1,11 @@
+---
+title: "Kerberoasting — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Kerberoasting — Sequence Diagram
 
 The attack path (request SPN tickets, crack offline), then the defenses: gMSA/strong

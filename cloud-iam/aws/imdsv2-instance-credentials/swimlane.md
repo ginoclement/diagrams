@@ -1,3 +1,11 @@
+---
+title: "IMDSv2 Instance Credentials — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IMDSv2 Instance Credentials — Swimlane Diagram
 
 One lane per actor. The token handshake and credential fetch span the App and IMDS lanes; the

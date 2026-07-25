@@ -1,3 +1,11 @@
+---
+title: "AP Exchange — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # AP Exchange — Swimlane Diagram
 
 One lane per actor; arrows crossing lanes are protocol handoffs.

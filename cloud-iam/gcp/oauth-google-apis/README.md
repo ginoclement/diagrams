@@ -1,3 +1,11 @@
+---
+title: "3-Legged OAuth to Google APIs"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # 3-Legged OAuth to Google APIs
 
 **Status:** ✅ Current

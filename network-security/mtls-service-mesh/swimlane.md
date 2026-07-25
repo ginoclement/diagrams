@@ -1,3 +1,11 @@
+---
+title: "mTLS in a Service Mesh — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # mTLS in a Service Mesh — Swimlane
 
 Zones are the control plane and two workload pods. Note that each app talks plaintext to

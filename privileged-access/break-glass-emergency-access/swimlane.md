@@ -1,3 +1,11 @@
+---
+title: "Break-Glass Emergency Access — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Break-Glass Emergency Access — Swimlane Diagram
 
 One lane per actor. Alerting runs in parallel with the whole flow, not after it.

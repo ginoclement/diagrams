@@ -1,3 +1,11 @@
+---
+title: "Credential Vault Check-Out / Check-In — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Credential Vault Check-Out / Check-In — Sequence Diagram
 
 Happy path first (brokered check-out, session, check-in with rotation), then alternates:

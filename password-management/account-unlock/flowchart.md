@@ -1,3 +1,11 @@
+---
+title: "Account Unlock — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Account Unlock — Decision Flowchart
 
 Branch-focused view: detect lockout, auto-unlock after cool-down, identity proof for

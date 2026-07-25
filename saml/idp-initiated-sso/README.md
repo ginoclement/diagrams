@@ -1,3 +1,11 @@
+---
+title: "IdP-Initiated Web Browser SSO"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IdP-Initiated Web Browser SSO
 
 **Status:** ✅ Current

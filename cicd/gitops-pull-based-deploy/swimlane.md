@@ -1,3 +1,11 @@
+---
+title: "GitOps Pull-Based Deploy — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # GitOps Pull-Based Deploy — Swimlane Diagram
 
 One lane per component. Note the arrow direction: the Reconciler lane reaches **out** to Git

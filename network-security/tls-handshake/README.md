@@ -1,3 +1,12 @@
+---
+title: "TLS 1.3 Handshake"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 8446"
+---
+
 # TLS 1.3 Handshake
 
 **Status:** ✅ Current

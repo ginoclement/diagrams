@@ -1,3 +1,11 @@
+---
+title: "Personas — Identity Archetypes and Flow Variance"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Personas — Identity Archetypes and Flow Variance
 
 **Status:** ✅ Current

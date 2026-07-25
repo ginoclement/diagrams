@@ -1,3 +1,11 @@
+---
+title: "Authenticated Password Change — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Authenticated Password Change — Sequence Diagram
 
 Happy path: a logged-in user reauthenticates with the current password, the new

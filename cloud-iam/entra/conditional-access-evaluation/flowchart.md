@@ -1,3 +1,11 @@
+---
+title: "Conditional Access Evaluation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Conditional Access Evaluation — Decision Flowchart
 
 Signal-by-signal evaluation. Block and deny paths terminate explicitly; remediable

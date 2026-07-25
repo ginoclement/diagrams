@@ -1,3 +1,11 @@
+---
+title: "SPNEGO over HTTP — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SPNEGO over HTTP — Swimlane Diagram
 
 One lane per actor; arrows crossing lanes are HTTP or Kerberos handoffs.

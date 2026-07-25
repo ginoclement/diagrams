@@ -1,3 +1,11 @@
+---
+title: "Implicit Flow — Swimlane (Deprecated)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: true
+---
+
 # Implicit Flow — Swimlane (Deprecated)
 
 Note that tokens cross the Browser lane in the URL itself — the structural flaw that

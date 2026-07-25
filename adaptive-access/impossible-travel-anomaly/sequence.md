@@ -1,3 +1,11 @@
+---
+title: "Impossible Travel / Anomalous Session — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Impossible Travel / Anomalous Session — Sequence Diagram
 
 Happy path first (feasible travel, allowed), then the impossible-travel step-up, the

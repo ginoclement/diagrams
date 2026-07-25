@@ -1,3 +1,12 @@
+---
+title: "Pushed Authorization Requests — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9126"
+---
+
 # Pushed Authorization Requests — Sequence Diagram
 
 Happy path: push the request, get a `request_uri`, redirect with it, redeem the

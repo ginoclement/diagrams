@@ -1,3 +1,11 @@
+---
+title: "Federation Topology — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Federation Topology — Sequence Diagram
 
 A brokered login: the user starts at a downstream SP, the broker performs home-realm

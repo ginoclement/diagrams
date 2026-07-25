@@ -1,3 +1,11 @@
+---
+title: "Enrollment & Update (Registering and Updating Credentials, Devices, and Profile Data)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Enrollment & Update (Registering and Updating Credentials, Devices, and Profile Data)
 
 Before an identity can be used, its **authenticators, devices, credentials, and contact

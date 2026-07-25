@@ -1,3 +1,11 @@
+---
+title: "EC2 Instance Credentials via IMDSv2"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # EC2 Instance Credentials via IMDSv2
 
 **Status:** ✅ Current

@@ -1,3 +1,11 @@
+---
+title: "Kerberos AP Exchange (AP-REQ / AP-REP)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Kerberos AP Exchange (AP-REQ / AP-REP)
 
 **Status:** ✅ Current

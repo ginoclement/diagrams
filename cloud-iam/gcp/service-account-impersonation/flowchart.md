@@ -1,3 +1,11 @@
+---
+title: "Service Account Impersonation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Service Account Impersonation — Decision Flowchart
 
 Token Creator checks, delegation, and token-type selection with explicit error terminals.

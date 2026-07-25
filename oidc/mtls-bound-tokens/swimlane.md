@@ -1,3 +1,12 @@
+---
+title: "mTLS Client Auth and Certificate-Bound Tokens — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 8705"
+---
+
 # mTLS Client Auth and Certificate-Bound Tokens — Swimlane
 
 The Client presents the same certificate at the token endpoint and the API; the API

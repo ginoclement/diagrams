@@ -1,3 +1,11 @@
+---
+title: "OIDC Session Management — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # OIDC Session Management — Swimlane
 
 The Browser hosts both iframes and relays `postMessage`; the Client owns polling and

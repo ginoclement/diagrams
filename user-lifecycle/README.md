@@ -1,3 +1,11 @@
+---
+title: "User Lifecycle & Identity Governance (Joiner-Mover-Leaver)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # User Lifecycle & Identity Governance (Joiner-Mover-Leaver)
 
 Identity governance is the discipline of ensuring the **right people have the right access

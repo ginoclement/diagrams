@@ -1,3 +1,11 @@
+---
+title: "Service Account Impersonation — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Service Account Impersonation — Swimlane Diagram
 
 One lane per actor. The delegation branch shows an intermediate SA hop.

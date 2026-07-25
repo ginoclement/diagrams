@@ -1,3 +1,11 @@
+---
+title: "platform-specific — Vendor-Specific Identity Flows"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # platform-specific — Vendor-Specific Identity Flows
 
 This category captures the flows that are **unique to a specific IAM product** —

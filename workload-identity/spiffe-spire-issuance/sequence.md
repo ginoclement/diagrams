@@ -1,3 +1,11 @@
+---
+title: "SPIFFE / SPIRE Issuance — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SPIFFE / SPIRE Issuance — Sequence Diagram
 
 Happy path first: node attestation, then a workload fetching an X.509-SVID. Alternates:

@@ -1,3 +1,11 @@
+---
+title: "Header-Based SSO — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Header-Based SSO — Decision Flowchart
 
 Two decision surfaces: the proxy (authentication, header hygiene) and the app

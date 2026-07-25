@@ -1,3 +1,11 @@
+---
+title: "AP Exchange — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # AP Exchange — Decision Flowchart
 
 Service-side decision logic for an AP-REQ, with explicit error terminals.

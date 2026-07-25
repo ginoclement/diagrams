@@ -1,3 +1,11 @@
+---
+title: "Policy Decision and Enforcement — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Policy Decision and Enforcement — Swimlane Diagram
 
 One lane per component. The PEP enforces; the PDP decides; the PIP supplies missing attributes; the

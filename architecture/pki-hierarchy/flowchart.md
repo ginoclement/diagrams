@@ -1,3 +1,11 @@
+---
+title: "PKI Hierarchy — Certificate Path Validation Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # PKI Hierarchy — Certificate Path Validation Flowchart
 
 The relying party's decision path when validating a presented certificate: chain

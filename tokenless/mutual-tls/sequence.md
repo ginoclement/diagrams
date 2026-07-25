@@ -1,3 +1,11 @@
+---
+title: "Mutual TLS — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Mutual TLS — Sequence Diagram
 
 Happy path: TLS 1.3-style handshake with client authentication, validation, and

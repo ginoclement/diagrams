@@ -1,3 +1,11 @@
+---
+title: "GitOps Pull-Based Deployment (In-Cluster Reconciler)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # GitOps Pull-Based Deployment (In-Cluster Reconciler)
 
 **Status:** 🔵 Emerging

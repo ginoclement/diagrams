@@ -1,3 +1,11 @@
+---
+title: "Front-Channel Logout — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Front-Channel Logout — Decision Flowchart
 
 Decision logic from the IdP emitting iframes through each RP's handling of the

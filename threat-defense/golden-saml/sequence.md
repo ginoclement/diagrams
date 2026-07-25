@@ -1,3 +1,11 @@
+---
+title: "Golden SAML — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Golden SAML — Sequence Diagram
 
 The attack path (forging a SAML assertion with a stolen signing key), then the defenses

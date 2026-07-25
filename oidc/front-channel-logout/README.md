@@ -1,3 +1,11 @@
+---
+title: "Front-Channel Logout"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Front-Channel Logout
 
 **Status:** ✅ Current

@@ -1,3 +1,11 @@
+---
+title: "IMDSv2 Instance Credentials — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IMDSv2 Instance Credentials — Decision Flowchart
 
 The version/token gates IMDS applies, with explicit deny and 404 terminals. The IMDSv1 branch is

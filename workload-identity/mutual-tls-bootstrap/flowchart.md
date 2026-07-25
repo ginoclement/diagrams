@@ -1,3 +1,11 @@
+---
+title: "Mutual TLS Bootstrap — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Mutual TLS Bootstrap — Decision Flowchart
 
 Every gate from keypair generation through attestation and authorization to a usable mTLS

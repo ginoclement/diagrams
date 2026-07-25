@@ -1,3 +1,11 @@
+---
+title: "Auth0 Universal Login + Actions — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Auth0 Universal Login + Actions — Sequence Diagram
 
 Happy path: app hits `/authorize`, user authenticates at Universal Login, Auth0 runs

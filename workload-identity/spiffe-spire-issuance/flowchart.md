@@ -1,3 +1,11 @@
+---
+title: "SPIFFE / SPIRE Issuance — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # SPIFFE / SPIRE Issuance — Decision Flowchart
 
 Every gate from node attestation through workload attestation to SVID issuance, with

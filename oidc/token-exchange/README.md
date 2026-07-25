@@ -1,3 +1,12 @@
+---
+title: "OAuth 2.0 Token Exchange (RFC 8693)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 8693"
+---
+
 # OAuth 2.0 Token Exchange (RFC 8693)
 
 **Status:** 🔵 Emerging

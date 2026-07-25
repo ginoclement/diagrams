@@ -1,3 +1,12 @@
+---
+title: "Device Authorization Grant — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 8628"
+---
+
 # Device Authorization Grant — Swimlane Diagram
 
 One lane per actor; arrows crossing lanes are handoffs between the constrained

@@ -1,3 +1,11 @@
+---
+title: "Policy Decision and Enforcement (PEP / PDP / PIP / PAP)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Policy Decision and Enforcement (PEP / PDP / PIP / PAP)
 
 **Status:** ✅ Current

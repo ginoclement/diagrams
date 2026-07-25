@@ -1,3 +1,11 @@
+---
+title: "MFA Factors — Comparison"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # MFA Factors — Comparison
 
 | Option | Status | When to use | When NOT to use | Key tradeoffs | Security notes |

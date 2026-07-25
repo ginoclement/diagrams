@@ -1,3 +1,11 @@
+---
+title: "Enrollment by Persona — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Enrollment by Persona — Sequence Diagram
 
 Each `alt` branch differs in who starts enrolment and how identity is proven before a factor

@@ -1,3 +1,11 @@
+---
+title: "Choosing an Authentication Protocol — Decision Tree"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Choosing an Authentication Protocol — Decision Tree
 
 Leaves are rounded nodes naming the recommended protocol. Selection criteria are diamonds.

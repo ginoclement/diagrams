@@ -1,3 +1,11 @@
+---
+title: "Kerberos Unconstrained Delegation"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: true
+---
+
 # Kerberos Unconstrained Delegation
 
 **Status:** ⛔ Deprecated

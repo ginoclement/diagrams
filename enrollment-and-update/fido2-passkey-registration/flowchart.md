@@ -1,3 +1,11 @@
+---
+title: "FIDO2 / Passkey Registration — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # FIDO2 / Passkey Registration — Decision Flowchart
 
 Client-side branching (attachment, exclude list, user verification) followed by the

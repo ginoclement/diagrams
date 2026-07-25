@@ -1,3 +1,11 @@
+---
+title: "IdP-Initiated SSO — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IdP-Initiated SSO — Sequence Diagram
 
 Happy path: user clicks an app tile on the IdP portal and the IdP posts an unsolicited

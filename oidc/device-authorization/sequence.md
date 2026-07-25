@@ -1,3 +1,12 @@
+---
+title: "Device Authorization Grant — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 8628"
+---
+
 # Device Authorization Grant — Sequence Diagram
 
 RFC 8628 device flow: a smart TV / CLI obtains tokens by having the user approve

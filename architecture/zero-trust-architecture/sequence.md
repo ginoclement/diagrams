@@ -1,3 +1,11 @@
+---
+title: "Zero Trust Architecture — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Zero Trust Architecture — Sequence Diagram
 
 A resource request evaluated by the PDP: the PEP intercepts, the Policy Engine gathers

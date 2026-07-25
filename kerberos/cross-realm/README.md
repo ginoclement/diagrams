@@ -1,3 +1,11 @@
+---
+title: "Kerberos Cross-Realm Authentication"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Kerberos Cross-Realm Authentication
 
 **Status:** ✅ Current

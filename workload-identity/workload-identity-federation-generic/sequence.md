@@ -1,3 +1,11 @@
+---
+title: "Workload Identity Federation — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Workload Identity Federation — Sequence Diagram
 
 Happy path first: obtain platform OIDC token, exchange at the target STS, call the API.

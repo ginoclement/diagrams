@@ -1,3 +1,11 @@
+---
+title: "API Gateway Authentication & Authorization (BFF Pattern)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # API Gateway Authentication & Authorization (BFF Pattern)
 
 **Status:** ✅ Current

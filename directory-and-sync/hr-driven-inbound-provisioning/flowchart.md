@@ -1,3 +1,11 @@
+---
+title: "HR-Driven Inbound Provisioning — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # HR-Driven Inbound Provisioning — Decision Flowchart
 
 Per-record decision logic from HR delta to lifecycle action, with explicit quarantine and

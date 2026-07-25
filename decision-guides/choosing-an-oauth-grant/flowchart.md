@@ -1,3 +1,11 @@
+---
+title: "Choosing an OAuth 2.0 Grant — Decision Tree"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Choosing an OAuth 2.0 Grant — Decision Tree
 
 Leaves name the recommended grant; deprecated grants are ⛔ with their replacement.

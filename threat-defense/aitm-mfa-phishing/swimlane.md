@@ -1,3 +1,11 @@
+---
+title: "AiTM MFA Phishing — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # AiTM MFA Phishing — Swimlane Diagram
 
 Lanes for Attacker, Victim, IdP, and Defender controls. Solid arrows are the relay/replay path;

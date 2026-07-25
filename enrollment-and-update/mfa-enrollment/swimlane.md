@@ -1,3 +1,12 @@
+---
+title: "MFA Enrollment — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 6238"
+---
+
 # MFA Enrollment — Swimlane
 
 Lanes for each actor: the User drives the UI, the Browser renders the QR and posts the

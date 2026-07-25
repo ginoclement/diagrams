@@ -1,3 +1,11 @@
+---
+title: "Workload / Non-Human Identity Diagrams"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Workload / Non-Human Identity Diagrams
 
 How software — services, jobs, CI runners, pods, VMs — proves *who it is* without a human

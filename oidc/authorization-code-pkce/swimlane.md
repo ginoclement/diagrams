@@ -1,3 +1,12 @@
+---
+title: "Authorization Code + PKCE — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7636"
+---
+
 # Authorization Code + PKCE — Swimlane
 
 The App lane covers the public client (SPA or native app); the interception branch shows

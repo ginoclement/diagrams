@@ -1,3 +1,11 @@
+---
+title: "Golden & Silver Ticket — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Golden & Silver Ticket — Sequence Diagram
 
 Two forgery paths — Golden (forged TGT from the krbtgt key) and Silver (forged service

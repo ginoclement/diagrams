@@ -1,3 +1,11 @@
+---
+title: "Admin-Initiated Password Reset"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Admin-Initiated Password Reset
 
 **Status:** ✅ Current

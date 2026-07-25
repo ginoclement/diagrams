@@ -1,3 +1,11 @@
+---
+title: "Choosing a Kerberos Delegation Model — Decision Tree"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Choosing a Kerberos Delegation Model — Decision Tree
 
 Leaves name the recommended model. Unconstrained delegation is ⛔ with its replacement.

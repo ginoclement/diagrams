@@ -1,3 +1,11 @@
+---
+title: "Primary Refresh Token — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Primary Refresh Token — Sequence Diagram
 
 Happy path first (interactive logon issues the PRT, then a brokered app token), followed

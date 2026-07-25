@@ -1,3 +1,11 @@
+---
+title: "Ephemeral Runner Isolation — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Ephemeral Runner Isolation — Sequence Diagram
 
 Happy path first (a trusted job runs on a fresh, isolated, single-use runner that is destroyed

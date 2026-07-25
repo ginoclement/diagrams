@@ -1,3 +1,12 @@
+---
+title: "Token Introspection — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 7662"
+---
+
 # Token Introspection — Decision Flowchart
 
 From receiving a bearer token to the enforcement decision, with explicit error

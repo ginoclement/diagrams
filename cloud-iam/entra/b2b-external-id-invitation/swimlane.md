@@ -1,3 +1,11 @@
+---
+title: "B2B Guest Invitation and Redemption — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # B2B Guest Invitation and Redemption — Swimlane
 
 One lane per actor. Authentication crosses into the Home IdP lane; authorization stays in

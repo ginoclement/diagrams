@@ -1,3 +1,11 @@
+---
+title: "Hybrid Flow (code id_token) — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Hybrid Flow (code id_token) — Decision Flowchart
 
 Dual ID-token validation with c_hash as the gate before the code is redeemed.

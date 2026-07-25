@@ -1,3 +1,11 @@
+---
+title: "Federation Topology (Identity Broker / Hub-and-Spoke)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Federation Topology (Identity Broker / Hub-and-Spoke)
 
 **Status:** ✅ Current

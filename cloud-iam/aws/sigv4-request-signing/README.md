@@ -1,3 +1,11 @@
+---
+title: "AWS Signature Version 4 (SigV4) Request Signing"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # AWS Signature Version 4 (SigV4) Request Signing
 
 **Status:** ✅ Current

@@ -1,3 +1,11 @@
+---
+title: "3-Legged OAuth to Google APIs — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # 3-Legged OAuth to Google APIs — Sequence Diagram
 
 Happy path first (consent, code exchange, API call), then alternates: offline refresh,

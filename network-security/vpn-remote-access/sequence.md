@@ -1,3 +1,11 @@
+---
+title: "Remote Access VPN — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Remote Access VPN — Sequence Diagram
 
 Happy path: IKEv2/IPsec-style negotiation with MFA and a passing posture check, then

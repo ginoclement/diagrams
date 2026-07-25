@@ -1,3 +1,11 @@
+---
+title: "Okta Identity Engine Sign-In — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Okta Identity Engine Sign-In — Decision Flowchart
 
 Two-layer policy evaluation: **Global Session Policy** gates the org session,

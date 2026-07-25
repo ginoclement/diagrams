@@ -1,3 +1,11 @@
+---
+title: "Password Expiry and Rotation — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Password Expiry and Rotation — Decision Flowchart
 
 Branch-focused view: after a valid login, decide whether the password is expired or

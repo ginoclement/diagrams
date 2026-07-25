@@ -1,3 +1,11 @@
+---
+title: "Directory Services & Synchronization"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Directory Services & Synchronization
 
 How identities are stored, authenticated against, and synchronized between on-prem

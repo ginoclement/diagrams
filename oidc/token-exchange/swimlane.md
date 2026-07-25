@@ -1,3 +1,12 @@
+---
+title: "Token Exchange — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 8693"
+---
+
 # Token Exchange — Swimlane
 
 The IdP (STS) lane decides delegation vs impersonation and enforces `may_act`; the

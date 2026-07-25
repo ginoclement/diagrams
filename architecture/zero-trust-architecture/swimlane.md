@@ -1,3 +1,11 @@
+---
+title: "Zero Trust Architecture — Control / Data Plane Zone Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Zero Trust Architecture — Control / Data Plane Zone Diagram
 
 Components split into the untrusted access zone, the data-plane enforcement path, the

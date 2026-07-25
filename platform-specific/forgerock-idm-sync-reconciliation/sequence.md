@@ -1,3 +1,11 @@
+---
+title: "ForgeRock IDM — Sync & Reconciliation Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # ForgeRock IDM — Sync & Reconciliation Sequence Diagram
 
 Happy path shows both mechanisms: **implicit sync** pushes a single change out

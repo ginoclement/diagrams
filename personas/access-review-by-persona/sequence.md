@@ -1,3 +1,11 @@
+---
+title: "Access Review by Persona — Sequence Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Access Review by Persona — Sequence Diagram
 
 The persona is resolved first, then each `alt` branch shows the cadence, approver, and default

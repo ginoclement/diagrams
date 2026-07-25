@@ -1,3 +1,12 @@
+---
+title: "JAR / JARM — Swimlane"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+rfc: "RFC 9101"
+---
+
 # JAR / JARM — Swimlane
 
 The Client signs the request object and verifies the response JWT; the IdP verifies

@@ -1,3 +1,11 @@
+---
+title: "CIBA — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # CIBA — Swimlane Diagram
 
 Poll-mode happy path with the ping-mode shortcut shown as a dashed handoff.

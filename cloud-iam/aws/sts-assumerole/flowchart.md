@@ -1,3 +1,11 @@
+---
+title: "STS AssumeRole — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # STS AssumeRole — Decision Flowchart
 
 Every gate STS and IAM apply to an `AssumeRole` call, with explicit deny terminals.

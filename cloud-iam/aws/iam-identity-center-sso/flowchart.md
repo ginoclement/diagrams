@@ -1,3 +1,11 @@
+---
+title: "IAM Identity Center SSO — Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IAM Identity Center SSO — Decision Flowchart
 
 Authentication, assignment, and token gates from portal/CLI sign-in to credentials.

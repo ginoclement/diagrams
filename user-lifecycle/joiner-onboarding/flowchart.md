@@ -1,3 +1,11 @@
+---
+title: "Joiner — Onboarding Decision Flowchart"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Joiner — Onboarding Decision Flowchart
 
 Provisioning decision logic from HR event to active account, with explicit terminals for

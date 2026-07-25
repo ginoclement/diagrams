@@ -1,3 +1,11 @@
+---
+title: "Kerberos TGS Exchange (TGS-REQ / TGS-REP)"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Kerberos TGS Exchange (TGS-REQ / TGS-REP)
 
 **Status:** ✅ Current

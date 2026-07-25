@@ -1,3 +1,11 @@
+---
+title: "Federated vs Managed Authentication"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Federated vs Managed Authentication
 
 **Status:** ✅ Current

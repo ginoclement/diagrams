@@ -1,3 +1,11 @@
+---
+title: "IRSA on EKS — Swimlane Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # IRSA on EKS — Swimlane Diagram
 
 One lane per actor. The projected token crosses from the cluster into AWS STS.

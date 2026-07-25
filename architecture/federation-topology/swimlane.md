@@ -1,3 +1,11 @@
+---
+title: "Federation Topology — Hub-and-Spoke Zone Diagram"
+creation: 2026-07-25
+lastUpdate: 2026-07-25
+reviewed: false
+deprecated: false
+---
+
 # Federation Topology — Hub-and-Spoke Zone Diagram
 
 The broker sits at the center. Upstream IdPs feed identity in (broker acts as SP);
