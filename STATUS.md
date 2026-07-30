@@ -8,7 +8,7 @@ deprecated: false
 
 # Review Status Dashboard
 
-**0 / 173 diagrams reviewed.**
+**0 / 174 diagrams reviewed.**
 
 Generated from each diagram's frontmatter `reviewed` flag and its Status line. Flip
 `reviewed: true` in a diagram's README frontmatter once it has had a human technical review.
@@ -178,6 +178,7 @@ Generated from each diagram's frontmatter `reviewed` flag and its Status line. F
 | Diagram | Status | Reviewed | RFC |
 |---|---|---|---|
 | [API Gateway Authentication & Authorization (BFF Pattern)](infrastructure/architecture/api-gateway-authn-authz/README.md) | ✅ | ☐ |  |
+| [Enterprise Identity Environment](infrastructure/architecture/enterprise-identity-environment/README.md) | ✅ | ☐ |  |
 | [Federation Topology (Identity Broker / Hub-and-Spoke)](infrastructure/architecture/federation-topology/README.md) | ✅ | ☐ |  |
 | [Identity Provider (IdP) Reference Architecture](infrastructure/architecture/identity-provider-reference-architecture/README.md) | ✅ | ☐ |  |
 | [PKI Trust Hierarchy](infrastructure/architecture/pki-hierarchy/README.md) | ✅ | ☐ |  |

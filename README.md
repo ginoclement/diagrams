@@ -33,10 +33,10 @@ Each diagram README carries a **Status**: ✅ Current · 🟡 Legacy · ⛔ Depr
 | [privileged-access](privileged-access/) | PAM/PIM — vaulting, JIT elevation, break-glass, bastion | 6 |
 | [workload-identity](workload-identity/) | Non-human / workload identity — SPIFFE, federation, k8s tokens | 6 |
 | [platforms](platforms/) | Vendor & cloud implementations — Entra/AWS/GCP, Okta/Auth0/ForgeRock/PocketID | 35 |
-| [infrastructure](infrastructure/) | Supporting systems — reference architecture, network security, CI/CD | 22 |
+| [infrastructure](infrastructure/) | Supporting systems — reference architecture, network security, CI/CD | 23 |
 | [threat-defense](threat-defense/) | Attack-and-defense pairs mapped to the flows they abuse | 8 |
 | [reference](reference/) | Cross-cutting reference — personas and decision guides | 13 |
-| | **Total** | **173** |
+| | **Total** | **174** |
 
 ## Index
 
@@ -217,6 +217,7 @@ Supporting systems — reference architecture, network security, CI/CD.
 
 - **architecture**
   - [API Gateway Authentication & Authorization (BFF Pattern)](infrastructure/architecture/api-gateway-authn-authz/README.md)
+  - [Enterprise Identity Environment](infrastructure/architecture/enterprise-identity-environment/README.md)
   - [Federation Topology (Identity Broker / Hub-and-Spoke)](infrastructure/architecture/federation-topology/README.md)
   - [Identity Provider (IdP) Reference Architecture](infrastructure/architecture/identity-provider-reference-architecture/README.md)
   - [PKI Trust Hierarchy](infrastructure/architecture/pki-hierarchy/README.md)

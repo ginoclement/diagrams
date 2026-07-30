@@ -23,6 +23,7 @@ trusted. Each folder still uses the three-view convention, adapted for architect
 
 | Diagram | Description |
 |---|---|
+| [enterprise-identity-environment](./enterprise-identity-environment/README.md) | Product-oriented map of a real estate — SailPoint, Okta, Entra ID, AD, Workday, CyberArk, apps, users — in two views: a functional systems architecture and a network-security view with ports/protocols. |
 | [identity-provider-reference-architecture](./identity-provider-reference-architecture/README.md) | Internal components of a modern IdP: authentication, token/assertion, session, directory, MFA, admin/policy, audit, and federation — with trust boundaries around each data store. |
 | [federation-topology](./federation-topology/README.md) | Hub-and-spoke identity federation: a broker proxying between many upstream IdPs (SAML/OIDC/social) and downstream SPs, with home-realm discovery and claim normalization. |
 | [zero-trust-architecture](./zero-trust-architecture/README.md) | NIST SP 800-207 zero trust: Policy Decision Point (Policy Engine + Administrator), Policy Enforcement Points, continuous verification, device posture and context signals, no network-location trust. |
