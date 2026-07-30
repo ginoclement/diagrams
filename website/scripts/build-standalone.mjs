@@ -40,6 +40,11 @@ ${body}
 `;
 
 writeFileSync(join(EXP, 'standalone.html'), full);
-const scratch = '/tmp/claude-0/-home-user-diagrams/3ec58028-3e8a-5de2-97b4-c9ee959cf12c/scratchpad/explorer-all-body.html';
-writeFileSync(scratch, body);
-console.log(`Standalone built with ${index.length} flows (${Math.round(full.length/1024)} KB).`);
+
+// Optionally also emit a body-only fragment (used only for publishing an Artifact preview).
+// Enabled by setting EXPLORER_BODY_OUT to a writable path; never required for the site build.
+const bodyOut = process.env.EXPLORER_BODY_OUT;
+if (bodyOut) {
+  try { writeFileSync(bodyOut, body); } catch (e) { console.warn('Skipped body fragment:', e.message); }
+}
+console.log(`Standalone built with ${index.length} flows (${Math.round(full.length / 1024)} KB).`);
