@@ -1,0 +1,68 @@
+{
+  "id": "00000000-0000-0000-0000-000000000301",
+  "name": "Employee Identity Profile",
+  "description": "Template identity profile mapping the authoritative delimited-file source.",
+  "priority": 10,
+  "authoritativeSource": {
+    "type": "SOURCE",
+    "id": "00000000-0000-0000-0000-000000000201",
+    "name": "Delimited File Source"
+  },
+  "identityAttributeConfig": {
+    "enabled": true,
+    "attributeTransforms": [
+      {
+        "identityAttributeName": "uid",
+        "transformDefinition": {
+          "type": "accountAttribute",
+          "attributes": {
+            "sourceName": "Delimited File Source",
+            "attributeName": "employeeId"
+          }
+        }
+      },
+      {
+        "identityAttributeName": "firstname",
+        "transformDefinition": {
+          "type": "accountAttribute",
+          "attributes": {
+            "sourceName": "Delimited File Source",
+            "attributeName": "firstName"
+          }
+        }
+      },
+      {
+        "identityAttributeName": "lastname",
+        "transformDefinition": {
+          "type": "accountAttribute",
+          "attributes": {
+            "sourceName": "Delimited File Source",
+            "attributeName": "lastName"
+          }
+        }
+      },
+      {
+        "identityAttributeName": "email",
+        "transformDefinition": {
+          "type": "reference",
+          "attributes": {
+            "id": "00000000-0000-0000-0000-000000000101",
+            "name": "To Lower Email"
+          }
+        }
+      },
+      {
+        "identityAttributeName": "department",
+        "transformDefinition": {
+          "type": "accountAttribute",
+          "attributes": {
+            "sourceName": "Delimited File Source",
+            "attributeName": "department"
+          }
+        }
+      }
+    ]
+  },
+  "identityExceptionReportReference": null,
+  "hasTimeBasedAttribute": false
+}

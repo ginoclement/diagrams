@@ -1,0 +1,23 @@
+# Example variables for the DEV environment / tenant.
+# Copy to dev.tfvars (gitignored) and edit. Do NOT put credentials here —
+# auth0_domain / auth0_client_id / auth0_client_secret come from TF_VAR_* env vars.
+
+environment          = "dev"
+tenant_friendly_name = "Example CIAM (Dev)"
+support_email        = "support@example.com"
+support_url          = "https://example.com/support"
+
+# Shorter sessions in non-prod are fine.
+session_lifetime_hours      = 24
+idle_session_lifetime_hours = 8
+
+# App URLs (local dev defaults).
+spa_callback_urls = ["http://localhost:3000/callback"]
+spa_logout_urls   = ["http://localhost:3000"]
+spa_web_origins   = ["http://localhost:3000"]
+
+webapp_callback_urls = ["http://localhost:8080/callback"]
+webapp_logout_urls   = ["http://localhost:8080"]
+
+# API audience.
+api_identifier = "https://api.dev.example.com"

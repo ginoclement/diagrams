@@ -1,0 +1,44 @@
+{
+  "id": "00000000-0000-0000-0000-000000000201",
+  "name": "Delimited File Source",
+  "description": "Template flat-file (delimited) authoritative source. Replace with your real source.",
+  "type": "DelimitedFile",
+  "connector": "delimited-file",
+  "connectorClass": "sailpoint.connector.DelimitedFileConnector",
+  "owner": {
+    "type": "IDENTITY",
+    "id": "REPLACE_WITH_OWNER_IDENTITY_ID",
+    "name": "source.owner"
+  },
+  "authoritative": true,
+  "connectionType": "file",
+  "connectorAttributes": {
+    "delimiter": ",",
+    "hasHeader": "true",
+    "includesNames": "true",
+    "quoteChars": "\"",
+    "identityAttribute": "employeeId"
+  },
+  "accountCorrelationConfig": {
+    "type": "ACCOUNT_CORRELATION_CONFIG",
+    "id": "REPLACE_WITH_CORRELATION_CONFIG_ID",
+    "name": "Delimited File Source Account Correlation"
+  },
+  "schemas": [
+    {
+      "name": "account",
+      "nativeObjectType": "account",
+      "identityAttribute": "employeeId",
+      "displayAttribute": "displayName",
+      "attributes": [
+        { "name": "employeeId", "type": "STRING", "isMultiValued": false },
+        { "name": "firstName", "type": "STRING", "isMultiValued": false },
+        { "name": "lastName", "type": "STRING", "isMultiValued": false },
+        { "name": "email", "type": "STRING", "isMultiValued": false },
+        { "name": "department", "type": "STRING", "isMultiValued": false },
+        { "name": "employmentStatus", "type": "STRING", "isMultiValued": false },
+        { "name": "managerId", "type": "STRING", "isMultiValued": false }
+      ]
+    }
+  ]
+}

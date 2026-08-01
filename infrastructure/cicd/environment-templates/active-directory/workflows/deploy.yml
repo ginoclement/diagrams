@@ -1,0 +1,124 @@
+# =============================================================================
+# Active Directory baseline - deployment workflow (TEMPLATE)
+# -----------------------------------------------------------------------------
+# Copy this file to  .github/workflows/deploy.yml  in your dedicated IaC repo.
+#
+# IMPORTANT - this workflow MUST run on a SELF-HOSTED Windows runner that can
+# reach a domain controller and has the RSAT ActiveDirectory PowerShell module
+# installed. GitHub-hosted runners cannot reach an on-prem domain and are NOT
+# usable here. Label your runner  [self-hosted, windows, ad].
+#
+# Behaviour:
+#   * Pull request      -> runs Deploy-ADBaseline.ps1 with -WhatIf (PREVIEW ONLY,
+#                          makes no changes) and posts the output for review.
+#   * Push to main      -> runs the script FOR REAL, gated by the protected
+#                          `production` environment (manual approval + reviewers).
+#
+# Credentials (choose ONE, see README.md):
+#   * gMSA runner identity   - the runner's service logs on as a gMSA with
+#                              delegated rights; NO secret needed, omit -Credential.
+#   * AD_ADMIN secret        - a delegated account's username/password stored as
+#                              GitHub Actions secrets; the job builds a
+#                              [PSCredential] and passes it via -Credential.
+# Never hard-code credentials. Never echo the password.
+# =============================================================================
+name: deploy-ad-baseline
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'active-directory/**'
+      - '.github/workflows/deploy.yml'
+  push:
+    branches: [ main ]
+    paths:
+      - 'active-directory/**'
+      - '.github/workflows/deploy.yml'
+
+# Only run one deployment at a time; queue rather than overlap AD writes.
+concurrency:
+  group: ad-baseline-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # PLAN / PREVIEW - runs on every pull request. -WhatIf only: NO changes.
+  # ---------------------------------------------------------------------------
+  whatif:
+    if: github.event_name == 'pull_request'
+    # Self-hosted Windows runner with domain reachability + ActiveDirectory module.
+    runs-on: [self-hosted, windows, ad]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify ActiveDirectory module is present
+        shell: powershell
+        run: |
+          if (-not (Get-Module -ListAvailable -Name ActiveDirectory)) {
+            Write-Error "ActiveDirectory module not found. Install RSAT AD PowerShell on this runner."
+            exit 1
+          }
+
+      - name: Preview baseline (-WhatIf)
+        shell: powershell
+        env:
+          # AD_DOMAIN_DN is a repo/environment variable (not a secret), e.g.
+          # 'DC=corp,DC=example,DC=com'. AD_TARGET_DC is the DC FQDN (optional).
+          AD_DOMAIN_DN: ${{ vars.AD_DOMAIN_DN }}
+          AD_TARGET_DC: ${{ vars.AD_TARGET_DC }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $common = @{ DomainDN = $env:AD_DOMAIN_DN }
+          if ($env:AD_TARGET_DC) { $common['Server'] = $env:AD_TARGET_DC }
+          # -WhatIf: preview every change, modify nothing.
+          ./active-directory/powershell/Deploy-ADBaseline.ps1 @common -WhatIf -Verbose
+
+  # ---------------------------------------------------------------------------
+  # APPLY - runs only on push to main. Gated by the protected `production`
+  # environment (configure required reviewers / wait timer in repo settings).
+  # ---------------------------------------------------------------------------
+  apply:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, windows, ad]
+    environment: production   # <-- protected environment: manual approval gate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify ActiveDirectory module is present
+        shell: powershell
+        run: |
+          if (-not (Get-Module -ListAvailable -Name ActiveDirectory)) {
+            Write-Error "ActiveDirectory module not found. Install RSAT AD PowerShell on this runner."
+            exit 1
+          }
+
+      - name: Apply baseline (for real)
+        shell: powershell
+        env:
+          AD_DOMAIN_DN: ${{ vars.AD_DOMAIN_DN }}
+          AD_TARGET_DC: ${{ vars.AD_TARGET_DC }}
+          # OPTIONAL credential path. Leave these secrets UNSET when the runner
+          # uses a gMSA identity with delegated rights (recommended).
+          AD_ADMIN_USER: ${{ secrets.AD_ADMIN_USER }}
+          AD_ADMIN_PASSWORD: ${{ secrets.AD_ADMIN_PASSWORD }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $params = @{ DomainDN = $env:AD_DOMAIN_DN }
+          if ($env:AD_TARGET_DC) { $params['Server'] = $env:AD_TARGET_DC }
+
+          # Build a PSCredential only if the AD_ADMIN secrets are provided.
+          # Otherwise rely on the runner's own (gMSA) identity - no secret needed.
+          if ($env:AD_ADMIN_USER -and $env:AD_ADMIN_PASSWORD) {
+            $sec = ConvertTo-SecureString $env:AD_ADMIN_PASSWORD -AsPlainText -Force
+            $params['Credential'] = [System.Management.Automation.PSCredential]::new($env:AD_ADMIN_USER, $sec)
+          }
+
+          # -Confirm:$false so ConfirmImpact='High' actions run unattended in CI
+          # (review already happened on the PR -WhatIf and the environment gate).
+          ./active-directory/powershell/Deploy-ADBaseline.ps1 @params -Confirm:$false -Verbose

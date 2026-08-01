@@ -1,0 +1,145 @@
+# =============================================================================
+# TEMPLATE — copy this file to .github/workflows/deploy.yml in your IaC repo.
+#
+# What it does:
+#   - Pull requests           -> terraform fmt / init / validate / plan (read-only)
+#   - Push to the default branch -> terraform plan + apply, gated by a protected
+#                                   `production` GitHub Environment (manual approval)
+#
+# Auth0 credentials are read from GitHub Actions secrets and exposed to Terraform
+# as TF_VAR_* environment variables:
+#   AUTH0_DOMAIN        -> TF_VAR_auth0_domain
+#   AUTH0_CLIENT_ID     -> TF_VAR_auth0_client_id
+#   AUTH0_CLIENT_SECRET -> TF_VAR_auth0_client_secret
+#
+# Before use:
+#   1. Store those three secrets in the repo (Settings > Secrets and variables > Actions).
+#      For per-environment tenants, store them as Environment secrets on the
+#      matching GitHub Environment instead of repo-wide secrets.
+#   2. Create a protected `production` Environment with required reviewers.
+#   3. Adjust the working-directory and the -var-file to match your layout.
+#   4. Configure terraform/backend.tf for remote state before the first apply.
+#
+# Action versions are pinned to major tags; pin to a commit SHA for stricter supply-chain control.
+# =============================================================================
+
+name: auth0-terraform
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "terraform/**"
+      - ".github/workflows/deploy.yml"
+  push:
+    branches: [main]
+    paths:
+      - "terraform/**"
+      - ".github/workflows/deploy.yml"
+
+# Least-privilege token; the plan job needs to comment on PRs.
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: auth0-terraform-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  TF_IN_AUTOMATION: "true"
+  # Point at the environment you are deploying. Change to prod.tfvars for the
+  # production tenant, or template this per environment.
+  TF_VARFILE: env/prod.tfvars
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # PLAN — runs on PRs and on push. Read-only.
+  # ---------------------------------------------------------------------------
+  plan:
+    name: fmt / validate / plan
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+    env:
+      TF_VAR_auth0_domain: ${{ secrets.AUTH0_DOMAIN }}
+      TF_VAR_auth0_client_id: ${{ secrets.AUTH0_CLIENT_ID }}
+      TF_VAR_auth0_client_secret: ${{ secrets.AUTH0_CLIENT_SECRET }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.8"
+
+      - name: Terraform fmt (check)
+        run: terraform fmt -check -recursive
+
+      - name: Terraform init
+        run: terraform init -input=false
+
+      - name: Terraform validate
+        run: terraform validate -no-color
+
+      - name: Terraform plan
+        id: plan
+        run: terraform plan -input=false -no-color -var-file="${TF_VARFILE}" -out=tfplan
+        continue-on-error: true
+
+      - name: Comment plan on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          PLAN_OUTCOME: ${{ steps.plan.outcome }}
+        with:
+          script: |
+            const outcome = process.env.PLAN_OUTCOME;
+            const body = `### Terraform plan: \`${outcome}\`\n\nReview the full plan in the job logs before merging.`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+      - name: Fail if plan errored
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+  # ---------------------------------------------------------------------------
+  # APPLY — only on push to main, gated by the protected `production` Environment.
+  # ---------------------------------------------------------------------------
+  apply:
+    name: apply (production)
+    needs: plan
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    # Requires a GitHub Environment named `production` with required reviewers.
+    environment: production
+    defaults:
+      run:
+        working-directory: terraform
+    env:
+      TF_VAR_auth0_domain: ${{ secrets.AUTH0_DOMAIN }}
+      TF_VAR_auth0_client_id: ${{ secrets.AUTH0_CLIENT_ID }}
+      TF_VAR_auth0_client_secret: ${{ secrets.AUTH0_CLIENT_SECRET }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.8"
+
+      - name: Terraform init
+        run: terraform init -input=false
+
+      - name: Terraform plan
+        run: terraform plan -input=false -no-color -var-file="${TF_VARFILE}" -out=tfplan
+
+      - name: Terraform apply
+        run: terraform apply -input=false -no-color -auto-approve tfplan

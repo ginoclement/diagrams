@@ -1,0 +1,129 @@
+# Copy to .github/workflows/deploy.yml in your IaC repo.
+#
+# Okta (Terraform) deployment workflow.
+#   - pull_request  -> fmt-check, init, validate, PLAN (read-only, dev)
+#   - push to main  -> plan then APPLY (prod), gated by a protected `production`
+#                      environment that requires manual approval.
+#
+# Okta credentials are passed from GitHub secrets as TF_VAR_* env. Supply EITHER
+# the OAuth trio (OKTA_API_CLIENT_ID / OKTA_API_PRIVATE_KEY / OKTA_API_SCOPES)
+# OR OKTA_API_TOKEN — see okta/README.md.
+
+name: okta-terraform
+
+on:
+  pull_request:
+    paths:
+      - "terraform/**"
+      - ".github/workflows/deploy.yml"
+  push:
+    branches: [main]
+    paths:
+      - "terraform/**"
+      - ".github/workflows/deploy.yml"
+
+# Least privilege for the workflow token.
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: okta-terraform-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  TF_IN_AUTOMATION: "true"
+  # Directory holding the Terraform root module.
+  TF_WORKING_DIR: terraform
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # PLAN — runs on PRs and on pushes to main. Read-only; no apply here.
+  # On PRs it targets dev; on main it targets prod (validated before apply).
+  # ---------------------------------------------------------------------------
+  plan:
+    name: plan (${{ github.event_name == 'push' && 'prod' || 'dev' }})
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
+    env:
+      TF_ENV: ${{ github.event_name == 'push' && 'prod' || 'dev' }}
+      # --- Okta connection / auth from secrets (read-only plan still needs auth) ---
+      TF_VAR_org_name: ${{ secrets.OKTA_ORG_NAME }}
+      TF_VAR_base_url: ${{ secrets.OKTA_BASE_URL }}
+      TF_VAR_api_client_id: ${{ secrets.OKTA_API_CLIENT_ID }}
+      TF_VAR_api_private_key: ${{ secrets.OKTA_API_PRIVATE_KEY }}
+      TF_VAR_api_scopes: ${{ secrets.OKTA_API_SCOPES }}
+      TF_VAR_api_token: ${{ secrets.OKTA_API_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+          terraform_wrapper: false
+
+      - name: Terraform fmt (check)
+        run: terraform fmt -check -recursive
+
+      - name: Terraform init
+        run: terraform init -input=false
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform plan
+        run: terraform plan -input=false -no-color -var-file="env/${TF_ENV}.tfvars" -out=tfplan
+
+      - name: Upload plan artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-${{ env.TF_ENV }}
+          path: ${{ env.TF_WORKING_DIR }}/tfplan
+          retention-days: 5
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------------------
+  # APPLY — only on push to main, after a successful plan. Gated by the
+  # protected `production` environment (configure required reviewers in repo
+  # Settings -> Environments -> production).
+  # ---------------------------------------------------------------------------
+  apply:
+    name: apply (prod)
+    needs: plan
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
+    env:
+      TF_ENV: prod
+      TF_VAR_org_name: ${{ secrets.OKTA_ORG_NAME }}
+      TF_VAR_base_url: ${{ secrets.OKTA_BASE_URL }}
+      TF_VAR_api_client_id: ${{ secrets.OKTA_API_CLIENT_ID }}
+      TF_VAR_api_private_key: ${{ secrets.OKTA_API_PRIVATE_KEY }}
+      TF_VAR_api_scopes: ${{ secrets.OKTA_API_SCOPES }}
+      TF_VAR_api_token: ${{ secrets.OKTA_API_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+          terraform_wrapper: false
+
+      - name: Terraform init
+        run: terraform init -input=false
+
+      # Re-plan on the merged commit, then apply that plan.
+      - name: Terraform plan
+        run: terraform plan -input=false -no-color -var-file="env/${TF_ENV}.tfvars" -out=tfplan
+
+      - name: Terraform apply
+        run: terraform apply -input=false -no-color -auto-approve tfplan

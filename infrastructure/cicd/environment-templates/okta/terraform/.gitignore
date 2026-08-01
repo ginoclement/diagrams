@@ -1,0 +1,21 @@
+# Terraform variable files may contain org-specific values — never commit them.
+# The committed *.example templates are the exception.
+*.tfvars
+!*.tfvars.example
+
+# Terraform state (may contain sensitive metadata).
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Provider plugins / working dir.
+.terraform/
+.terraform.tfstate.lock.info
+
+# Saved plans.
+*.tfplan
+
+# Lock file: commit it for reproducible provider versions in a real repo.
+# Ignored here only because this is a copyable template. Remove this line
+# after copying into your IaC repo so the lock is version-controlled.
+.terraform.lock.hcl

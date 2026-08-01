@@ -1,0 +1,100 @@
+# =============================================================================
+# TEMPLATE - copy this file to .github/workflows/deploy.yml in your IaC repo.
+# Do NOT commit it under this templates directory's real .github/ folder.
+#
+# SailPoint Identity Security Cloud (ISC) - SP-Config deploy pipeline.
+#
+#   Pull request  -> validate JSON + dry-run (preview) import   (read-only)
+#   Push to main  -> import into the tenant, gated by a protected
+#                    `production` GitHub Environment (manual approval)
+#
+# Required GitHub Actions secrets (Settings -> Secrets and variables -> Actions):
+#   SAIL_BASE_URL       e.g. https://TENANT.api.identitynow.com
+#   SAIL_CLIENT_ID      OAuth client id (PAT id or client-credentials client)
+#   SAIL_CLIENT_SECRET  OAuth client secret
+#
+# Store SAIL_CLIENT_ID / SAIL_CLIENT_SECRET as environment-scoped secrets on the
+# protected `production` environment so the apply job cannot run without approval.
+# =============================================================================
+name: sailpoint-isc-spconfig
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "config/**"
+      - "scripts/**"
+      - ".github/workflows/deploy.yml"
+  push:
+    branches: [main]
+    paths:
+      - "config/**"
+      - "scripts/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sailpoint-isc-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # PR: validate every config JSON parses, then run a dry-run/preview import.
+  # No changes are persisted to the tenant.
+  # ---------------------------------------------------------------------------
+  validate-and-preview:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate config JSON
+        run: |
+          fail=0
+          for f in $(find config -name '*.json'); do
+            if node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))"; then
+              echo "OK   $f"
+            else
+              echo "FAIL $f"; fail=1
+            fi
+          done
+          exit $fail
+
+      - name: Dry-run (preview) import
+        env:
+          SAIL_BASE_URL: ${{ secrets.SAIL_BASE_URL }}
+          SAIL_CLIENT_ID: ${{ secrets.SAIL_CLIENT_ID }}
+          SAIL_CLIENT_SECRET: ${{ secrets.SAIL_CLIENT_SECRET }}
+        run: |
+          chmod +x scripts/import.sh
+          ./scripts/import.sh --dry-run
+
+  # ---------------------------------------------------------------------------
+  # main: import into the tenant. Gated by the protected `production`
+  # environment, which requires a reviewer approval before the job runs.
+  # ---------------------------------------------------------------------------
+  import:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate config JSON
+        run: |
+          fail=0
+          for f in $(find config -name '*.json'); do
+            node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" \
+              && echo "OK   $f" || { echo "FAIL $f"; fail=1; }
+          done
+          exit $fail
+
+      - name: Import SP-Config bundle
+        env:
+          SAIL_BASE_URL: ${{ secrets.SAIL_BASE_URL }}
+          SAIL_CLIENT_ID: ${{ secrets.SAIL_CLIENT_ID }}
+          SAIL_CLIENT_SECRET: ${{ secrets.SAIL_CLIENT_SECRET }}
+        run: |
+          chmod +x scripts/import.sh
+          ./scripts/import.sh

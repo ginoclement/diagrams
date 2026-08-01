@@ -1,0 +1,24 @@
+# Example variables for the PROD environment / tenant.
+# Copy to prod.tfvars (gitignored) and edit. Do NOT put credentials here —
+# auth0_domain / auth0_client_id / auth0_client_secret come from TF_VAR_* env vars,
+# and MUST point at the dedicated production tenant (one tenant per environment).
+
+environment          = "prod"
+tenant_friendly_name = "Example CIAM"
+support_email        = "support@example.com"
+support_url          = "https://example.com/support"
+
+# Longer sessions in prod (tune to your risk appetite).
+session_lifetime_hours      = 168 # 7 days
+idle_session_lifetime_hours = 72  # 3 days
+
+# App URLs (production origins).
+spa_callback_urls = ["https://app.example.com/callback"]
+spa_logout_urls   = ["https://app.example.com"]
+spa_web_origins   = ["https://app.example.com"]
+
+webapp_callback_urls = ["https://web.example.com/callback"]
+webapp_logout_urls   = ["https://web.example.com"]
+
+# API audience.
+api_identifier = "https://api.example.com"

@@ -1,0 +1,27 @@
+# Example dev variables. Copy to dev.tfvars and edit. No secrets here —
+# credentials (api_client_id / api_private_key / api_scopes or api_token)
+# come from TF_VAR_* environment / CI secrets, not this file.
+
+environment = "dev"
+
+# org_name and base_url are typically passed via TF_VAR_org_name / TF_VAR_base_url
+# in CI, but may be set here for local dev:
+# org_name = "dev-123456"
+# base_url = "okta.com"
+
+group_name_prefix = "ACME"
+departments       = ["Engineering", "Sales", "Finance"]
+
+web_app_label = "Example Web App (dev)"
+web_app_redirect_uris = [
+  "https://dev.app.example.com/authorization-code/callback",
+  "http://localhost:8080/authorization-code/callback",
+]
+web_app_post_logout_redirect_uris = [
+  "https://dev.app.example.com/",
+  "http://localhost:8080/",
+]
+
+saml_app_label = "Example SAML App (dev)"
+saml_sso_url   = "https://dev.saml.example.com/sso/acs"
+saml_audience  = "https://dev.saml.example.com/metadata"

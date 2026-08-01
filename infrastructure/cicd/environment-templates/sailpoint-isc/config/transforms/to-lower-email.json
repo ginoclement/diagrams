@@ -1,0 +1,31 @@
+{
+  "id": "00000000-0000-0000-0000-000000000101",
+  "name": "To Lower Email",
+  "type": "lower",
+  "attributes": {
+    "input": {
+      "type": "concat",
+      "attributes": {
+        "values": [
+          {
+            "type": "accountAttribute",
+            "attributes": {
+              "sourceName": "Delimited File Source",
+              "attributeName": "firstName"
+            }
+          },
+          ".",
+          {
+            "type": "accountAttribute",
+            "attributes": {
+              "sourceName": "Delimited File Source",
+              "attributeName": "lastName"
+            }
+          },
+          "@example.com"
+        ]
+      }
+    }
+  },
+  "internal": false
+}

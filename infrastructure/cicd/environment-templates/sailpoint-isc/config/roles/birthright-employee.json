@@ -1,0 +1,45 @@
+{
+  "id": "00000000-0000-0000-0000-000000000501",
+  "name": "Birthright - Employee",
+  "description": "Template birthright role automatically assigned to all active employees.",
+  "enabled": true,
+  "requestable": false,
+  "owner": {
+    "type": "IDENTITY",
+    "id": "REPLACE_WITH_OWNER_IDENTITY_ID",
+    "name": "role.owner"
+  },
+  "accessProfiles": [
+    {
+      "type": "ACCESS_PROFILE",
+      "id": "00000000-0000-0000-0000-000000000401",
+      "name": "App Standard Access"
+    }
+  ],
+  "membership": {
+    "type": "STANDARD",
+    "criteria": {
+      "operation": "AND",
+      "children": [
+        {
+          "operation": "EQUALS",
+          "key": {
+            "type": "IDENTITY",
+            "property": "attribute.cloudLifecycleState"
+          },
+          "stringValue": "active"
+        },
+        {
+          "operation": "EQUALS",
+          "key": {
+            "type": "IDENTITY",
+            "property": "attribute.identityProfile"
+          },
+          "stringValue": "Employee Identity Profile"
+        }
+      ]
+    }
+  },
+  "legacyMembershipInfo": null,
+  "segments": []
+}

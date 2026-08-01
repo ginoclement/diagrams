@@ -1,0 +1,23 @@
+# Example prod variables. Copy to prod.tfvars and edit. No secrets here —
+# credentials come from TF_VAR_* environment / CI secrets, not this file.
+# For prod, prefer the OAuth 2.0 private-key-JWT service app over an API token.
+
+environment = "prod"
+
+# org_name = "acme"
+# base_url = "okta.com"
+
+group_name_prefix = "ACME"
+departments       = ["Engineering", "Sales", "Finance"]
+
+web_app_label = "Example Web App"
+web_app_redirect_uris = [
+  "https://app.example.com/authorization-code/callback",
+]
+web_app_post_logout_redirect_uris = [
+  "https://app.example.com/",
+]
+
+saml_app_label = "Example SAML App"
+saml_sso_url   = "https://saml.example.com/sso/acs"
+saml_audience  = "https://saml.example.com/metadata"

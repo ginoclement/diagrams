@@ -34,6 +34,13 @@ A useful way to frame the security model is by trust boundary:
 The diagrams are vendor-aware (GitHub Actions, GitLab CI, Jenkins, Argo CD / Flux, and
 generic patterns) because the controls differ in name but rhyme in shape across platforms.
 
+## Environment templates (Infrastructure as Code)
+
+Beyond the diagrams, [`environment-templates/`](environment-templates/README.md) provides
+**copyable IaC + GitHub Actions deployment workflows** to stand up identity platform
+environments as code — Okta, Auth0, SailPoint ISC, Microsoft Entra ID, and Active Directory —
+with generic, parameterized configs and plan-on-PR / apply-on-merge pipelines.
+
 ## Diagrams
 
 | Diagram | Status | Description |

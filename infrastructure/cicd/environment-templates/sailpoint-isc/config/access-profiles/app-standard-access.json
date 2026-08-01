@@ -1,0 +1,50 @@
+{
+  "id": "00000000-0000-0000-0000-000000000401",
+  "name": "App Standard Access",
+  "description": "Template access profile granting standard entitlements on the app source.",
+  "enabled": true,
+  "requestable": true,
+  "owner": {
+    "type": "IDENTITY",
+    "id": "REPLACE_WITH_OWNER_IDENTITY_ID",
+    "name": "access.profile.owner"
+  },
+  "source": {
+    "type": "SOURCE",
+    "id": "00000000-0000-0000-0000-000000000201",
+    "name": "Delimited File Source"
+  },
+  "entitlements": [
+    {
+      "type": "ENTITLEMENT",
+      "id": "REPLACE_WITH_ENTITLEMENT_ID_1",
+      "name": "app-standard-users"
+    },
+    {
+      "type": "ENTITLEMENT",
+      "id": "REPLACE_WITH_ENTITLEMENT_ID_2",
+      "name": "app-read-only"
+    }
+  ],
+  "accessRequestConfig": {
+    "commentsRequired": false,
+    "denialCommentsRequired": false,
+    "approvalSchemes": [
+      {
+        "approverType": "MANAGER",
+        "approverId": null
+      }
+    ]
+  },
+  "revocationRequestConfig": {
+    "commentsRequired": false,
+    "denialCommentsRequired": false,
+    "approvalSchemes": [
+      {
+        "approverType": "OWNER",
+        "approverId": null
+      }
+    ]
+  },
+  "segments": []
+}

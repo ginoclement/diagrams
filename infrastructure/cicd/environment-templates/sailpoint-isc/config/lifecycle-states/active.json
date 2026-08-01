@@ -1,0 +1,27 @@
+{
+  "id": "00000000-0000-0000-0000-000000000601",
+  "name": "Active",
+  "technicalName": "active",
+  "description": "Template lifecycle state for active employees.",
+  "identityProfileId": "00000000-0000-0000-0000-000000000301",
+  "enabled": true,
+  "identityCount": 0,
+  "accessProfileIds": [
+    "00000000-0000-0000-0000-000000000401"
+  ],
+  "emailNotificationOption": {
+    "notifyManagers": false,
+    "notifyAllAdmins": false,
+    "notifySpecificUsers": false,
+    "emailAddressList": []
+  },
+  "accountActions": [
+    {
+      "action": "ENABLE",
+      "sourceIds": [
+        "00000000-0000-0000-0000-000000000201"
+      ]
+    }
+  ],
+  "priority": 10
+}

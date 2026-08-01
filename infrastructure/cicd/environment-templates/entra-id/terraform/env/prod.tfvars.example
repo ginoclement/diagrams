@@ -1,0 +1,28 @@
+# Copy to prod.tfvars and edit. prod.tfvars is gitignored; this .example is committed.
+# Do NOT put secrets here — tenant_id/client_id come from ARM_* env / CI secrets,
+# and auth uses OIDC federation (no client secret). Never create a client secret in prod.
+
+environment = "prod"
+name_prefix = "iac"
+
+# Groups
+engineering_group_name        = "Engineering"
+dynamic_group_membership_rule = "(user.department -eq \"Engineering\")"
+
+# Break-glass emergency-access account object IDs to exclude from Conditional Access.
+# REQUIRED in prod: never enforce MFA without at least one excluded break-glass account.
+break_glass_member_object_ids = [
+  # "aaaaaaaa-1111-2222-3333-444444444444",
+  # "bbbbbbbb-1111-2222-3333-444444444444",
+]
+
+# App registration
+app_display_name      = "Sample Web App"
+app_web_redirect_uris = ["https://app.example.com/auth/callback"]
+create_client_secret  = false
+
+# Conditional Access — enforce only after validating in report-only mode.
+ca_policy_state = "enabled"
+
+# Named location — trusted corporate IP ranges (CIDR).
+trusted_ip_ranges = ["203.0.113.0/24", "198.51.100.0/24"]

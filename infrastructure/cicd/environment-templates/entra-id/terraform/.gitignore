@@ -1,0 +1,22 @@
+# Terraform state — never commit.
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Provider plugins, lock caches, and local dirs.
+.terraform/
+.terraform.lock.hcl
+
+# Variable files with real values. Keep only *.tfvars.example committed.
+*.tfvars
+!*.tfvars.example
+env/*.tfvars
+!env/*.tfvars.example
+
+# Plan output / secrets that may leak.
+*.tfplan
+*.pem
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
