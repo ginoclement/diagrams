@@ -1,0 +1,132 @@
+{
+  "id": "cloud-workload",
+  "title": "Cloud IAM & Workload Identity",
+  "summary": "How machines get cloud access without stored secrets: temporary credentials from STS, OIDC federation for keyless CI, policy gates at token issuance, and workload-bound identities from Kubernetes to SPIFFE. One theme runs through all of it — replace long-lived stored keys with short-lived, federated, workload-bound credentials.",
+  "lessons": [
+    {
+      "id": "aws-sts-assumerole",
+      "title": "AWS STS AssumeRole: temporary credentials and role trust",
+      "objective": "Understand how an already-authenticated principal trades into a role for short-lived credentials, and why two policies must agree.",
+      "content": "<p>AWS <b>Security Token Service (STS)</b> issues <b>temporary security credentials</b> — an <code>AccessKeyId</code>, a <code>SecretAccessKey</code>, and a <code>SessionToken</code> — that expire. The core API is <code>sts:AssumeRole</code>: an already-authenticated principal (an IAM user, another role, or a service) assumes a task-specific IAM <b>role</b> and receives credentials scoped to that role's permissions.</p><p>Whether the assume succeeds is decided by <b>two policies that must both allow it</b>:</p><ul><li>the caller's <b>identity policy</b> — it must permit <code>Action: sts:AssumeRole</code> on the target role's ARN; and</li><li>the role's <b>trust policy</b> (the <code>AssumeRolePolicyDocument</code>) — it names which principals are allowed to assume the role.</li></ul><p>A broad trust policy is the classic misconfiguration, so scope the <code>Principal</code> and add conditions like <code>aws:PrincipalOrgID</code> or <code>aws:SourceAccount</code>. For third-party/vendor access, require an <code>ExternalId</code> to defeat the confused-deputy problem — and never let the vendor choose it or reuse it across customers.</p><p>Credentials are valid for <code>DurationSeconds</code> (15 minutes up to the role's <code>MaxSessionDuration</code>, capped at 12 hours; role chaining caps at 1 hour). You can narrow them further with an inline <b>session policy</b> — effective permissions are the <i>intersection</i> of the role's policies and the session policy, so a session policy can only restrict, never grant beyond the role. This is the foundation: short-lived, auditable credentials in place of long-lived IAM user access keys that sit in a config file waiting to leak.</p>",
+      "links": [
+        {
+          "label": "AWS STS AssumeRole",
+          "href": "../platforms/cloud-iam/aws/sts-assumerole/"
+        }
+      ]
+    },
+    {
+      "id": "oidc-web-identity-federation",
+      "title": "Keyless CI via OIDC: AssumeRoleWithWebIdentity",
+      "objective": "See how a signed OIDC token replaces stored AWS keys entirely, and why the trust policy must pin both aud and sub.",
+      "content": "<p><code>sts:AssumeRoleWithWebIdentity</code> exchanges a signed <b>OIDC ID token</b> (a JWT) from an external identity provider for temporary AWS credentials — with <b>no long-lived AWS access keys involved at all</b>. The call is unsigned, because the JWT itself is the proof.</p><p>The flagship use is <b>GitHub Actions deploying to AWS keylessly</b>. The workflow asks GitHub for an OIDC token from <code>token.actions.githubusercontent.com</code>, calls <code>AssumeRoleWithWebIdentity</code>, and receives short-lived credentials scoped to the deploy role. The stored <code>AWS_ACCESS_KEY_ID</code> secret disappears completely.</p><p>Setup requires an <b>IAM OIDC identity provider</b> that records the issuer URL and a certificate thumbprint (AWS now validates most issuers directly against the issuer's published <b>JWKS</b>). STS then validates the JWT signature, that <code>iss</code> matches the provider, that <code>aud</code> is in the allowed <code>ClientIDList</code>, that <code>exp</code> has not passed, and finally the trust-policy claim conditions.</p><p>Those conditions are where security lives. The trust policy keys are prefixed by the issuer host, e.g. <code>token.actions.githubusercontent.com:aud</code> and <code>:sub</code>. <b>Always pin both</b>: use <code>StringEquals</code> on <code>aud</code>, and a tightly scoped <code>StringLike</code> on <code>sub</code> such as <code>repo:my-org/my-repo:ref:refs/heads/main</code>. An <code>aud</code>-only policy on the GitHub issuer trusts <i>every repository on GitHub</i>; a wildcard <code>sub</code> like <code>repo:my-org/*</code> lets the wrong branch or a fork assume the role. This is the same mechanism EKS uses for IRSA — projected ServiceAccount tokens exchanged for role credentials.</p>",
+      "links": [
+        {
+          "label": "AssumeRoleWithWebIdentity (OIDC federation)",
+          "href": "../platforms/cloud-iam/aws/assumerole-web-identity-oidc/"
+        }
+      ]
+    },
+    {
+      "id": "entra-conditional-access",
+      "title": "Entra Conditional Access at token issuance",
+      "objective": "Understand how a policy engine evaluates request signals at the moment a token is minted, and how that fits Zero Trust.",
+      "content": "<p>Not every gate is about swapping keys — sometimes the question is whether a token should be issued at all, given the context of the request. <b>Conditional Access (CA)</b> is Microsoft Entra ID's policy engine, and it runs <i>at the moment a token is about to be issued</i>.</p><p>The Entra authorization endpoint evaluates every enabled CA policy against the <b>signals</b> of the request: the user or group, the target cloud app, the client app type, sign-in and user <b>risk</b> (from Identity Protection), <b>device state</b> (compliant / Entra-joined), network location (named locations, trusted IPs), and authentication context.</p><p>Each matching policy produces two kinds of output:</p><ul><li><b>Grant controls</b> — block, require MFA, require a compliant device, require an approved client app, require terms of use, require password change.</li><li><b>Session controls</b> — sign-in frequency, persistent browser, app-enforced restrictions, and Continuous Access Evaluation.</li></ul><p>The <i>union</i> of all matching policies must be satisfied before a token is minted. This is Zero Trust's \"verify explicitly\" in practice. A few operational truths: CA is <b>fail-closed</b> for block policies but only evaluates signals it actually has — so disable legacy authentication, or password-only protocols will bypass your MFA policies. Always keep a <b>break-glass</b> account excluded from CA to avoid tenant lock-out, and validate new policies in <b>report-only</b> mode with the What-If tool first. Location signals rely on source IP and can be spoofed; prefer device compliance and phishing-resistant MFA over IP allow-lists. Pair CA with Continuous Access Evaluation so revocation is near-real-time rather than waiting for token expiry.</p>",
+      "links": [
+        {
+          "label": "Conditional Access policy evaluation",
+          "href": "../platforms/cloud-iam/entra/conditional-access-evaluation/"
+        }
+      ]
+    },
+    {
+      "id": "gcp-workload-identity-federation",
+      "title": "GCP Workload Identity Federation",
+      "objective": "Follow the token-exchange-then-impersonate pattern that lets external workloads reach Google Cloud without a downloadable key.",
+      "content": "<p>Google Cloud's answer to the stored-key problem for workloads running <b>outside</b> GCP — GitHub Actions, AWS, Azure, on-prem OIDC/SAML IdPs — is <b>Workload Identity Federation</b>. It is the recommended replacement for downloading a service account JSON key.</p><p>The external workload presents a credential its own IdP already issues: an OIDC ID token, an AWS <code>GetCallerIdentity</code> signature, or a SAML assertion. Google's <b>Security Token Service</b> (<code>sts.googleapis.com</code>) exchanges that for a short-lived <b>federated access token</b>. The workload then usually <b>impersonates a service account</b> via <code>generateAccessToken</code> to obtain the final Google credential — a two-leg pattern: exchange, then impersonate.</p><p>Trust is defined by a <b>Workload Identity Pool</b> containing one or more <b>Providers</b>. Each provider pins the external issuer and the allowed <code>audience</code>, and carries an <b>attribute mapping</b> written in CEL — for example <code>google.subject = assertion.sub</code> and <code>attribute.repository = assertion.repository</code>. The federated identity is expressed as a <code>principalSet://</code> member such as one keyed on <code>attribute.repository/ORG/REPO</code>, and SA impersonation is granted to that member.</p><p>The critical control is the provider's <b>attribute_condition</b> (also CEL): set it so only the intended repo, branch, or AWS account can federate. A missing condition trusts <i>every</i> token the issuer can mint. Always validate the <code>audience</code> so tokens minted for one provider cannot be replayed to another, and enforce <code>iam.disableServiceAccountKeyCreation</code> so teams cannot quietly fall back to keys. Same principle as AWS web-identity, expressed in Google's vocabulary.</p>",
+      "links": [
+        {
+          "label": "GCP Workload Identity Federation",
+          "href": "../platforms/cloud-iam/gcp/workload-identity-federation/"
+        },
+        {
+          "label": "Generic federation pattern",
+          "href": "../workload-identity/workload-identity-federation-generic/"
+        }
+      ]
+    },
+    {
+      "id": "non-human-identity",
+      "title": "Non-human identity: SPIFFE/SPIRE and projected ServiceAccount tokens",
+      "objective": "Understand attestation-based, platform-neutral workload identity and the audience-bound Kubernetes token that feeds cloud exchanges.",
+      "content": "<p>Federation still needs the workload to <i>already have</i> a token to present. Where does that first identity come from? Two answers close the loop, both replacing on-disk secrets with attested, short-lived, workload-bound credentials.</p><p><b>Kubernetes projected ServiceAccount tokens.</b> A projected token is a short-lived, audience-bound OIDC JWT that the kubelet obtains from the API server's <b>TokenRequest API</b> and mounts into a Pod as a projected volume. Unlike the old, never-expiring Secret-based tokens, it has an explicit <code>aud</code>, a bounded <code>exp</code> the kubelet refreshes before it lapses, and it is bound to the Pod's lifetime. Because the cluster publishes an OIDC discovery document and JWKS, any external relying party that trusts the cluster issuer — AWS STS <code>AssumeRoleWithWebIdentity</code>, GCP/Azure federation, Vault — can verify it and return its own credential. The <code>sub</code> is <code>system:serviceaccount:&lt;ns&gt;:&lt;sa&gt;</code>; always map the exact subject, never namespace alone on a shared cluster. Treat legacy Secret-mounted tokens as deprecated: they never expire and are not audience-bound.</p><p><b>SPIFFE/SPIRE.</b> SPIFFE defines a platform-neutral identity — the <b>SPIFFE ID</b>, a URI like <code>spiffe://example.org/ns/prod/sa/frontend</code> — carried in an <b>SVID</b>. SPIRE is the reference implementation: a <b>SPIRE Server</b> is the trust-domain signing authority and registry; a <b>SPIRE Agent</b> on each node performs <b>node attestation</b> (AWS Instance Identity Document, GCP instance identity, Kubernetes PSAT, TPM, join token) and then <b>workload attestation</b> (kernel peer credentials plus <code>unix</code>/<code>docker</code>/<code>k8s</code> selectors) before handing each workload an SVID over the Workload API. SVIDs come as an <b>X.509-SVID</b> (SPIFFE ID in the URI SAN, for mTLS) or a <b>JWT-SVID</b> (<code>sub</code> is the SPIFFE ID, <code>aud</code> names the target service). Attestation is the root of trust, TTLs are short (default 1h) with automatic rotation, and no private key is ever persisted. Together these give workloads an identity with no stored secret at all — the endpoint of the whole theme.</p>",
+      "links": [
+        {
+          "label": "Kubernetes projected ServiceAccount token",
+          "href": "../workload-identity/kubernetes-serviceaccount-token/"
+        },
+        {
+          "label": "SPIFFE identity issuance with SPIRE",
+          "href": "../workload-identity/spiffe-spire-issuance/"
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "q": "A caller has an identity policy allowing sts:AssumeRole on a role's ARN, but the assume still fails. What is the most likely cause?",
+      "choices": [
+        "The credentials returned were not signed with SigV4",
+        "The role's trust policy does not name the caller as an allowed principal",
+        "The DurationSeconds was set below 15 minutes",
+        "STS only issues credentials to IAM users, not roles"
+      ],
+      "answer": 1,
+      "explain": "Two policies must both allow the assume: the caller's identity policy AND the role's trust policy (the AssumeRolePolicyDocument). If the trust policy does not name the caller as an allowed principal, the assume is denied even when the identity policy permits it."
+    },
+    {
+      "q": "A GitHub Actions role trust policy pins token.actions.githubusercontent.com:aud but has no sub condition. What is the risk?",
+      "choices": [
+        "Nothing — pinning aud alone fully scopes the role to your workflow",
+        "Any repository on GitHub can mint a token that satisfies the policy and assume the role",
+        "The role can no longer be assumed by any workflow",
+        "GitHub will refuse to issue the OIDC token without a sub claim"
+      ],
+      "answer": 1,
+      "explain": "An aud-only condition on the GitHub issuer trusts every repository on GitHub, since aud identifies the audience but not which repo/branch requested the token. You must also pin a tightly scoped sub (e.g. repo:my-org/my-repo:ref:refs/heads/main) so only the intended workflow can assume the role."
+    },
+    {
+      "q": "In Entra Conditional Access, when are policies evaluated and what determines the outcome?",
+      "choices": [
+        "After a token is issued, and only network location matters",
+        "At the moment a token is about to be issued, and the union of all matching policies must be satisfied",
+        "Only during password reset, based solely on user risk",
+        "Once per day as a batch job that revokes tokens"
+      ],
+      "answer": 1,
+      "explain": "CA runs at token issuance. The authorization endpoint evaluates every enabled policy against the request's signals (user, app, risk, device, location) and the union of all matching policies' grant controls must be satisfied before a token is minted."
+    },
+    {
+      "q": "In GCP Workload Identity Federation, what happens after sts.googleapis.com returns a federated access token, and what is the key restriction on which external tokens are accepted?",
+      "choices": [
+        "The workload downloads a service account key; the pool's audience is ignored",
+        "The workload usually impersonates a service account via generateAccessToken; the provider's attribute_condition restricts which tokens federate",
+        "Google immediately revokes the token; only SAML assertions are accepted",
+        "The federated token is permanent; only the sub claim is checked"
+      ],
+      "answer": 1,
+      "explain": "It is a two-leg pattern: the STS exchange yields a short-lived federated token, then the workload typically impersonates a service account via generateAccessToken for the final credential. A provider's attribute_condition (CEL) restricts which external tokens are accepted — a missing condition trusts every token the issuer can mint."
+    },
+    {
+      "q": "How does a Kubernetes projected ServiceAccount token differ from a legacy Secret-based ServiceAccount token?",
+      "choices": [
+        "The projected token never expires and is not audience-bound",
+        "The projected token is audience-bound, has a bounded expiry the kubelet refreshes, and is tied to the Pod's lifetime",
+        "The projected token can only be used inside the cluster and never verified externally",
+        "There is no difference; both are stored as long-lived Secrets"
+      ],
+      "answer": 1,
+      "explain": "A projected token has an explicit audience (aud), a bounded expiry (exp) the kubelet refreshes before it lapses, and is bound to the Pod's lifetime. Legacy Secret-based tokens never expire and are not audience-bound, so they are treated as deprecated. Because the cluster publishes OIDC discovery + JWKS, external relying parties can still verify the projected token."
+    }
+  ]
+}

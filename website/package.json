@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "sync": "node scripts/sync-docs.mjs",
-    "start": "node scripts/gen-explorer-index.mjs && node scripts/build-standalone.mjs && npm run sync && docusaurus start",
-    "build": "node scripts/gen-explorer-index.mjs && node scripts/build-standalone.mjs && npm run sync && docusaurus build",
+    "start": "node scripts/gen-explorer-index.mjs && node scripts/gen-curriculum.mjs && node scripts/build-standalone.mjs && npm run sync && docusaurus start",
+    "build": "node scripts/gen-explorer-index.mjs && node scripts/gen-curriculum.mjs && node scripts/build-standalone.mjs && npm run sync && docusaurus build",
     "serve": "docusaurus serve",
     "clear": "docusaurus clear"
   },

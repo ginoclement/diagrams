@@ -1,0 +1,144 @@
+{
+  "id": "lifecycle-directories",
+  "title": "Identity Lifecycle & Directories",
+  "summary": "How identities are born, changed, and killed off — HR-driven joiner/mover/leaver orchestration, SCIM provisioning, access recertification, factor enrollment, and the directories that back it all — with the leaver case as the highest-risk moment of the whole lifecycle.",
+  "lessons": [
+    {
+      "id": "jml-orchestration",
+      "title": "Joiner, Mover, Leaver orchestration",
+      "objective": "See identity as event-driven state that HR authorizes and IGA enforces — and why the leaver is the riskiest event.",
+      "content": "<p>An identity has a lifecycle, and it is <b>event-driven and attribute-based</b>. The pattern is always the same three moving parts:</p><p><b>HR is the source of truth</b> for <i>who exists and what they are</i> — it emits the joiner, mover, and leaver events. The <b>IGA engine</b> is authoritative for <i>what access that implies</i> — it re-evaluates policy on every event. The <b>IdP and downstream apps</b> are the <i>targets</i> that get provisioned or deprovisioned.</p><p><b>Joiner</b> — create the identity, grant <b>birthright access</b> (the baseline every employee in that role/department/location gets automatically, no ticket required), provision apps, issue credentials, prompt for MFA enrollment.</p><p><b>Mover</b> — an attribute changes (new department, new title). IGA re-evaluates: add the new entitlements <i>and</i> revoke the stale ones. The stale-revoke half is the one organizations forget, and it is exactly how privilege creep accumulates.</p><p><b>Leaver</b> — <b>the highest-risk transition.</b> A departing person still holding live access is an active attacker surface. Timely deprovisioning means: disable the account, <i>kill running sessions and refresh tokens</i> (disabling the account does not evict a session already minted), revoke app access, reclaim licenses, then archive and delete after the retention window. Speed matters — the gap between the last day and the disable is pure exposure.</p><p>Two edge cases every design must handle: <b>out-of-order events</b> (a leaver arriving before a pending mover finishes — IGA reconciles to the latest authoritative state) and a <b>reconciliation sweep</b> that compares intended state against actual state to catch orphaned accounts the events missed.</p>",
+      "links": [
+        {
+          "label": "JML orchestration overview",
+          "href": "../identity-lifecycle/user-lifecycle/jml-orchestration/"
+        },
+        {
+          "label": "SCIM provisioning (the wire protocol)",
+          "href": "../identity-lifecycle/user-lifecycle/scim-provisioning/"
+        }
+      ]
+    },
+    {
+      "id": "scim-provisioning",
+      "title": "SCIM provisioning",
+      "objective": "Understand the standard protocol that turns 'IGA provisions an app' into concrete REST calls.",
+      "content": "<p>When IGA or the IdP \"provisions an app,\" it is almost always speaking <b>SCIM (System for Cross-domain Identity Management) 2.0</b> — RFC 7643 for the schema, RFC 7644 for the protocol. SCIM is the standard REST/JSON wire format for pushing users and groups from a <b>client</b> (the IdP/IGA, the provisioning source) into a <b>service provider</b> (the downstream app exposing <code>/Users</code> and <code>/Groups</code> endpoints).</p><p>The user CRUD lifecycle maps to plain HTTP verbs:</p><ul><li><code>POST /Users</code> — create a new user, returns <code>201</code> with a server-assigned <code>id</code> (this is the joiner)</li><li><code>PATCH /Users/{id}</code> — partial update (add/replace/remove ops)</li><li><code>PUT /Users/{id}</code> — full replacement of the resource</li><li><code>PATCH /Groups/{id}</code> — add or remove a single member without rewriting the whole group (this is the mover)</li><li><code>DELETE /Users/{id}</code> — often mapped to soft-delete rather than a hard purge</li></ul><p>The details that separate a toy client from a production one are the error and edge cases: a <b><code>409 Conflict</code></b> on create (the <code>userName</code> already exists — the client <code>GET</code>s and switches to <code>PATCH</code>/<code>PUT</code>), <b>soft-delete via <code>active=false</code></b> (deactivate but preserve the record, the norm for a leaver under retention), and <b><code>429 Too Many Requests</code></b> rate limiting with a <code>Retry-After</code> back-off. Okta, Entra ID, OneLogin, and SailPoint all speak SCIM to their app connectors.</p>",
+      "links": [
+        {
+          "label": "SCIM 2.0 provisioning",
+          "href": "../identity-lifecycle/user-lifecycle/scim-provisioning/"
+        },
+        {
+          "label": "JML orchestration (what SCIM implements)",
+          "href": "../identity-lifecycle/user-lifecycle/jml-orchestration/"
+        }
+      ]
+    },
+    {
+      "id": "access-reviews",
+      "title": "Access reviews and certification",
+      "objective": "Learn the detective control that catches the privilege creep the event-driven flows let through.",
+      "content": "<p>Joiner and mover are <b>preventive</b> — they try to keep access correct at the moment of change. But access still drifts: privileges granted by exception and never removed, entitlements a forgotten mover left behind, orphaned grants. <b>Access review (recertification)</b> is the periodic <b>detective</b> control that asks: <i>does everyone who has access still deserve it?</i></p><p>The IGA engine generates a <b>campaign</b> — a scoped, time-bounded batch of review items, each pairing a user (or role/entitlement) with a <b>reviewer</b>, usually the line manager or the resource owner. For every item the reviewer must <b>certify</b> (affirm it is still needed) or <b>revoke</b> (mark it for removal). Revocations flow into remediation, which deprovisions the access through the very same machinery as leaver offboarding.</p><p>Two design defaults matter. <b>Auto-revoke on no response</b>: items left undecided at the deadline default to revoke — a secure default, not silent retention. And beware <b>rubber-stamping</b>: bulk-approving a whole campaign in one click technically closes the items but hollows out the control.</p><p>Auditors care because certifications produce <b>evidence</b> — a signed, timestamped record that a responsible human affirmatively decided each grant is still appropriate. SOX and ISO 27001 effectively mandate them, and high-risk or privileged access is reviewed on a tighter cadence than baseline access.</p>",
+      "links": [
+        {
+          "label": "Access review & certification",
+          "href": "../identity-lifecycle/user-lifecycle/access-review-certification/"
+        },
+        {
+          "label": "Self-service password reset",
+          "href": "../identity-lifecycle/password-management/self-service-reset/"
+        }
+      ]
+    },
+    {
+      "id": "enrollment-mfa-fido2",
+      "title": "Enrollment: MFA and FIDO2 passkeys",
+      "objective": "Contrast registering a shared-secret factor with registering a phishing-resistant key pair.",
+      "content": "<p>A joiner has an account, but not yet a strong factor. <b>Enrollment</b> is the act of registering one — and it always happens <i>inside an authenticated (often freshly re-authenticated) session</i>, because adding a factor is itself a sensitive operation.</p><p><b>MFA enrollment (TOTP).</b> The server generates a per-user secret and hands it over as a QR code (an <code>otpauth://</code> URI) plus a manual key; the authenticator app derives 6-digit time-based codes (RFC 6238). The user proves possession by typing the <b>first generated code</b> before the factor is activated, and the server issues one-time backup codes. Rules that keep it safe: the <b>server generates and owns the secret</b> (never accept a client-supplied one), treat the factor as inactive until proof-of-possession succeeds, verify against the current time window with small skew tolerance, and rate-limit attempts. SMS/voice OTP follows the same shape but is a weaker, phishable channel.</p><p><b>FIDO2 / passkey registration.</b> A different and stronger model. In the WebAuthn attestation ceremony the Relying Party issues a challenge and creation options; the browser calls <code>navigator.credentials.create()</code>; the authenticator generates a <b>public/private key pair scoped to the RP ID</b>, keeps the private key, and returns an attestation object. The server validates it and stores only the <b>credential public key + credential ID</b>. Because there is no shared secret to phish and the key is bound to the origin, passkeys are <b>phishing-resistant</b> where TOTP is not. Server-side checks: the <code>clientDataJSON.type</code> is <code>webauthn.create</code>, the challenge matches and is single-use, the origin is expected, and <code>excludeCredentials</code> stops an already-enrolled authenticator from double-registering.</p>",
+      "links": [
+        {
+          "label": "MFA enrollment",
+          "href": "../identity-lifecycle/enrollment-and-update/mfa-enrollment/"
+        },
+        {
+          "label": "FIDO2 / passkey registration",
+          "href": "../identity-lifecycle/enrollment-and-update/fido2-passkey-registration/"
+        }
+      ]
+    },
+    {
+      "id": "directories-and-sync",
+      "title": "Directories: AD logon and hybrid sync",
+      "objective": "Know how domain logon works and how the three hybrid sign-in models differ.",
+      "content": "<p>Under all of this sits a <b>directory</b> — historically Active Directory. <b>Interactive logon</b> is what happens when a user signs in to a domain-joined Windows machine. The logon stack (Winlogon, LSASS and its Security Support Providers) turns credentials into domain authentication via <b>Negotiate (SPNEGO)</b>: Windows <b>prefers Kerberos</b> — which yields a cached TGT and later service tickets — and only <b>falls back to NTLM</b> when Kerberos is unavailable (no reachable KDC, access by IP literal, a local account, or a target with no Service Principal Name). The user's group SIDs ride in the Kerberos <b>PAC</b>, from which Windows builds the logon token. <b>NTLM is Legacy and discouraged</b>: it is exposed to relay attacks, pass-the-hash, and offline cracking, so restrict it and prefer Kerberos.</p><p>When the directory extends to the cloud, there are three <b>hybrid sign-in</b> models — the tradeoff is <i>where the password is actually validated</i>:</p><ul><li><b>Password hash sync (PHS)</b> — a sync agent copies a <b>hash of the on-prem NT hash</b> (re-hashed with PBKDF2-HMAC-SHA256, salted) up to the cloud IdP. Sign-in is validated <b>entirely in the cloud</b>, so it keeps working during an on-prem outage and needs no inbound firewall openings. The plaintext never leaves the domain controller, and the stored value cannot be replayed on-prem. It also enables leaked-credential detection.</li><li><b>Pass-through authentication (PTA)</b> — same password, but validated <b>live against on-prem AD</b> at each sign-in via a lightweight agent. No password hash is stored in the cloud, but sign-in now depends on on-prem availability.</li><li><b>Federation</b> — the cloud <b>redirects authentication to an on-prem STS</b> (e.g. ADFS); the on-prem system fully owns the credential check and returns a token. Most control, most infrastructure, and the cloud never sees a verifier at all.</li></ul><p>Remember the leaver angle here too: a disabled AD account must <b>sync as disabled</b> so cloud sign-in is blocked — verify sync scoping so deprovisioning actually propagates.</p>",
+      "links": [
+        {
+          "label": "Active Directory interactive logon",
+          "href": "../identity-lifecycle/directory-and-sync/active-directory-logon/"
+        },
+        {
+          "label": "Password hash synchronization",
+          "href": "../identity-lifecycle/directory-and-sync/password-hash-sync/"
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "q": "An employee is terminated at 5pm. IT disables the AD account at 5:05pm but the person keeps accessing a SaaS app for another hour. What was most likely missed?",
+      "choices": [
+        "Birthright access was never granted",
+        "Running sessions and refresh tokens were not revoked",
+        "The joiner event never fired",
+        "SCIM returned a 409 Conflict"
+      ],
+      "answer": 1,
+      "explain": "Disabling the account stops new logons but does not evict a session or refresh token already minted. Timely leaver deprovisioning must kill live sessions and tokens, not just disable the account — the leaver is the highest-risk transition precisely because of gaps like this."
+    },
+    {
+      "q": "An IGA engine needs to add a single user to one group in a downstream app without rewriting the group's entire membership. Which SCIM call fits?",
+      "choices": [
+        "PUT /Users/{id}",
+        "POST /Users",
+        "PATCH /Groups/{id}",
+        "DELETE /Groups/{id}"
+      ],
+      "answer": 2,
+      "explain": "A PATCH to /Groups/{id} carries a targeted add/remove Operations patch, changing one member without replacing the whole members array. POST /Users creates a user; PUT fully replaces a resource."
+    },
+    {
+      "q": "Why is a periodic access certification campaign considered a detective control rather than a preventive one?",
+      "choices": [
+        "It blocks access at the moment an attribute changes",
+        "It runs before the joiner is provisioned",
+        "It catches privilege creep and stale grants that the event-driven joiner/mover flows already let through",
+        "It only applies to service accounts"
+      ],
+      "answer": 2,
+      "explain": "Joiner and mover are preventive — they fix access at the moment of change. Certification is detective: it periodically re-checks existing access to catch drift, exception grants never removed, and orphaned entitlements the events missed."
+    },
+    {
+      "q": "What makes FIDO2 passkey registration phishing-resistant in a way that TOTP enrollment is not?",
+      "choices": [
+        "TOTP codes are longer than passkey signatures",
+        "The passkey uses an origin-bound public/private key pair with no shared secret to steal, while TOTP relies on a shared secret and a code the user can be tricked into typing",
+        "Passkeys are sent over SMS",
+        "The server supplies the passkey secret to the client"
+      ],
+      "answer": 1,
+      "explain": "In WebAuthn the authenticator generates a key pair scoped to the RP ID and keeps the private key; the server stores only the public key, and the ceremony is bound to the origin. There is no shared secret to phish and a code cannot be replayed on a lookalike site — unlike a TOTP code the user types."
+    },
+    {
+      "q": "An organization wants cloud sign-in to keep working even during a complete on-prem Active Directory outage, with no inbound firewall openings. Which hybrid model fits best?",
+      "choices": [
+        "Federation to an on-prem STS",
+        "Pass-through authentication (PTA)",
+        "Password hash synchronization (PHS)",
+        "NTLM fallback"
+      ],
+      "answer": 2,
+      "explain": "PHS validates the password entirely in the cloud from a synced (re-hashed, salted) verifier, so sign-in survives an on-prem outage and needs no inbound openings. PTA and federation both depend on on-prem availability at sign-in time."
+    }
+  ]
+}

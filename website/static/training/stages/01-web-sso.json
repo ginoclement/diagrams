@@ -1,0 +1,128 @@
+{
+  "id": "web-sso",
+  "title": "Web SSO: OIDC & SAML",
+  "summary": "The two protocols that carry single sign-on across the web: OpenID Connect (the modern default) and SAML 2.0 (the enterprise incumbent). How each moves a proven identity from an IdP to an app, and how to pick between them.",
+  "lessons": [
+    {
+      "id": "oidc-authorization-code-pkce",
+      "title": "OIDC Authorization Code + PKCE",
+      "objective": "Explain why PKCE is the modern default for SPAs and native apps, and what the verifier actually protects.",
+      "content": "<p>The <b>Authorization Code flow with PKCE</b> (Proof Key for Code Exchange, RFC 7636) is the current recommended flow for <b>public clients</b> — single-page apps and native/mobile apps that cannot keep a client secret. The app never holds a secret, so a stolen authorization code alone must not be redeemable.</p><p>PKCE closes that gap. Before redirecting to <code>/authorize</code>, the app generates a random <code>code_verifier</code> (43–128 chars, kept only in memory) and sends its hash: <code>code_challenge = BASE64URL(SHA256(code_verifier))</code> with <code>code_challenge_method=S256</code>. When it later redeems the code at <code>/token</code>, it presents the original <code>code_verifier</code>. The IdP recomputes the hash and rejects any mismatch with <code>invalid_grant</code>. An attacker who intercepts the redirect gets a code but never the verifier, so the code is useless.</p><p>PKCE stops <i>code interception</i> — it does not replace <code>state</code> (CSRF binding) or <code>nonce</code> (ID-token replay binding), both still required. Use <code>S256</code>, never <code>plain</code>: with <code>plain</code> the challenge equals the verifier, so anyone who saw the <code>/authorize</code> request already has it. Current security guidance recommends PKCE for <b>all</b> clients, confidential ones included, as extra code-injection defense.</p><p>Step through it end to end in the Flow Explorer to see exactly what each request carries.</p>",
+      "links": [
+        {
+          "label": "OIDC Authorization Code + PKCE",
+          "href": "../authentication/oidc/authorization-code-pkce/"
+        },
+        {
+          "label": "Try it in the Flow Explorer",
+          "href": "../explorer/?flow=oidc-authorization-code-pkce"
+        }
+      ]
+    },
+    {
+      "id": "oidc-authorization-code-confidential",
+      "title": "OIDC Authorization Code for confidential clients",
+      "objective": "Trace how a server-side app redeems a code over the back channel so tokens never touch the browser.",
+      "content": "<p>The baseline OpenID Connect flow is built for a <b>confidential client</b> — a server-side web app with a backend that can hold credentials. The browser is redirected to <code>/authorize</code> with <code>response_type=code&scope=openid</code>; the user authenticates and consents; the IdP returns a short-lived, single-use <b>authorization code</b> through the browser (the front channel).</p><p>The important part happens next, out of the browser's reach: the backend redeems the code at the <code>/token</code> endpoint over a direct <b>back-channel</b> HTTPS call, authenticating itself with <code>client_secret_basic</code> or the stronger <code>private_key_jwt</code>. It receives an ID token, an access token, and optionally a refresh token. <b>Tokens never transit the browser</b>, which is the security advantage over front-channel token delivery.</p><p>The client then validates the ID token: signature against the IdP's JWKS, <code>iss</code>, <code>aud</code> equal to its <code>client_id</code>, <code>exp</code>, and a <code>nonce</code> match. It must also verify <code>state</code> on the callback <i>before</i> touching the code (a mismatch is treated as CSRF and discarded). Codes are single-use and short-lived; the IdP detects reuse and revokes any tokens already issued for that code. Register an exact-match <code>redirect_uri</code> — no wildcards, no open redirectors.</p><p>Prefer <code>private_key_jwt</code> where supported: it avoids a shared secret and enables key rotation. A public client uses this same flow plus PKCE.</p>",
+      "links": [
+        {
+          "label": "OIDC Authorization Code (confidential)",
+          "href": "../authentication/oidc/authorization-code/"
+        }
+      ]
+    },
+    {
+      "id": "saml-sp-initiated-sso",
+      "title": "SAML SP-initiated SSO",
+      "objective": "Walk the AuthnRequest-to-assertion exchange and name the checks the SP must perform.",
+      "content": "<p>SAML 2.0 is the enterprise incumbent for workforce SSO, and <b>SP-initiated Web Browser SSO</b> is its canonical flow. The user starts at the application — the <b>Service Provider (SP)</b> — which builds an <code>AuthnRequest</code> and sends it to the <b>Identity Provider (IdP)</b> via the <b>HTTP-Redirect binding</b>: the request is DEFLATE-compressed, base64- and URL-encoded into the <code>SAMLRequest</code> query parameter. <code>RelayState</code> carries the deep link the user originally wanted so the SP can restore it after login.</p><p>The IdP authenticates the user (or reuses an existing IdP session for seamless SSO) and returns a signed <code>Response</code> containing an <code>Assertion</code>. It is delivered as a base64 <code>SAMLResponse</code> form field auto-posted to the SP's <b>Assertion Consumer Service (ACS) URL</b> via the <b>HTTP-POST binding</b>.</p><p>The SP's validation is where security lives: verify the XML signature <i>before</i> trusting any content, using the IdP certificate from metadata (never one embedded in the message alone). Then check <code>Issuer</code>, <code>Destination</code>, the <code>Audience</code> restriction, the <code>NotBefore</code>/<code>NotOnOrAfter</code> conditions, and <code>SubjectConfirmationData</code> — including <code>InResponseTo</code>, which must match a request ID the SP actually issued. Enforce one-time use of the assertion ID (a replay cache), and guard against <b>XML Signature Wrapping</b> by consuming only the element the signature truly covers. Treat <code>RelayState</code> as untrusted input and allow-list it to prevent open redirects.</p><p>Because the SP originated the request, it controls <code>InResponseTo</code> correlation and can demand fresh auth with <code>ForceAuthn=\"true\"</code> — which is why SP-initiated is preferred over IdP-initiated SSO, where an unsolicited response has no <code>InResponseTo</code> to correlate.</p>",
+      "links": [
+        {
+          "label": "SAML SP-initiated SSO",
+          "href": "../authentication/saml/sp-initiated-sso/"
+        },
+        {
+          "label": "IdP-initiated SSO (the unsolicited variant)",
+          "href": "../authentication/saml/idp-initiated-sso/"
+        },
+        {
+          "label": "Try it in the Flow Explorer",
+          "href": "../explorer/?flow=saml-sp-initiated-sso"
+        }
+      ]
+    },
+    {
+      "id": "choosing-saml-vs-oidc",
+      "title": "Choosing SAML vs OIDC",
+      "objective": "Decide which protocol a given app should use, and justify it in one line.",
+      "content": "<p>Both protocols achieve federated SSO — a trusted IdP proves identity and hands the result to an app — but they differ in shape and era. <b>OIDC</b> is JSON/JWT over OAuth 2.0, with broad library support and first-class fits for SPAs, native/mobile, and API-fronted apps. <b>SAML 2.0</b> is XML with redirect/POST bindings: verbose, but ubiquitous in enterprise IdPs (Okta, Entra ID, ADFS, Shibboleth) and partner federations.</p><p>The default rule: <b>greenfield browser and mobile apps should choose OIDC.</b> SAML is marked 🟡 Legacy <i>for new consumer/greenfield apps</i> — not a runtime warning; SAML remains valid and widely deployed. <b>Keep SAML where an existing enterprise IdP or partner already speaks it</b>, which is common in workforce SSO. SAML also has no clean native/mobile or SPA story, so those cases point firmly to OIDC.</p><p>Note the two protocols are not the whole map: domain-joined intranet Windows apps may be better served by Kerberos, and pure service-to-service or single-first-party-app cases may need no federation at all (mutual TLS, an API key, or a plain session cookie). Picking OIDC is also only half the decision — you then choose the right OAuth grant (Authorization Code + PKCE for public clients).</p><p>Work the decision top-down with the protocol decision guide, then confirm the tradeoffs in its comparison table before committing.</p>",
+      "links": [
+        {
+          "label": "Choosing an authentication protocol",
+          "href": "../reference/decision-guides/choosing-an-authentication-protocol/"
+        },
+        {
+          "label": "OIDC Authorization Code + PKCE",
+          "href": "../authentication/oidc/authorization-code-pkce/"
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "q": "In the OIDC Authorization Code + PKCE flow, what does the code_verifier protect against?",
+      "choices": [
+        "An attacker who intercepts the authorization code redeeming it, because they lack the verifier",
+        "CSRF on the authorization request",
+        "Replay of the ID token",
+        "The IdP's TLS certificate being spoofed"
+      ],
+      "answer": 0,
+      "explain": "PKCE binds the code to a secret held only in the app. A stolen code is useless without the code_verifier, which the IdP re-hashes and checks at /token. CSRF is handled by state and ID-token replay by nonce — both still required alongside PKCE."
+    },
+    {
+      "q": "Why should PKCE use code_challenge_method=S256 rather than plain?",
+      "choices": [
+        "plain is faster but produces a longer challenge",
+        "With plain the challenge equals the verifier, so anyone who saw the /authorize request already has the secret",
+        "plain does not work over HTTPS",
+        "S256 lets the app skip sending state and nonce"
+      ],
+      "answer": 1,
+      "explain": "plain sends the verifier itself as the challenge, so an interceptor of the /authorize request learns it and PKCE gives no protection. S256 sends only the SHA-256 hash. S256 does not remove the need for state or nonce."
+    },
+    {
+      "q": "What is the defining advantage of the confidential-client Authorization Code flow's back-channel token exchange?",
+      "choices": [
+        "It skips the /authorize redirect entirely",
+        "Tokens are returned directly in the browser URL for speed",
+        "Tokens never transit the browser — the code is redeemed server-to-server at /token",
+        "It removes the need to validate the ID token signature"
+      ],
+      "answer": 2,
+      "explain": "Only a single-use code goes through the front channel (browser); the backend redeems it over a direct HTTPS call, authenticating with a secret or private_key_jwt, so tokens never reach the browser. The ID token must still be validated (iss, aud, exp, nonce, signature)."
+    },
+    {
+      "q": "In SAML SP-initiated SSO, which SP-side check specifically defends against unsolicited or attacker-injected responses?",
+      "choices": [
+        "DEFLATE-compressing the SAMLRequest",
+        "Matching InResponseTo against a request ID the SP actually issued",
+        "Storing RelayState server-side",
+        "Using the HTTP-POST binding for the response"
+      ],
+      "answer": 1,
+      "explain": "InResponseTo ties the response to a pending AuthnRequest the SP originated, so a response the SP never asked for is rejected. This correlation is exactly what IdP-initiated SSO lacks, which is why SP-initiated is preferred. RelayState storage and bindings are transport concerns, not injection defenses."
+    },
+    {
+      "q": "A team is building a brand-new mobile app and a partner already runs a corporate SAML IdP for its internal web portal. What does the decision guide recommend?",
+      "choices": [
+        "Use SAML for both, since the IdP already speaks it",
+        "OIDC (Authorization Code + PKCE) for the new mobile app; keep SAML for the existing enterprise portal",
+        "Use OIDC for both and decommission the SAML IdP immediately",
+        "Use Kerberos for the mobile app"
+      ],
+      "answer": 1,
+      "explain": "Greenfield browser/mobile apps default to OIDC — SAML has no clean native/mobile story and is 🟡 Legacy for new apps. But SAML stays valid where an enterprise IdP already uses it, so keep the existing portal on SAML rather than forcing a migration. Kerberos is for domain-joined intranet apps, not internet mobile clients."
+    }
+  ]
+}

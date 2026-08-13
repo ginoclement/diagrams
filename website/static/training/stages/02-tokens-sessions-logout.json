@@ -1,0 +1,136 @@
+{
+  "id": "tokens-sessions-logout",
+  "title": "Tokens, sessions & logout",
+  "summary": "How an authenticated session is kept alive, validated, and torn down: refresh-token rotation with reuse detection, introspection vs. local JWT validation and revocation, the three OIDC logout mechanisms, and how to choose a session representation without reaching for deprecated flows.",
+  "lessons": [
+    {
+      "id": "refresh-tokens-and-rotation",
+      "title": "Refresh tokens & rotation with reuse detection",
+      "objective": "Renew access without re-prompting the user, and detect a stolen refresh token.",
+      "content": "<p>Access tokens are deliberately short-lived, but users stay signed in far longer. A <b>refresh token</b> bridges the gap: the client presents it at the token endpoint with <code>grant_type=refresh_token</code> and receives a fresh access token — no user interaction. For OIDC the client asks for this capability with the <code>offline_access</code> scope, subject to consent.</p><p><b>Rotation</b> hardens this. On each refresh the authorization server issues a <i>new</i> refresh token and invalidates the old one. Public clients (SPAs, native apps) <b>must</b> rotate; confidential clients should, or sender-constrain instead.</p><p>Rotation is what makes <b>reuse detection</b> possible. Once a refresh token has been rotated away, it should never be seen again. If an already-used token <i>is</i> presented, two parties hold copies — one of them is a thief. The AS cannot tell which, so it revokes the entire token <b>family</b> and forces interactive re-authentication. Every reuse trip is a probable theft: log and alert on it.</p><p>Two expiry models bound the family: <b>sliding</b> expiry extends an idle window on each refresh, while <b>absolute</b> expiry sets a hard ceiling from initial authorization. Robust deployments combine them — a sliding idle timeout capped by an absolute lifetime. On refresh you may <i>narrow</i> scope with the <code>scope</code> parameter, never widen it. Errors surface as <code>invalid_grant</code> (expired, revoked, reused, or unknown token).</p>",
+      "links": [
+        {
+          "label": "Refresh Token Grant",
+          "href": "../authentication/oidc/refresh-token/"
+        },
+        {
+          "label": "Step through it in the Flow Explorer",
+          "href": "../explorer/?flow=oidc-refresh-token"
+        }
+      ]
+    },
+    {
+      "id": "validating-tokens",
+      "title": "Validating tokens: introspection vs. local JWT validation, and revocation",
+      "objective": "Decide how a resource server checks a token, and understand what revocation actually does.",
+      "content": "<p>A resource server holding a bearer token has two ways to trust it, and they trade freshness against scale.</p><p><b>Local JWT validation</b> — a self-contained JWT is verified against the issuer's signing keys (JWKS) with no network call. Fast and stateless, but the token stays valid until its <code>exp</code>: you cannot un-issue it early.</p><p><b>Introspection (RFC 7662)</b> — for opaque <i>reference</i> tokens the API POSTs the token to <code>/introspect</code> with its own client credentials and reads back <code>active</code> (true/false) plus metadata like <code>scope</code>, <code>aud</code>, <code>exp</code>, and a <code>cnf</code> claim for sender-constrained tokens. Introspection reflects revocation <i>immediately</i>, at the cost of a round trip — cache positive results only up to <code>exp</code>. The endpoint MUST authenticate its caller and return exactly <code>{\"active\":false}</code> for an inactive token, or it becomes a token oracle.</p><p><b>Revocation (RFC 7009)</b> is the write side of the same lifecycle. A client POSTs to <code>/revoke</code>; the AS returns <code>200</code> even for an unknown token, deliberately, so the endpoint can't be used to probe validity. Revoking a refresh token cascades to its access tokens (and, under rotation, the whole family). Whether an API sees the effect at once depends on how it validates: introspection catches it immediately, a local JWT survives until <code>exp</code>. That is why revocation is paired with short access-token lifetimes.</p>",
+      "links": [
+        {
+          "label": "Token Introspection (RFC 7662)",
+          "href": "../authentication/oidc/token-introspection/"
+        },
+        {
+          "label": "Token Revocation (RFC 7009)",
+          "href": "../authentication/oidc/token-revocation/"
+        }
+      ]
+    },
+    {
+      "id": "logout-done-right",
+      "title": "Logout done right: RP-initiated, front-channel, back-channel",
+      "objective": "Distinguish the three OIDC logout mechanisms and see why single logout is hard.",
+      "content": "<p>Signing out of one app is easy; signing out of an SSO session shared by many apps is not. OIDC splits the problem into three specifications.</p><p><b>RP-Initiated Logout</b> starts it. The Relying Party clears its own session, then redirects the browser to the IdP's <code>end_session_endpoint</code> with an <code>id_token_hint</code> and a pre-registered <code>post_logout_redirect_uri</code>. The IdP ends its <i>own</i> SSO session and redirects back. This ends the session at the IdP — but not at the <i>other</i> RPs that joined the same SSO session.</p><p>Propagating to those other RPs is a separate concern with two mechanisms. <b>Front-Channel Logout</b> runs through the browser: the IdP's logout page renders one hidden <code>iframe</code> per RP, each loading that RP's <code>frontchannel_logout_uri</code> to clear its cookie. It needs no server-to-server path, but it is <i>best-effort</i> — modern browsers partition or block third-party cookies (Safari ITP, Firefox ETP, Chrome), the IdP gets no confirmation, and CSP or <code>X-Frame-Options</code> can silently kill a frame, so expect <b>partial logout</b>. <b>Back-Channel Logout</b> is the reliable path: the IdP POSTs a signed <b>logout token</b> (a JWT with an <code>events</code> claim plus <code>sub</code> and/or <code>sid</code>) directly to each RP's <code>backchannel_logout_uri</code>, no browser involved. The RP validates it like an ID token — signature, <code>iss</code>, <code>aud</code>, <code>events</code>, and no <code>nonce</code> — then destroys the matching sessions.</p><p><b>Single logout is hard</b> because every RP must cooperate, front-channel delivery is unverifiable, and clearing a session does not revoke tokens already issued: access tokens live until <code>exp</code> unless the RP also revokes or introspects. Keep them short-lived as a backstop.</p>",
+      "links": [
+        {
+          "label": "RP-Initiated Logout",
+          "href": "../authentication/oidc/rp-initiated-logout/"
+        },
+        {
+          "label": "Front-Channel Logout",
+          "href": "../authentication/oidc/front-channel-logout/"
+        },
+        {
+          "label": "Back-Channel Logout",
+          "href": "../authentication/oidc/back-channel-logout/"
+        },
+        {
+          "label": "Watch back-channel logout in the Flow Explorer",
+          "href": "../explorer/?flow=oidc-back-channel-logout"
+        }
+      ]
+    },
+    {
+      "id": "sessions-vs-tokens",
+      "title": "Choosing sessions vs. tokens (and avoiding the deprecated Implicit flow)",
+      "objective": "Pick a session representation on purpose, and recognize why Implicit was replaced.",
+      "content": "<p>How should a system remember an authenticated user across requests? Three shapes, with the same underlying tension — <b>revocation and freshness</b> versus <b>scale and statelessness</b>, plus the browser-security profile (XSS vs. CSRF).</p><p><b>Server-side session cookie</b> — an opaque ID in an <code>HttpOnly</code> cookie, with state in a session store. Revocation is instant (delete the session); ideal for classic first-party web apps.</p><p><b>Stateless JWT</b> — a self-contained signed token verified locally, scaling without any central lookup. The cost is revocation: it needs short TTLs plus a denylist to un-issue early.</p><p><b>Reference token + introspection</b> — an opaque bearer token the API introspects (or caches) at the AS, giving central revocation while keeping the token contents opaque.</p><p>Whatever you choose, do not reach for the <b>⛔ deprecated Implicit flow</b>. It returned tokens directly in the redirect URL fragment, exposing them to browser history, referrer leakage, and script access, with <i>no</i> client authentication and no refresh-token rotation. The OAuth 2.0 Security BCP forbids <code>response_type=token</code> and OAuth 2.1 removes the flow entirely. Its replacement is <b>Authorization Code + PKCE</b>: a code exchanged over the back channel, proof-bound with PKCE, and eligible for refresh-token rotation. Migrating a legacy SPA means switching <code>response_type</code> from <code>id_token token</code> to <code>code</code> plus PKCE, and rotating any long-lived tokens issued under Implicit.</p>",
+      "links": [
+        {
+          "label": "Choosing Session vs Token",
+          "href": "../reference/decision-guides/choosing-session-vs-token/"
+        },
+        {
+          "label": "Implicit Flow (deprecated)",
+          "href": "../authentication/oidc/implicit/"
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "q": "A previously rotated refresh token is presented again at the token endpoint. What should the authorization server do?",
+      "choices": [
+        "Silently issue a new access token; rotation makes replay harmless",
+        "Revoke the entire token family and force interactive re-authentication",
+        "Return the same access token it issued the first time",
+        "Extend the family's sliding expiry window"
+      ],
+      "answer": 1,
+      "explain": "A rotated token should never be seen again. Its reuse means two parties hold copies and one is a thief. The AS cannot tell which, so it revokes the whole family and forces re-authentication — this is reuse detection."
+    },
+    {
+      "q": "A resource server validates a self-contained JWT locally against the JWKS. An admin revokes that token. When does the API stop honoring it?",
+      "choices": [
+        "Immediately, because revocation propagates to JWKS",
+        "Not until the token's exp, unless the API also introspects or checks a denylist",
+        "After the next refresh rotation",
+        "Only when the user next signs in"
+      ],
+      "answer": 1,
+      "explain": "Local JWT validation is stateless: the token stays valid until exp regardless of revocation. To get immediate effect, validate via introspection (which reflects revocation at once) or keep access-token lifetimes short."
+    },
+    {
+      "q": "Why does the RFC 7009 revocation endpoint return 200 even for a token it has never seen?",
+      "choices": [
+        "To signal the token was successfully created",
+        "So the endpoint cannot be used as an oracle to probe token validity",
+        "Because unknown tokens are always still active",
+        "To trigger a retry from the client"
+      ],
+      "answer": 1,
+      "explain": "Returning 200 for unknown or already-invalid tokens is deliberate: a differentiated response would let a caller test whether a given token is valid. The endpoint must not become a validity oracle."
+    },
+    {
+      "q": "Which logout mechanism is the reliable one for propagating a single logout to other RPs, and why?",
+      "choices": [
+        "Front-channel, because iframes always render",
+        "RP-initiated, because it clears the IdP session",
+        "Back-channel, because the IdP POSTs a signed logout token server-to-server with no dependence on browser cookies",
+        "They are equally reliable"
+      ],
+      "answer": 2,
+      "explain": "Front-channel logout runs through browser iframes and is best-effort — third-party-cookie blocking and CSP cause partial logout, with no confirmation to the IdP. Back-channel logout delivers a validated logout-token JWT directly to each RP, independent of the browser, so it is the reliable path."
+    },
+    {
+      "q": "A legacy SPA uses the OIDC Implicit flow (response_type=id_token token). What is the recommended migration?",
+      "choices": [
+        "Keep Implicit but add longer token lifetimes",
+        "Switch to the Resource Owner Password Credentials grant",
+        "Move to Authorization Code + PKCE and rotate any long-lived tokens issued under Implicit",
+        "Add a silent-renewal iframe to keep it compliant"
+      ],
+      "answer": 2,
+      "explain": "Implicit is deprecated: it leaks tokens in the URL fragment, has no client authentication, and cannot use refresh-token rotation. The Security BCP and OAuth 2.1 replace it with Authorization Code + PKCE — a back-channel code exchange bound with PKCE."
+    }
+  ]
+}

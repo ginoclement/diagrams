@@ -1,0 +1,79 @@
+/* Training Path styles. Reuses the Flow Explorer token set for one consistent system. */
+@import url("../explorer/explorer.css");
+
+/* Overview: stage cards */
+.stagegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:14px}
+.stagecard{display:block;text-align:left;width:100%;background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--radius);padding:16px;cursor:pointer;color:var(--ink);font:inherit;transition:.15s}
+.stagecard:hover{border-color:var(--brand);transform:translateY(-1px)}
+.stagecard .row{display:flex;align-items:center;gap:12px}
+.stagecard .num{flex:0 0 auto;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  font-family:var(--mono);font-size:12px;font-weight:700;background:var(--panel-2);border:2px solid var(--line);color:var(--muted)}
+.stagecard.done .num{background:var(--ok);border-color:var(--ok);color:#fff}
+.stagecard.started .num{border-color:var(--brand);color:var(--brand)}
+.stagecard .t{font-size:15px;font-weight:650;line-height:1.3}
+.stagecard .s{font-size:12.5px;color:var(--muted);margin-top:6px}
+.stagecard .meta{display:flex;justify-content:space-between;align-items:center;margin-top:12px;
+  font-family:var(--mono);font-size:11px;color:var(--muted)}
+.minibar{flex:1;height:4px;background:var(--panel-2);border-radius:99px;overflow:hidden;margin-right:10px}
+.minibar > i{display:block;height:100%;background:var(--brand);border-radius:99px}
+.stagecard.done .minibar > i{background:var(--ok)}
+.badge{font-family:var(--mono);font-size:10px;font-weight:700;padding:1px 7px;border-radius:5px}
+.badge.done{color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}
+.badge.quiz{color:var(--brand);background:color-mix(in srgb,var(--brand) 12%,transparent)}
+
+/* Stage view: lesson list */
+.lessonlist{list-style:none;margin:0;padding:0}
+.lessonlist li + li{margin-top:8px}
+.lessonrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--panel);
+  border:1px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer;color:var(--ink);font:inherit;transition:.15s}
+.lessonrow:hover{border-color:var(--brand)}
+.lessonrow .check{flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);
+  display:grid;place-items:center;font-size:12px;color:#fff}
+.lessonrow.done .check{background:var(--ok);border-color:var(--ok)}
+.lessonrow .lt{font-size:14px;font-weight:600}
+.lessonrow .lo{font-size:12.5px;color:var(--muted)}
+.lessonrow.quizrow .check{border-style:dashed}
+
+/* Lesson view */
+.lesson-body{font-size:15px;max-width:72ch}
+.lesson-body p{margin:.5em 0}
+.linkchips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+.linkchips a{display:inline-block;font-size:13px;font-weight:600;text-decoration:none;color:var(--brand);
+  background:var(--brand-soft);border:1px solid color-mix(in srgb,var(--brand) 35%,transparent);
+  border-radius:8px;padding:7px 12px;transition:.15s}
+.linkchips a:hover{border-color:var(--brand)}
+.btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+button.primary{font:inherit;font-size:14px;font-weight:650;color:#fff;background:var(--brand);
+  border:1px solid var(--brand);border-radius:9px;padding:9px 16px;cursor:pointer}
+button.primary:hover{filter:brightness(1.08)}
+button.ghost{font:inherit;font-size:14px;font-weight:600;color:var(--ink);background:var(--panel);
+  border:1px solid var(--line);border-radius:9px;padding:9px 16px;cursor:pointer}
+button.ghost:hover{border-color:var(--brand);color:var(--brand)}
+button.primary:focus-visible,button.ghost:focus-visible,.stagecard:focus-visible,.lessonrow:focus-visible,
+.choice:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+/* Quiz */
+.choice{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;background:var(--panel);
+  border:1px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer;color:var(--ink);font:inherit;margin-top:8px}
+.choice:hover{border-color:var(--brand)}
+.choice .key{flex:0 0 auto;font-family:var(--mono);font-size:11px;font-weight:700;width:22px;height:22px;
+  border-radius:6px;display:grid;place-items:center;background:var(--panel-2);border:1px solid var(--line);color:var(--muted)}
+.choice.correct{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 8%,transparent)}
+.choice.correct .key{background:var(--ok);border-color:var(--ok);color:#fff}
+.choice.wrong{border-color:var(--err);background:color-mix(in srgb,var(--err) 8%,transparent)}
+.choice.wrong .key{background:var(--err);border-color:var(--err);color:#fff}
+.choice[disabled]{cursor:default}
+.explain{margin-top:10px;font-size:13.5px;color:var(--muted);border-left:3px solid var(--line);padding:4px 12px}
+.scorebox{text-align:center;padding:26px 16px}
+.scorebox .big{font-size:40px;font-weight:750;font-variant-numeric:tabular-nums}
+.scorebox .msg{color:var(--muted);margin-top:6px}
+
+/* Crumbs + progress header */
+.crumbs{font-size:13px;color:var(--muted);margin-bottom:14px}
+.crumbs a{text-decoration:none}
+.overall{display:flex;align-items:center;gap:12px;margin:10px 0 4px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.overall .minibar{max-width:340px}
+.reset{font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0}
+.reset:hover{color:var(--err)}
+.recommend{font-size:12px;color:var(--muted);font-style:italic}

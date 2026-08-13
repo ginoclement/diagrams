@@ -1,0 +1,144 @@
+{
+  "id": "authorization",
+  "title": "Authorization Models",
+  "summary": "The five ways systems decide what a proven identity may do: roles, attributes, relationships, externalized policy, and the token-time vs. runtime split. How each model works, where each breaks, and a rule of thumb for picking one.",
+  "lessons": [
+    {
+      "id": "rbac",
+      "title": "RBAC — roles, hierarchy, and role explosion",
+      "objective": "Model access by job function and recognize when roles stop scaling.",
+      "content": "<p><b>Role-Based Access Control</b> decides access by <b>role</b>, not by listing permissions per user. Users are assigned one or more <b>roles</b>; each role bundles a set of <b>permissions</b> — an action on a resource type, e.g. <code>invoice:approve</code>. A subject may act if <i>any</i> assigned role grants the matching permission. This is the ANSI/INCITS 359 model: the core relations are <code>User → Role</code> (assignment) and <code>Role → Permission</code> (grant).</p><p><b>Role hierarchy</b> adds senior-to-junior inheritance — a senior role automatically gets every junior role's permissions, so you define \"Auditor\" once and let \"Senior Auditor\" inherit it. Optional <b>sessions</b> activate only a subset of a user's roles at a time, keeping least privilege (constrained RBAC). <b>Separation of Duty</b> guards against fraud: the person who creates a payment cannot also approve it (enforce static SoD at assignment, dynamic SoD at activation).</p><p>RBAC is the default in enterprise apps and cloud IAM (AWS IAM roles, Kubernetes RBAC, Entra ID). It fits when access maps cleanly onto stable <b>job functions</b>. Its failure mode is <b>role explosion</b>: the moment roles start encoding data values — <code>Approver-EU-Tier1</code>, <code>Approver-US-Tier2</code> — the role count races toward the user count and you have rebuilt ABAC badly. RBAC alone cannot express \"owner of <i>this</i> record\" or \"same department as the resource\"; do not fake those with roles — that is the signal to move contextual conditions into attributes or relationships.</p>",
+      "links": [
+        {
+          "label": "RBAC diagram",
+          "href": "../authorization/rbac/"
+        },
+        {
+          "label": "Choosing an authorization model",
+          "href": "../reference/decision-guides/choosing-an-authorization-model/"
+        }
+      ]
+    },
+    {
+      "id": "abac",
+      "title": "ABAC — attributes and policies",
+      "objective": "Express context- and data-dependent access as boolean rules over attributes.",
+      "content": "<p><b>Attribute-Based Access Control</b> decides access by evaluating <b>attributes</b> against <b>policies</b> rather than static role grants. A decision is a function of four attribute categories (NIST SP 800-162):</p><p><b>Subject</b> — who is asking: department, clearance, employment type, group.<br><b>Resource</b> — what is being acted on: classification, owner, tenant, data region.<br><b>Action</b> — the operation: read, write, approve, delete.<br><b>Environment</b> — the context: time of day, source IP, device posture, risk score.</p><p>A policy is a boolean rule over these, e.g. <i>\"Permit read if <code>subject.clearance >= resource.classification</code> AND <code>subject.region == resource.region</code> AND <code>env.deviceManaged == true</code>.\"</i> Because conditions compare <b>values</b> at request time, ABAC expresses rules that would require an explosion of roles under RBAC — multi-tenant isolation, data-residency, clearance models, time- or location-bounded access.</p><p>The tradeoffs are real. <b>Attribute integrity is everything</b>: ABAC is only as trustworthy as its attribute sources, so source them from signed tokens or authoritative systems, never from a spoofable client header. Choose an explicit <b>combining algorithm</b> (deny-overrides, permit-overrides, first-applicable) with a safe default, and treat an <b>Indeterminate</b> result (attribute missing, source down) as Deny for sensitive resources. Watch attribute <b>staleness</b>: a cache TTL on a revoked clearance is a window of over-privilege.</p>",
+      "links": [
+        {
+          "label": "ABAC diagram",
+          "href": "../authorization/abac/"
+        },
+        {
+          "label": "RBAC diagram",
+          "href": "../authorization/rbac/"
+        }
+      ]
+    },
+    {
+      "id": "rebac",
+      "title": "ReBAC — relationships and Google Zanzibar",
+      "objective": "Authorize from an object graph using tuples and Check.",
+      "content": "<p><b>Relationship-Based Access Control</b> decides access from the <b>relationships</b> between subjects and objects rather than from roles or standalone attributes. Google <b>Zanzibar</b> is the canonical implementation and the model behind SpiceDB, OpenFGA, Ory Keto, and Auth0 FGA. Its building blocks:</p><p><b>Relation tuple</b> — the atomic fact, written <code>object#relation@user</code>, e.g. <code>document:readme#owner@user:anna</code> (\"anna is an owner of document readme\").<br><b>Userset</b> — a set of users defined by a relation, so a tuple's \"user\" can itself be a group: <code>document:readme#viewer@group:eng#member</code> gives groups-as-subjects.<br><b>Namespace schema</b> — per-type config with <b>userset rewrites</b> that compose relations transitively: <code>viewer = viewer + editor</code> (editors are viewers), <code>viewer = viewer + parent->viewer</code> (inherit from a parent folder).<br><b>Check(object, relation, user)</b> — the authorization API: <i>is this user related to this object via this relation?</i> It returns a boolean, walking the tuple graph and the rewrites.</p><p>ReBAC shines for fine-grained, per-object access at scale: \"who can view <i>this specific</i> document,\" nested folders, org/team hierarchies, Google-Docs-style sharing — object graphs that RBAC role explosion and ABAC attribute plumbing cannot express cleanly. Two cautions dominate. A <b>zookie</b> (consistency token) binds a Check to a minimum snapshot; pass the zookie from a permission-revoking write into later Checks to avoid the <b>\"new enemy\" problem</b> — a stale replica leaking content after a revoke. And <b>writes must be authorized</b>: anyone who can write <code>document:x#owner@user:self</code> has just granted themselves access, so guard the write path.</p>",
+      "links": [
+        {
+          "label": "ReBAC / Zanzibar diagram",
+          "href": "../authorization/rebac-zanzibar/"
+        },
+        {
+          "label": "ABAC diagram",
+          "href": "../authorization/abac/"
+        }
+      ]
+    },
+    {
+      "id": "pbac",
+      "title": "PBAC — external policy engines and PEP/PDP/PIP/PAP",
+      "objective": "Externalize decisions into a policy engine and name the four cooperating roles.",
+      "content": "<p><b>Policy-Based Access Control</b> <b>externalizes</b> the authorization decision into a dedicated <b>policy engine</b> the application calls instead of hard-coding <code>if</code> checks. The engine evaluates declarative policy against an input document (subject, action, resource, context) and returns a decision. Two dominant implementations: <b>Open Policy Agent (OPA)</b>, a general-purpose engine whose policies are written in <b>Rego</b> and distributed as signed <b>bundles</b>; and <b>AWS Cedar</b>, a purpose-built language of <code>permit</code>/<code>forbid</code> statements over principal, action, resource, and context that is analyzable and <b>forbid-overrides</b> by design.</p><p>Both realize the reference architecture that XACML named and that is now shared vocabulary:</p><p><b>PEP — Policy Enforcement Point.</b> Sits in the request path (API gateway or sidecar), builds the decision request, calls the PDP, and <b>enforces</b> the result. It holds no policy logic.<br><b>PDP — Policy Decision Point.</b> Evaluates policy and returns a decision, optionally with <b>obligations</b> (things the PEP must do, e.g. redact a field) and advice.<br><b>PIP — Policy Information Point.</b> Supplies attributes the request lacks (department, owner, risk score) from directories or services.<br><b>PAP — Policy Administration Point.</b> Where policy is authored, versioned, and distributed — not in the request path.</p><p>The payoff is <b>separation of decision from enforcement</b>: policy changes at the PAP reach the PDPs without redeploying services, and PBAC can express RBAC, ABAC, or relationship rules — it is a <i>mechanism</i>, not a distinct model. The rules: <b>fail closed</b> (an unreachable or erroring PDP must deny, never allow), <b>sign and verify bundles</b> so a compromised control plane cannot ship an allow-everything policy, and treat <b>decision logs</b> as both audit evidence and sensitive data.</p>",
+      "links": [
+        {
+          "label": "PBAC policy engine (OPA / Cedar)",
+          "href": "../authorization/pbac-policy-engine/"
+        },
+        {
+          "label": "Policy decision & enforcement (PEP/PDP)",
+          "href": "../authorization/policy-decision-enforcement/"
+        }
+      ]
+    },
+    {
+      "id": "scopes-claims-entitlements",
+      "title": "Scopes vs. claims vs. entitlements",
+      "objective": "Separate coarse token-time authority from fine-grained runtime decisions.",
+      "content": "<p>Three primitives operate at <b>different layers</b> and are constantly confused:</p><p><b>OAuth scopes</b> are a <b>token-time, coarse</b> grant. A scope like <code>invoices.read</code> names a capability the client asked for and the user consented to; it bounds what the <b>client</b> may attempt on the user's behalf — a ceiling on delegated authority, fixed for the life of the token, not per-object permission.</p><p><b>Claims</b> are assertions about the subject or authorization context carried in the token: identity claims (<code>sub</code>, <code>email</code>) in the ID token, authorization claims (<code>roles</code>, <code>groups</code>, <code>tenant</code>, <code>acr</code>) in the access token. They are what the issuer <i>stated at issuance</i> — readable without a network call, but only as fresh as the token.</p><p><b>Entitlements</b> are <b>fine-grained, runtime</b> authorization facts — \"may user U perform action A on <i>this specific</i> resource R\" — resolved <b>at the resource</b> against live policy and data. They are not a token format; they are the decision an authorization model (RBAC, ReBAC, ABAC) produces per request.</p><p>The relationship is a funnel: <b>scope</b> gates whether the client may even ask; <b>claims</b> carry who the subject is and coarse context; <b>entitlement</b> decides this exact operation on this exact object, now. A request must pass all three. The cardinal rule: <b>scope is a ceiling, not a permission</b> — <code>invoices.write</code> means \"the client may attempt writes,\" never \"the user may write <i>this</i> invoice.\" Enforcing only scope is the classic broken-object-level-authorization (BOLA/IDOR) flaw, so always add the instance-level entitlement check at the resource, and do not trust role/group claims past their freshness — re-decide sensitive actions against live data.</p>",
+      "links": [
+        {
+          "label": "Scopes, claims & entitlements",
+          "href": "../authorization/scopes-claims-entitlements/"
+        },
+        {
+          "label": "Choosing an authorization model",
+          "href": "../reference/decision-guides/choosing-an-authorization-model/"
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "q": "A team keeps adding roles like Approver-EU-Tier1 and Approver-US-Tier2 as new regions and tiers appear. What is happening and what does it signal?",
+      "choices": [
+        "Healthy use of role hierarchy; nothing to change",
+        "Role explosion — the distinctions belong in attributes or relationships, not new roles",
+        "Separation of Duty being enforced correctly",
+        "A sign to remove the role hierarchy entirely"
+      ],
+      "answer": 1,
+      "explain": "When roles start encoding data values (region, tier, tenant, ownership), the role count races toward the user count. That is role explosion, and the contextual conditions belong in ABAC attributes or ReBAC relationships instead of ever more roles."
+    },
+    {
+      "q": "A policy reads: Permit if subject.clearance >= resource.classification AND env.deviceManaged == true. Which authorization model is this?",
+      "choices": [
+        "RBAC, because clearance is a role",
+        "ReBAC, because it relates a subject to a resource",
+        "ABAC, because the decision is a boolean rule over subject, resource, and environment attributes",
+        "PBAC, because it is written as a policy"
+      ],
+      "answer": 2,
+      "explain": "The decision compares attribute values (subject clearance, resource classification, environment device posture) at request time. That is ABAC. A policy engine could evaluate it, but the model — the shape of the decision — is attribute-based."
+    },
+    {
+      "q": "In Google Zanzibar, after revoking someone's access you want your next Check to reflect the revoke rather than read a stale replica. What do you use?",
+      "choices": [
+        "A userset rewrite",
+        "The Expand API",
+        "A permit-overrides combining algorithm",
+        "The zookie (consistency token) from the revoking write"
+      ],
+      "answer": 3,
+      "explain": "A zookie encodes a snapshot timestamp. Passing the zookie from a permission-revoking write into later Checks forces an at-least-as-fresh read, closing the 'new enemy' window where a stale ACL could still permit access."
+    },
+    {
+      "q": "In the PEP/PDP/PIP/PAP pattern, which component fetches attributes the decision request is missing, such as a user's department or a resource owner?",
+      "choices": [
+        "PEP (Policy Enforcement Point)",
+        "PDP (Policy Decision Point)",
+        "PIP (Policy Information Point)",
+        "PAP (Policy Administration Point)"
+      ],
+      "answer": 2,
+      "explain": "The PIP supplies attributes the request lacks, pulled from directories, databases, or risk services. The PEP enforces, the PDP decides, and the PAP authors and distributes policy out of the request path."
+    },
+    {
+      "q": "A token carries the scope invoices.write. A request tries to edit invoice #42 that the subject does not own. What is the correct outcome?",
+      "choices": [
+        "Allow — the scope grants write access to invoices",
+        "Deny — scope is a ceiling on what the client may attempt; the resource must still check the instance-level entitlement",
+        "Allow — scopes always imply per-object permission",
+        "Deny — invoices.write is an identity claim, not a scope"
+      ],
+      "answer": 1,
+      "explain": "Scope bounds what the client may attempt, never per-object permission. Enforcing only scope is the classic BOLA/IDOR flaw; the resource must resolve the runtime entitlement (does this subject own or relate to invoice #42?) before allowing the write."
+    }
+  ]
+}

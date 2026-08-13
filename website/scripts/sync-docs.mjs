@@ -56,8 +56,10 @@ writeFileSync(join(DOCS, 'intro.md'),
   `Mermaid. Most flows have a **sequence**, **swimlane**, and **flowchart** view, and the ` +
   `authentication flows add **hands-on** pages (client snippets, a "read it in DevTools" ` +
   `walkthrough, and sanitized sample captures).\n\n` +
-  `New here? Start with the [Learning Path](LEARNING-PATH). Browse everything from the sidebar. ` +
-  `Look up terms in the [Glossary](GLOSSARY).\n\n` +
+  `New here? Start with the [Learning Path](LEARNING-PATH), or go hands-on with the interactive ` +
+  `[Training Path](pathname:///training/) (staged lessons + quizzes) and the ` +
+  `[Flow Explorer](pathname:///explorer/) (step through real flows). Browse everything from the ` +
+  `sidebar; look up terms in the [Glossary](GLOSSARY).\n\n` +
   `**Domains:** ${DOMAINS.map(label).join(' · ')}.\n`);
 
 console.log('Synced repository content into website/docs.');

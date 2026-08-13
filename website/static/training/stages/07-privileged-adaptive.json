@@ -1,0 +1,132 @@
+{
+  "id": "privileged-adaptive",
+  "title": "Privileged & Adaptive Access",
+  "summary": "Two halves of the same discipline: minimize standing privilege so a compromised account is usually not privileged, and re-check the session continuously instead of trusting the login forever.",
+  "lessons": [
+    {
+      "id": "jit-privilege-elevation",
+      "title": "Just-in-time privilege elevation",
+      "objective": "Trace the eligible → request → approve → time-bound → auto-revoke lifecycle and see why standing privilege is the thing to remove.",
+      "content": "<p>The old model gives an administrator a privileged role <i>permanently</i>. The problem is <b>standing privilege</b>: if that account is phished, it is privileged the moment it is compromised. Just-in-time (JIT) elevation flips the default — the identity is only made <b>eligible</b> for the role, and the privilege sits dormant until it is activated.</p><p>The lifecycle is a chain of gates:</p><p><b>Eligible</b> — a standing assignment that grants <i>nothing</i> on its own. Eligibility is not access.<br><b>Request / activate</b> — the admin supplies a <i>justification</i> (often bound to a change ticket) and passes a <b>fresh, phishing-resistant MFA</b> challenge — a valid session is not enough, because activation is the moment privilege is actually conferred.<br><b>Approve</b> — sensitive roles pause for a human approver; lower-tier roles may auto-approve after MFA + justification.<br><b>Time-bound</b> — activation grants the role for a <i>short, scoped</i> window: the least role, for the least time, on the least scope.<br><b>Auto-revoke</b> — when the window expires the assignment is removed automatically, with no user action, and the identity returns to zero standing privilege.</p><p>The payoff: a compromised admin account is usually <i>not currently privileged</i>, which shrinks the attack window to the rare, logged, justified moments of activation. Microsoft Entra PIM is the canonical implementation; AWS temporary role assumption and third-party PAM follow the same pattern.</p>",
+      "links": [
+        {
+          "label": "Just-in-time privilege elevation",
+          "href": "../privileged-access/jit-privilege-elevation/"
+        },
+        {
+          "label": "Credential vault check-out",
+          "href": "../privileged-access/credential-vault-checkout/"
+        }
+      ]
+    },
+    {
+      "id": "break-glass-emergency-access",
+      "title": "Break-glass emergency access",
+      "objective": "Understand the sealed, monitored, rehearsed exception you keep for when the normal paths themselves fail.",
+      "content": "<p>JIT and approval flows depend on the identity provider being up. What happens when the IdP is down, a Conditional Access misconfiguration has locked every admin out, or a ransomware incident demands immediate top-level control? That is the job of a small number of <b>break-glass</b> accounts held in reserve — the documented exception to your own guardrails.</p><p>Because these accounts <i>bypass</i> the usual controls, the entire control set is <b>detection over prevention</b>. You cannot rely on the fence, so you rely on making every use impossible to hide and impossible to ignore:</p><p><b>Sealed</b> — the credential is split into parts held by different custodians (a physical safe or a tightly controlled vault entry) so no single person can wield it alone. This <i>multi-person (M-of-N) control</i> stops one insider or one stolen credential half.<br><b>Monitored</b> — any invocation fires <b>loud, hard-to-suppress</b> real-time alerts to security and leadership. A break-glass account signing in on a normal Tuesday is itself an incident.<br><b>Rehearsed</b> — the procedure is tested and recertified periodically. A sealed account nobody can actually open in a crisis is worse than useless.</p><p>Two rules make or break it. Exclude these accounts from the very control that could lock them out (e.g. exempt them from the Conditional Access policy that failed) — but monitor them the hardest. And after <i>every</i> use, run the mandatory review: <b>rotate the secret, re-split, re-seal</b>, and file the record. An emergency credential still valid after the incident is just an unmonitored superuser password.</p>",
+      "links": [
+        {
+          "label": "Break-glass emergency access",
+          "href": "../privileged-access/break-glass-emergency-access/"
+        },
+        {
+          "label": "Just-in-time privilege elevation",
+          "href": "../privileged-access/jit-privilege-elevation/"
+        }
+      ]
+    },
+    {
+      "id": "pam-vaulting-session-recording",
+      "title": "PAM vaulting and session recording",
+      "objective": "See how a vault removes direct credential handling and how a session proxy makes shared-account activity attributable.",
+      "content": "<p>JIT elevates a role on <i>your own</i> identity. But some privileges are a <b>shared secret</b> — a local-admin password, a database <code>sa</code> account, an appliance root — that cannot practically be made per-person. The PAM answer is to never let the secret touch the administrator's machine.</p><p><b>Vault check-out / check-in.</b> The credential lives only inside the vault. To use it the admin <b>checks it out</b>: the vault verifies who they are, checks entitlement and any approval, then either reveals the secret for a bounded window or — far better — <b>brokers</b> it by injecting it straight into a session so the human never sees the value at all. On <b>check-in</b> (explicit, on session end, or on timeout) the vault <b>rotates</b> the credential, so what was checked out can never be reused. Prefer brokering over revealing: a secret the human never sees cannot be written down, pasted into chat, or phished later. Bind every check-out to a specific human so the log answers \"who used root at 02:00\", not just \"root logged in\".</p><p><b>Session recording and monitoring.</b> The brokered connection is routed through an inline <b>session proxy</b> (a Privileged Session Manager) that injects the target credential, <b>records the session</b> — screen capture plus a structured keystroke/command log — and runs a <b>real-time policy engine</b> per command. A prohibited command can be blocked in-line; a hard-rule violation or a live reviewer can terminate the session mid-stream. Recordings go to append-only / WORM storage with integrity hashing, because a log an admin can edit is not audit evidence. And the proxy <b>fails closed</b>: if the recorder or policy engine is down, deny new privileged sessions rather than allow an unrecorded one.</p>",
+      "links": [
+        {
+          "label": "Credential vault check-out",
+          "href": "../privileged-access/credential-vault-checkout/"
+        },
+        {
+          "label": "Session recording & monitoring",
+          "href": "../privileged-access/session-recording-monitoring/"
+        }
+      ]
+    },
+    {
+      "id": "continuous-adaptive-access",
+      "title": "Continuous and adaptive access",
+      "objective": "Move the check from login-time to session-time: CAE near-real-time revocation, device posture, and the MFA-fatigue problem.",
+      "content": "<p>Everything so far minimizes <i>standing</i> privilege. Adaptive access attacks the other assumption: that a decision made at <b>login</b> stays valid for the life of the session. It does not.</p><p><b>Continuous Access Evaluation (CAE).</b> A bearer token is honoured until it <i>expires</i> — so a one-hour token stays valid for up to an hour even if the user is disabled, the password is reset, or the session is flagged risky the moment after issuance. CAE closes that gap by keeping the resource server and IdP talking after issuance. On a <b>critical event</b> (account disabled, password reset, MFA revoked, admin sign-out, elevated risk, network-location change) the next API call is met with a <b>claims challenge</b> (<code>WWW-Authenticate</code> with a <code>claims</code> parameter) instead of being served; the client takes that back to the IdP, which re-evaluates and re-issues or blocks. Enforcement moves from token-expiry to <i>near</i>-real-time — it shrinks the window, it does not eliminate it, so pair it with short lifetimes for the most sensitive resources.</p><p><b>Device posture.</b> A valid identity is necessary but not sufficient; the request must also come from a <b>compliant, managed device</b>. The policy engine requires a device certificate or hardware attestation, then checks posture (encrypted, patched, EDR healthy, not jailbroken) and maps it to grant / limited / block. Do not trust client-asserted posture — root it in <b>hardware attestation</b> (TPM, Secure Enclave). And compliance is a snapshot: pair it with CAE so posture drift revokes access mid-session, not only at the next login.</p><p><b>The MFA-fatigue problem.</b> Push-based MFA has a specific weakness: an attacker who already holds the password sprays <b>approve/deny</b> prompts until a worn-down user taps Approve (\"push bombing\"). <b>Number matching</b> defeats it — the sign-in screen shows a two- or three-digit number the user must <i>type</i> into the app. The number lives on the <i>initiator's</i> screen, which during an attack is the attacker's, so the victim has no correct number to enter. It stops blind approval, but <b>not</b> a real-time AiTM relay — for that, move to phishing-resistant FIDO2 / passkeys. And treat unrequested prompts as signal: a burst the user never started means the password has already fallen.</p>",
+      "links": [
+        {
+          "label": "Continuous Access Evaluation (CAE)",
+          "href": "../authentication/adaptive-access/continuous-access-evaluation/"
+        },
+        {
+          "label": "Device posture conditional access",
+          "href": "../authentication/adaptive-access/device-posture-conditional-access/"
+        },
+        {
+          "label": "MFA fatigue & number matching",
+          "href": "../authentication/adaptive-access/mfa-fatigue-number-matching/"
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Under just-in-time elevation, what does an \"eligible\" assignment grant before activation?",
+      "choices": [
+        "Full use of the privileged role at all times",
+        "Nothing on its own — the privilege is dormant until it is activated",
+        "A permanent role that is merely hidden from audit",
+        "Standing access limited to business hours"
+      ],
+      "answer": 1,
+      "explain": "Eligibility is not access. The standing state is unprivileged; the role is conferred only on activation (justification + fresh MFA, possibly approval) and is auto-revoked when the time-bound window ends."
+    },
+    {
+      "q": "Why is a fresh, phishing-resistant MFA challenge required at the moment of activation, not just a valid existing session?",
+      "choices": [
+        "Because sessions cannot carry MFA claims",
+        "Because activation is the moment privilege is actually conferred, so it deserves the strongest proof",
+        "To reset the session cookie",
+        "Because approvers cannot see session state"
+      ],
+      "answer": 1,
+      "explain": "A valid sign-in session is not enough: activation is when standing-zero privilege becomes real access, so it is re-authenticated with a fresh phishing-resistant factor rather than trusting an earlier login."
+    },
+    {
+      "q": "Break-glass emergency accounts bypass the usual guardrails. What is the primary control model that keeps them safe?",
+      "choices": [
+        "Prevention — tight network firewalls block their use",
+        "Detection and accountability — loud alerting, logging, multi-person control, and mandatory post-use review",
+        "Short-lived tokens that expire in minutes",
+        "Automatic role revocation after each API call"
+      ],
+      "answer": 1,
+      "explain": "Because these accounts exist precisely to bypass controls, the guarantees come from detection over prevention: seal the credential under multi-person control, raise hard-to-suppress alerts on any use, and mandatorily reseal and rotate afterward."
+    },
+    {
+      "q": "In the strongest credential-vault model, how does the administrator use a shared privileged password?",
+      "choices": [
+        "The vault emails the password for offline storage",
+        "The vault brokers it — injecting the secret into the session so the human never sees the value, then rotating on check-in",
+        "The password is copied permanently to the admin's workstation",
+        "The admin memorizes the password so it need not be rotated"
+      ],
+      "answer": 1,
+      "explain": "Brokering is preferred over revealing: a secret the human never sees cannot be written down, pasted into chat, or phished later. The vault rotates the credential on check-in so the checked-out value can never be reused."
+    },
+    {
+      "q": "Number matching stops push-bombing but does NOT stop which attack?",
+      "choices": [
+        "A user tapping Approve out of fatigue",
+        "An attacker with only the victim's password spraying prompts",
+        "A real-time adversary-in-the-middle (AiTM) proxy that relays a legitimate challenge",
+        "A guessed or mistyped number on the authenticator"
+      ],
+      "answer": 2,
+      "explain": "Number matching defeats blind approval because the number lives on the initiator's (attacker's) screen. It does not stop an AiTM proxy relaying a genuine challenge in real time — that requires phishing-resistant FIDO2 / passkeys."
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "id": "architecture-delivery",
+  "title": "Architecture, CI/CD & Delivery",
+  "summary": "The capstone: how the pieces assemble into a real system. Inside a modern IdP, how enterprise identity products fit together, how zero trust decides every request, and how you ship and stand up all of it — keyless deploys, signed artifacts, and environments as code.",
+  "lessons": [
+    {
+      "id": "idp-reference-architecture",
+      "title": "Inside an identity provider",
+      "objective": "See the components a modern IdP is built from and the trust boundaries between them.",
+      "content": "<p>Everything you have learned about login flows runs <i>through</i> a system: the <b>Identity Provider</b>. Seen from the inside, an IdP is not one box but a set of cooperating planes, each with a different job and a different level of exposure:</p><ul><li><b>Edge / TLS gateway</b> — the only internet-facing component. TLS terminates here; a WAF and rate limiter blunt credential stuffing and DoS before traffic reaches anything sensitive.</li><li><b>Authentication service</b> — runs the login ceremony, verifies primary credentials, and orchestrates factors via the <b>Factor / MFA service</b> (TOTP, push, WebAuthn/passkey).</li><li><b>Token / assertion service</b> — mints OIDC ID/access tokens (JWT) and SAML assertions. It signs with private keys held in an <b>HSM/KMS</b>, the crown jewels — keys never leave the boundary, and the public half is published via JWKS or SAML metadata.</li><li><b>Session store</b> — the IdP's own long-lived, revocable SSO session, distinct from the short-lived tokens it mints for relying parties.</li><li><b>User directory</b> — the authoritative store of identities, credential hashes, and group membership; the highest-value data store, isolated in the data tier.</li><li><b>Policy/admin plane</b> and <b>append-only audit log</b> — management flows through its own MFA-protected, audited path, and every authN, token issuance, and admin action is written to a tamper-evident log.</li></ul><p>The point of drawing these boundaries is <b>containment</b>: only the edge is public, only the token service touches signing keys, and a compromise in one plane does not automatically grant the others.</p>",
+      "links": [
+        {
+          "label": "IdP reference architecture",
+          "href": "../infrastructure/architecture/identity-provider-reference-architecture/"
+        }
+      ]
+    },
+    {
+      "id": "enterprise-identity-environment",
+      "title": "A real enterprise identity environment",
+      "objective": "Place SailPoint, Okta/Entra, Active Directory, and applications in one picture.",
+      "content": "<p>A single IdP is only part of the estate. In a real enterprise, several systems each own a distinct role and hand off to the next:</p><ul><li><b>HR system of record</b> (e.g. Workday) — authoritative worker data; a hire, transfer, or termination here triggers the joiner/mover/leaver lifecycle.</li><li><b>Identity governance / IGA</b> (e.g. SailPoint) — the control plane. It provisions accounts, runs access requests and certifications, and enforces separation of duties.</li><li><b>Access management / IdP</b> (e.g. Okta, Microsoft Entra ID) — run-time authentication, MFA, and SSO into applications.</li><li><b>Directory</b> (e.g. Active Directory) — on-prem accounts, groups, and Kerberos/LDAP.</li><li><b>Privileged access / PAM</b> (e.g. CyberArk) — vaulted credentials and brokered privileged sessions.</li><li><b>Applications</b> — the relying parties that consume SSO and provisioned access.</li></ul><p>The shape is what matters, and product names are interchangeable: an <i>HR source of truth</i> feeds an <i>IGA control plane</i> that provisions a <i>directory, an IdP, and apps</i>, while the <i>IdP handles authentication and SSO at run time</i> and a <i>PAM tool brokers privileged access</i>. Governance decides <b>who should have access</b>; the IdP enforces <b>who is present right now</b>.</p>",
+      "links": [
+        {
+          "label": "Enterprise identity environment",
+          "href": "../infrastructure/architecture/enterprise-identity-environment/"
+        }
+      ]
+    },
+    {
+      "id": "zero-trust-architecture",
+      "title": "Zero trust: decide every request",
+      "objective": "Understand the PDP/PEP split, continuous verification, and why network location grants nothing.",
+      "content": "<p>Zero trust (NIST SP 800-207) replaces the old \"inside the perimeter is trusted\" model with a rule: <b>every request to every resource is mediated and re-verified</b>. Two roles do the work:</p><p><b>Policy Decision Point (PDP)</b> — the brain, made of a <b>Policy Engine</b> that computes the allow/deny decision from policy plus signals, and a <b>Policy Administrator</b> that establishes or tears down the connection and issues session credentials.</p><p><b>Policy Enforcement Point (PEP)</b> — the inline gate sitting in front of each resource. It allows, blocks, or terminates a session on the PDP's instruction. An API gateway is a concrete PEP.</p><p>The decision is a <b>function of live signals</b>, not a one-time login: identity and MFA from the IdP, device posture from EDR, and risk from SIEM/threat intel are combined <i>per request</i>. Key consequences:</p><ul><li><b>No network-location trust</b> — internal traffic is challenged exactly like internet traffic. This is the model that replaces IP-allowlist \"network auth\".</li><li><b>Continuous verification</b> — sessions are short and re-evaluated; a device that falls out of compliance mid-session is denied on the next check, and the PA can revoke an established session when a signal changes.</li><li><b>Least privilege, per-resource</b> — access is to a single resource for a single session, so lateral movement is denied by default.</li><li><b>Control plane vs data plane</b> — the PDP never carries application data, so compromising the data path does not grant policy authority. But the PDP and its signal feeds are high-value: poisoned posture or risk data corrupts every decision.</li></ul>",
+      "links": [
+        {
+          "label": "Zero-trust architecture",
+          "href": "../infrastructure/architecture/zero-trust-architecture/"
+        }
+      ]
+    },
+    {
+      "id": "secure-delivery",
+      "title": "Secure delivery: keyless deploys and provenance",
+      "objective": "Ship without stored cloud keys and refuse artifacts that cannot prove where they came from.",
+      "content": "<p>The same identity principles apply to how software reaches production. Two patterns remove long-lived secrets from the pipeline.</p><p><b>OIDC-to-cloud federation (keyless deploy).</b> Instead of pasting a long-lived cloud access key into CI secrets, the CI system acts as an OIDC issuer: for each job it mints a short-lived, signed JWT describing the workflow — claims like <code>sub=repo:org/repo:ref:refs/heads/main</code>, <code>aud</code>, and <code>environment</code>. The cloud is configured to trust that issuer and <b>exchanges the JWT for short-lived credentials</b> (AWS <code>sts:AssumeRoleWithWebIdentity</code>, GCP Workload Identity Federation, Azure workload identity federation). The exchange succeeds only if the signature verifies against the issuer's JWKS <i>and</i> the claims satisfy the trust policy. The cardinal rule: <b>scope <code>sub</code> and <code>aud</code> tightly and never wildcard the subject</b> — a loose <code>repo:org/*</code> lets a fork assume your role.</p><p><b>Artifact signing and provenance (verify on deploy).</b> Prove an artifact was built by a trusted pipeline from trusted source, and refuse anything that cannot. With <b>Sigstore keyless</b> signing, cosign gets an OIDC identity token, <b>Fulcio</b> issues a short-lived cert bound to that identity, cosign signs the artifact <b>digest</b>, and the signature is recorded in the <b>Rekor</b> transparency log — no signing key is stored. The build also emits signed <b>in-toto provenance</b> (source, builder, materials), graded by <b>SLSA</b> level. At deploy, an admission controller or deploy gate verifies the <i>signer identity</i> (not just that a signature exists), checks the provenance meets the required SLSA level and builder, and only then admits the artifact. Verify at <b>admission</b>, not only at build.</p>",
+      "links": [
+        {
+          "label": "OIDC-to-cloud federation (keyless deploy)",
+          "href": "../infrastructure/cicd/oidc-to-cloud-federation/"
+        },
+        {
+          "label": "Artifact signing and provenance",
+          "href": "../infrastructure/cicd/artifact-signing-provenance/"
+        }
+      ]
+    },
+    {
+      "id": "environments-as-code",
+      "title": "Environments as code, and where to go next",
+      "objective": "Stand up Okta/Auth0/SailPoint/Entra/AD from reviewed, versioned templates — then keep exploring.",
+      "content": "<p>The identity platforms themselves can be declared and deployed like any other infrastructure. The <b>environment templates</b> are copyable, parameterized starters — one per platform, each with a GitHub Actions workflow:</p><ul><li><b>Okta</b> (Workforce) and <b>Auth0</b> (CIAM) — Terraform providers.</li><li><b>SailPoint ISC</b> — SP-Config JSON driven by the SailPoint CLI/API.</li><li><b>Microsoft Entra ID</b> — the <code>azuread</code> Terraform provider.</li><li><b>Active Directory</b> — a PowerShell baseline for OUs, groups, and tiering.</li></ul><p>The shared conventions turn these into a safe workflow: <b>multi-environment</b> (<code>dev</code>/<code>test</code>/<code>prod</code>, never one shared state), <b>remote state</b>, <b>secrets never in code</b> (only <code>*.tfvars.example</code> is committed; real values come from CI secrets or, better, OIDC federation), <b>least privilege</b> per-environment service principals, and <b>plan on PR, apply on merge</b> gated by a protected <code>production</code> environment with manual approval. They are starter templates, not turn-key production configs — always read a plan before applying to a real tenant.</p><p><b>Where to go next.</b> You now have the whole picture: identity vocabulary, login and token flows, authorization, lifecycle, and how it all assembles and ships. When you face a real choice, reach for the <b>decision guides</b> — which authentication protocol, session vs. token, authorization model, MFA factor, OAuth grant, or workload-to-cloud auth. And to watch any flow run message by message, open the interactive <b>Flow Explorer</b>. Build the mental model here; make the call there.</p>",
+      "links": [
+        {
+          "label": "Identity environment templates (IaC)",
+          "href": "../infrastructure/cicd/environment-templates/"
+        },
+        {
+          "label": "Decision guides",
+          "href": "../reference/decision-guides/"
+        },
+        {
+          "label": "Try the Flow Explorer",
+          "href": "../explorer/"
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "q": "In the IdP reference architecture, which component holds the private keys used to sign tokens and assertions?",
+      "choices": [
+        "The Edge / TLS gateway",
+        "The Token / assertion service, backed by an HSM/KMS",
+        "The user directory",
+        "The session store"
+      ],
+      "answer": 1,
+      "explain": "The token/assertion service signs with private keys held in an HSM/KMS. Those keys are the crown jewels — they never leave the boundary, and only the public half is published via JWKS or SAML metadata."
+    },
+    {
+      "q": "In a typical enterprise identity environment, which system is the authoritative source that triggers the joiner/mover/leaver lifecycle?",
+      "choices": [
+        "The IdP (Okta / Entra ID)",
+        "Active Directory",
+        "The HR system of record (e.g. Workday)",
+        "The PAM tool (e.g. CyberArk)"
+      ],
+      "answer": 2,
+      "explain": "The HR system of record holds authoritative worker data; a hire, transfer, or termination there triggers the lifecycle, which the IGA control plane then provisions into the directory, IdP, and apps."
+    },
+    {
+      "q": "A laptop passes login and starts a session, then falls out of patch compliance an hour later. What does a zero-trust architecture do?",
+      "choices": [
+        "Nothing — it was already trusted at login for the life of the session",
+        "Denies it on the next evaluation, because decisions combine live signals per request and sessions are continuously re-verified",
+        "Trusts it as long as it stays on the internal network",
+        "Re-runs MFA but keeps network access regardless of posture"
+      ],
+      "answer": 1,
+      "explain": "Zero trust makes each decision a function of live signals (identity, device posture, risk), not a one-time login. A device that falls out of compliance is denied on the next check, and the Policy Administrator can revoke an established session."
+    },
+    {
+      "q": "What is the single most important condition to get right in an OIDC-to-cloud trust policy for keyless deploys?",
+      "choices": [
+        "Give the credentials a long TTL so jobs never expire mid-run",
+        "Store a backup access key in CI secrets in case OIDC fails",
+        "Scope the subject and audience tightly and never wildcard the subject",
+        "Allow any valid signature from the CI issuer"
+      ],
+      "answer": 2,
+      "explain": "The exchange must require a tightly scoped sub and aud. A wildcard subject like repo:org/* lets a fork or unrelated repo assume the role, undoing the whole model. Pin to a ref or, better, an environment claim."
+    },
+    {
+      "q": "With keyless artifact signing (Sigstore), how should a deploy gate decide whether to admit an image?",
+      "choices": [
+        "Admit any image that carries some signature",
+        "Verify at build time only; admission does not need to re-check",
+        "Verify the signer identity (OIDC issuer/subject) and that provenance meets the required SLSA level and builder, at admission",
+        "Require a long-lived signing key to be stored and rotated"
+      ],
+      "answer": 2,
+      "explain": "Verify the signer identity, not merely the presence of a signature, and require trusted-builder provenance at a minimum SLSA level. Do this at admission, since build-time checks do not stop a tampered artifact from being deployed by another path."
+    }
+  ]
+}

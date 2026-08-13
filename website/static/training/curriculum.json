@@ -1,0 +1,1327 @@
+{
+  "title": "Identity Security Training Path",
+  "subtitle": "A staged, self-paced course through authentication, authorization, identity lifecycle, and the systems around them. Read the lesson, explore the linked diagram, then pass the stage quiz.",
+  "stages": [
+    {
+      "id": "foundations",
+      "title": "Foundations",
+      "summary": "The vocabulary and mental models everything else builds on: identity vs. authentication vs. authorization, sessions, and how to read the diagrams in this repository.",
+      "lessons": [
+        {
+          "id": "identity-vs-authn-vs-authz",
+          "title": "Identity, authentication, and authorization",
+          "objective": "Tell apart the three ideas people most often conflate.",
+          "content": "<p>Three distinct questions sit at the heart of every access decision:</p><p><b>Identity</b> — <i>who are you?</i> A claim to be a particular principal (a person, a service, a device). An identifier like a username or a <code>sub</code> claim names the identity; it is not proof.</p><p><b>Authentication (authN)</b> — <i>can you prove it?</i> Verifying the claim with one or more factors: something you know (password), have (a passkey, a token), or are (biometric). The output is a trusted assertion that <i>this</i> principal is present.</p><p><b>Authorization (authZ)</b> — <i>what are you allowed to do?</i> Given a proven identity, deciding whether a specific action on a specific resource is permitted. Roles, attributes, relationships, and policy live here.</p><p>The order matters: you authenticate first to establish <i>who</i>, then authorize to decide <i>what</i>. A system can authenticate you perfectly and still deny you — that is authorization doing its job.</p>",
+          "links": [
+            {
+              "label": "Authorization models",
+              "href": "../authorization/rbac/"
+            },
+            {
+              "label": "OIDC Authorization Code + PKCE",
+              "href": "../authentication/oidc/authorization-code-pkce/"
+            }
+          ]
+        },
+        {
+          "id": "reading-the-diagrams",
+          "title": "How to read the diagrams",
+          "objective": "Get fluent in the three views every flow uses.",
+          "content": "<p>Most flows in this library are drawn three ways, and each answers a different question:</p><p><b>Sequence</b> — the messages exchanged over time, in order. Best for “what actually goes over the wire, and in what order?”</p><p><b>Swimlane</b> — the same flow with one lane per actor (User, Browser, IdP, API…). Best for “who is responsible for each step?”</p><p><b>Flowchart</b> — the decision and error logic, with every deny/error path drawn explicitly. Best for “where can this fail, and what gates each outcome?”</p><p>Each flow folder also carries a <b>Status</b> badge — ✅ Current, 🟡 Legacy, ⛔ Deprecated, 🔵 Emerging — so you can tell at a glance whether a mechanism is something to build on or something to migrate off.</p>",
+          "links": [
+            {
+              "label": "Glossary & legend",
+              "href": "../GLOSSARY/"
+            },
+            {
+              "label": "Conventions",
+              "href": "../CONVENTIONS/"
+            }
+          ]
+        },
+        {
+          "id": "sessions-and-tokens",
+          "title": "Sessions and tokens",
+          "objective": "Understand how a system remembers you after you authenticate.",
+          "content": "<p>Authentication happens once, but you make many requests. Something has to carry the “I already proved who I am” signal on each one. Two broad approaches:</p><p><b>Server-side session</b> — the server stores session state and hands the browser an opaque <b>session cookie</b>. Each request sends the cookie; the server looks up the session. Easy to revoke (delete the session), but the server holds state.</p><p><b>Token</b> — the client holds a signed <b>token</b> (often a JWT) that carries claims the server can verify without a lookup. Stateless and scalable, but harder to revoke before expiry — which is why short lifetimes, refresh rotation, and mechanisms like introspection and CAE exist.</p><p>The interactive Flow Explorer lets you step through a real token flow and see exactly what each request carries.</p>",
+          "links": [
+            {
+              "label": "Session cookie flow",
+              "href": "../authentication/tokenless/session-cookie/"
+            },
+            {
+              "label": "Try the Flow Explorer",
+              "href": "../explorer/?flow=oidc-authorization-code-pkce"
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "q": "A user signs in successfully but gets a 403 when opening the admin page. Which stage denied them?",
+          "choices": [
+            "Authentication",
+            "Authorization",
+            "Identity resolution",
+            "Session creation"
+          ],
+          "answer": 1,
+          "explain": "They proved who they are (authentication succeeded); the system then decided this proven identity may not perform this action — that is authorization."
+        },
+        {
+          "q": "You want to know exactly which HTTP requests a flow makes and in what order. Which diagram view is best?",
+          "choices": [
+            "Swimlane",
+            "Flowchart",
+            "Sequence",
+            "Status badge"
+          ],
+          "answer": 2,
+          "explain": "The sequence diagram shows the ordered messages exchanged over time. Swimlane shows responsibilities; flowchart shows decision/error logic."
+        },
+        {
+          "q": "Which statement about server-side sessions vs. tokens is correct?",
+          "choices": [
+            "Tokens are always more secure than sessions",
+            "Server-side sessions are easy to revoke; stateless tokens are harder to revoke before they expire",
+            "Session cookies cannot be used with HTTPS",
+            "JWTs are stored on the server, not the client"
+          ],
+          "answer": 1,
+          "explain": "Deleting a server-side session revokes it immediately. A stateless JWT stays valid until it expires, which is why short lifetimes, refresh rotation, introspection, and CAE exist."
+        },
+        {
+          "q": "A diagram carries a ⛔ Deprecated status badge. What does that signal?",
+          "choices": [
+            "It is the newest, recommended approach",
+            "It is actively discouraged; prefer the linked alternative",
+            "It is still the default for new builds",
+            "It has not been reviewed yet"
+          ],
+          "answer": 1,
+          "explain": "⛔ Deprecated means the mechanism is discouraged for new work and the page points to what to use instead (e.g. the OIDC Implicit flow → Authorization Code + PKCE)."
+        }
+      ]
+    },
+    {
+      "id": "web-sso",
+      "title": "Web SSO: OIDC & SAML",
+      "summary": "The two protocols that carry single sign-on across the web: OpenID Connect (the modern default) and SAML 2.0 (the enterprise incumbent). How each moves a proven identity from an IdP to an app, and how to pick between them.",
+      "lessons": [
+        {
+          "id": "oidc-authorization-code-pkce",
+          "title": "OIDC Authorization Code + PKCE",
+          "objective": "Explain why PKCE is the modern default for SPAs and native apps, and what the verifier actually protects.",
+          "content": "<p>The <b>Authorization Code flow with PKCE</b> (Proof Key for Code Exchange, RFC 7636) is the current recommended flow for <b>public clients</b> — single-page apps and native/mobile apps that cannot keep a client secret. The app never holds a secret, so a stolen authorization code alone must not be redeemable.</p><p>PKCE closes that gap. Before redirecting to <code>/authorize</code>, the app generates a random <code>code_verifier</code> (43–128 chars, kept only in memory) and sends its hash: <code>code_challenge = BASE64URL(SHA256(code_verifier))</code> with <code>code_challenge_method=S256</code>. When it later redeems the code at <code>/token</code>, it presents the original <code>code_verifier</code>. The IdP recomputes the hash and rejects any mismatch with <code>invalid_grant</code>. An attacker who intercepts the redirect gets a code but never the verifier, so the code is useless.</p><p>PKCE stops <i>code interception</i> — it does not replace <code>state</code> (CSRF binding) or <code>nonce</code> (ID-token replay binding), both still required. Use <code>S256</code>, never <code>plain</code>: with <code>plain</code> the challenge equals the verifier, so anyone who saw the <code>/authorize</code> request already has it. Current security guidance recommends PKCE for <b>all</b> clients, confidential ones included, as extra code-injection defense.</p><p>Step through it end to end in the Flow Explorer to see exactly what each request carries.</p>",
+          "links": [
+            {
+              "label": "OIDC Authorization Code + PKCE",
+              "href": "../authentication/oidc/authorization-code-pkce/"
+            },
+            {
+              "label": "Try it in the Flow Explorer",
+              "href": "../explorer/?flow=oidc-authorization-code-pkce"
+            }
+          ]
+        },
+        {
+          "id": "oidc-authorization-code-confidential",
+          "title": "OIDC Authorization Code for confidential clients",
+          "objective": "Trace how a server-side app redeems a code over the back channel so tokens never touch the browser.",
+          "content": "<p>The baseline OpenID Connect flow is built for a <b>confidential client</b> — a server-side web app with a backend that can hold credentials. The browser is redirected to <code>/authorize</code> with <code>response_type=code&scope=openid</code>; the user authenticates and consents; the IdP returns a short-lived, single-use <b>authorization code</b> through the browser (the front channel).</p><p>The important part happens next, out of the browser's reach: the backend redeems the code at the <code>/token</code> endpoint over a direct <b>back-channel</b> HTTPS call, authenticating itself with <code>client_secret_basic</code> or the stronger <code>private_key_jwt</code>. It receives an ID token, an access token, and optionally a refresh token. <b>Tokens never transit the browser</b>, which is the security advantage over front-channel token delivery.</p><p>The client then validates the ID token: signature against the IdP's JWKS, <code>iss</code>, <code>aud</code> equal to its <code>client_id</code>, <code>exp</code>, and a <code>nonce</code> match. It must also verify <code>state</code> on the callback <i>before</i> touching the code (a mismatch is treated as CSRF and discarded). Codes are single-use and short-lived; the IdP detects reuse and revokes any tokens already issued for that code. Register an exact-match <code>redirect_uri</code> — no wildcards, no open redirectors.</p><p>Prefer <code>private_key_jwt</code> where supported: it avoids a shared secret and enables key rotation. A public client uses this same flow plus PKCE.</p>",
+          "links": [
+            {
+              "label": "OIDC Authorization Code (confidential)",
+              "href": "../authentication/oidc/authorization-code/"
+            }
+          ]
+        },
+        {
+          "id": "saml-sp-initiated-sso",
+          "title": "SAML SP-initiated SSO",
+          "objective": "Walk the AuthnRequest-to-assertion exchange and name the checks the SP must perform.",
+          "content": "<p>SAML 2.0 is the enterprise incumbent for workforce SSO, and <b>SP-initiated Web Browser SSO</b> is its canonical flow. The user starts at the application — the <b>Service Provider (SP)</b> — which builds an <code>AuthnRequest</code> and sends it to the <b>Identity Provider (IdP)</b> via the <b>HTTP-Redirect binding</b>: the request is DEFLATE-compressed, base64- and URL-encoded into the <code>SAMLRequest</code> query parameter. <code>RelayState</code> carries the deep link the user originally wanted so the SP can restore it after login.</p><p>The IdP authenticates the user (or reuses an existing IdP session for seamless SSO) and returns a signed <code>Response</code> containing an <code>Assertion</code>. It is delivered as a base64 <code>SAMLResponse</code> form field auto-posted to the SP's <b>Assertion Consumer Service (ACS) URL</b> via the <b>HTTP-POST binding</b>.</p><p>The SP's validation is where security lives: verify the XML signature <i>before</i> trusting any content, using the IdP certificate from metadata (never one embedded in the message alone). Then check <code>Issuer</code>, <code>Destination</code>, the <code>Audience</code> restriction, the <code>NotBefore</code>/<code>NotOnOrAfter</code> conditions, and <code>SubjectConfirmationData</code> — including <code>InResponseTo</code>, which must match a request ID the SP actually issued. Enforce one-time use of the assertion ID (a replay cache), and guard against <b>XML Signature Wrapping</b> by consuming only the element the signature truly covers. Treat <code>RelayState</code> as untrusted input and allow-list it to prevent open redirects.</p><p>Because the SP originated the request, it controls <code>InResponseTo</code> correlation and can demand fresh auth with <code>ForceAuthn=\"true\"</code> — which is why SP-initiated is preferred over IdP-initiated SSO, where an unsolicited response has no <code>InResponseTo</code> to correlate.</p>",
+          "links": [
+            {
+              "label": "SAML SP-initiated SSO",
+              "href": "../authentication/saml/sp-initiated-sso/"
+            },
+            {
+              "label": "IdP-initiated SSO (the unsolicited variant)",
+              "href": "../authentication/saml/idp-initiated-sso/"
+            },
+            {
+              "label": "Try it in the Flow Explorer",
+              "href": "../explorer/?flow=saml-sp-initiated-sso"
+            }
+          ]
+        },
+        {
+          "id": "choosing-saml-vs-oidc",
+          "title": "Choosing SAML vs OIDC",
+          "objective": "Decide which protocol a given app should use, and justify it in one line.",
+          "content": "<p>Both protocols achieve federated SSO — a trusted IdP proves identity and hands the result to an app — but they differ in shape and era. <b>OIDC</b> is JSON/JWT over OAuth 2.0, with broad library support and first-class fits for SPAs, native/mobile, and API-fronted apps. <b>SAML 2.0</b> is XML with redirect/POST bindings: verbose, but ubiquitous in enterprise IdPs (Okta, Entra ID, ADFS, Shibboleth) and partner federations.</p><p>The default rule: <b>greenfield browser and mobile apps should choose OIDC.</b> SAML is marked 🟡 Legacy <i>for new consumer/greenfield apps</i> — not a runtime warning; SAML remains valid and widely deployed. <b>Keep SAML where an existing enterprise IdP or partner already speaks it</b>, which is common in workforce SSO. SAML also has no clean native/mobile or SPA story, so those cases point firmly to OIDC.</p><p>Note the two protocols are not the whole map: domain-joined intranet Windows apps may be better served by Kerberos, and pure service-to-service or single-first-party-app cases may need no federation at all (mutual TLS, an API key, or a plain session cookie). Picking OIDC is also only half the decision — you then choose the right OAuth grant (Authorization Code + PKCE for public clients).</p><p>Work the decision top-down with the protocol decision guide, then confirm the tradeoffs in its comparison table before committing.</p>",
+          "links": [
+            {
+              "label": "Choosing an authentication protocol",
+              "href": "../reference/decision-guides/choosing-an-authentication-protocol/"
+            },
+            {
+              "label": "OIDC Authorization Code + PKCE",
+              "href": "../authentication/oidc/authorization-code-pkce/"
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "q": "In the OIDC Authorization Code + PKCE flow, what does the code_verifier protect against?",
+          "choices": [
+            "An attacker who intercepts the authorization code redeeming it, because they lack the verifier",
+            "CSRF on the authorization request",
+            "Replay of the ID token",
+            "The IdP's TLS certificate being spoofed"
+          ],
+          "answer": 0,
+          "explain": "PKCE binds the code to a secret held only in the app. A stolen code is useless without the code_verifier, which the IdP re-hashes and checks at /token. CSRF is handled by state and ID-token replay by nonce — both still required alongside PKCE."
+        },
+        {
+          "q": "Why should PKCE use code_challenge_method=S256 rather than plain?",
+          "choices": [
+            "plain is faster but produces a longer challenge",
+            "With plain the challenge equals the verifier, so anyone who saw the /authorize request already has the secret",
+            "plain does not work over HTTPS",
+            "S256 lets the app skip sending state and nonce"
+          ],
+          "answer": 1,
+          "explain": "plain sends the verifier itself as the challenge, so an interceptor of the /authorize request learns it and PKCE gives no protection. S256 sends only the SHA-256 hash. S256 does not remove the need for state or nonce."
+        },
+        {
+          "q": "What is the defining advantage of the confidential-client Authorization Code flow's back-channel token exchange?",
+          "choices": [
+            "It skips the /authorize redirect entirely",
+            "Tokens are returned directly in the browser URL for speed",
+            "Tokens never transit the browser — the code is redeemed server-to-server at /token",
+            "It removes the need to validate the ID token signature"
+          ],
+          "answer": 2,
+          "explain": "Only a single-use code goes through the front channel (browser); the backend redeems it over a direct HTTPS call, authenticating with a secret or private_key_jwt, so tokens never reach the browser. The ID token must still be validated (iss, aud, exp, nonce, signature)."
+        },
+        {
+          "q": "In SAML SP-initiated SSO, which SP-side check specifically defends against unsolicited or attacker-injected responses?",
+          "choices": [
+            "DEFLATE-compressing the SAMLRequest",
+            "Matching InResponseTo against a request ID the SP actually issued",
+            "Storing RelayState server-side",
+            "Using the HTTP-POST binding for the response"
+          ],
+          "answer": 1,
+          "explain": "InResponseTo ties the response to a pending AuthnRequest the SP originated, so a response the SP never asked for is rejected. This correlation is exactly what IdP-initiated SSO lacks, which is why SP-initiated is preferred. RelayState storage and bindings are transport concerns, not injection defenses."
+        },
+        {
+          "q": "A team is building a brand-new mobile app and a partner already runs a corporate SAML IdP for its internal web portal. What does the decision guide recommend?",
+          "choices": [
+            "Use SAML for both, since the IdP already speaks it",
+            "OIDC (Authorization Code + PKCE) for the new mobile app; keep SAML for the existing enterprise portal",
+            "Use OIDC for both and decommission the SAML IdP immediately",
+            "Use Kerberos for the mobile app"
+          ],
+          "answer": 1,
+          "explain": "Greenfield browser/mobile apps default to OIDC — SAML has no clean native/mobile story and is 🟡 Legacy for new apps. But SAML stays valid where an enterprise IdP already uses it, so keep the existing portal on SAML rather than forcing a migration. Kerberos is for domain-joined intranet apps, not internet mobile clients."
+        }
+      ]
+    },
+    {
+      "id": "tokens-sessions-logout",
+      "title": "Tokens, sessions & logout",
+      "summary": "How an authenticated session is kept alive, validated, and torn down: refresh-token rotation with reuse detection, introspection vs. local JWT validation and revocation, the three OIDC logout mechanisms, and how to choose a session representation without reaching for deprecated flows.",
+      "lessons": [
+        {
+          "id": "refresh-tokens-and-rotation",
+          "title": "Refresh tokens & rotation with reuse detection",
+          "objective": "Renew access without re-prompting the user, and detect a stolen refresh token.",
+          "content": "<p>Access tokens are deliberately short-lived, but users stay signed in far longer. A <b>refresh token</b> bridges the gap: the client presents it at the token endpoint with <code>grant_type=refresh_token</code> and receives a fresh access token — no user interaction. For OIDC the client asks for this capability with the <code>offline_access</code> scope, subject to consent.</p><p><b>Rotation</b> hardens this. On each refresh the authorization server issues a <i>new</i> refresh token and invalidates the old one. Public clients (SPAs, native apps) <b>must</b> rotate; confidential clients should, or sender-constrain instead.</p><p>Rotation is what makes <b>reuse detection</b> possible. Once a refresh token has been rotated away, it should never be seen again. If an already-used token <i>is</i> presented, two parties hold copies — one of them is a thief. The AS cannot tell which, so it revokes the entire token <b>family</b> and forces interactive re-authentication. Every reuse trip is a probable theft: log and alert on it.</p><p>Two expiry models bound the family: <b>sliding</b> expiry extends an idle window on each refresh, while <b>absolute</b> expiry sets a hard ceiling from initial authorization. Robust deployments combine them — a sliding idle timeout capped by an absolute lifetime. On refresh you may <i>narrow</i> scope with the <code>scope</code> parameter, never widen it. Errors surface as <code>invalid_grant</code> (expired, revoked, reused, or unknown token).</p>",
+          "links": [
+            {
+              "label": "Refresh Token Grant",
+              "href": "../authentication/oidc/refresh-token/"
+            },
+            {
+              "label": "Step through it in the Flow Explorer",
+              "href": "../explorer/?flow=oidc-refresh-token"
+            }
+          ]
+        },
+        {
+          "id": "validating-tokens",
+          "title": "Validating tokens: introspection vs. local JWT validation, and revocation",
+          "objective": "Decide how a resource server checks a token, and understand what revocation actually does.",
+          "content": "<p>A resource server holding a bearer token has two ways to trust it, and they trade freshness against scale.</p><p><b>Local JWT validation</b> — a self-contained JWT is verified against the issuer's signing keys (JWKS) with no network call. Fast and stateless, but the token stays valid until its <code>exp</code>: you cannot un-issue it early.</p><p><b>Introspection (RFC 7662)</b> — for opaque <i>reference</i> tokens the API POSTs the token to <code>/introspect</code> with its own client credentials and reads back <code>active</code> (true/false) plus metadata like <code>scope</code>, <code>aud</code>, <code>exp</code>, and a <code>cnf</code> claim for sender-constrained tokens. Introspection reflects revocation <i>immediately</i>, at the cost of a round trip — cache positive results only up to <code>exp</code>. The endpoint MUST authenticate its caller and return exactly <code>{\"active\":false}</code> for an inactive token, or it becomes a token oracle.</p><p><b>Revocation (RFC 7009)</b> is the write side of the same lifecycle. A client POSTs to <code>/revoke</code>; the AS returns <code>200</code> even for an unknown token, deliberately, so the endpoint can't be used to probe validity. Revoking a refresh token cascades to its access tokens (and, under rotation, the whole family). Whether an API sees the effect at once depends on how it validates: introspection catches it immediately, a local JWT survives until <code>exp</code>. That is why revocation is paired with short access-token lifetimes.</p>",
+          "links": [
+            {
+              "label": "Token Introspection (RFC 7662)",
+              "href": "../authentication/oidc/token-introspection/"
+            },
+            {
+              "label": "Token Revocation (RFC 7009)",
+              "href": "../authentication/oidc/token-revocation/"
+            }
+          ]
+        },
+        {
+          "id": "logout-done-right",
+          "title": "Logout done right: RP-initiated, front-channel, back-channel",
+          "objective": "Distinguish the three OIDC logout mechanisms and see why single logout is hard.",
+          "content": "<p>Signing out of one app is easy; signing out of an SSO session shared by many apps is not. OIDC splits the problem into three specifications.</p><p><b>RP-Initiated Logout</b> starts it. The Relying Party clears its own session, then redirects the browser to the IdP's <code>end_session_endpoint</code> with an <code>id_token_hint</code> and a pre-registered <code>post_logout_redirect_uri</code>. The IdP ends its <i>own</i> SSO session and redirects back. This ends the session at the IdP — but not at the <i>other</i> RPs that joined the same SSO session.</p><p>Propagating to those other RPs is a separate concern with two mechanisms. <b>Front-Channel Logout</b> runs through the browser: the IdP's logout page renders one hidden <code>iframe</code> per RP, each loading that RP's <code>frontchannel_logout_uri</code> to clear its cookie. It needs no server-to-server path, but it is <i>best-effort</i> — modern browsers partition or block third-party cookies (Safari ITP, Firefox ETP, Chrome), the IdP gets no confirmation, and CSP or <code>X-Frame-Options</code> can silently kill a frame, so expect <b>partial logout</b>. <b>Back-Channel Logout</b> is the reliable path: the IdP POSTs a signed <b>logout token</b> (a JWT with an <code>events</code> claim plus <code>sub</code> and/or <code>sid</code>) directly to each RP's <code>backchannel_logout_uri</code>, no browser involved. The RP validates it like an ID token — signature, <code>iss</code>, <code>aud</code>, <code>events</code>, and no <code>nonce</code> — then destroys the matching sessions.</p><p><b>Single logout is hard</b> because every RP must cooperate, front-channel delivery is unverifiable, and clearing a session does not revoke tokens already issued: access tokens live until <code>exp</code> unless the RP also revokes or introspects. Keep them short-lived as a backstop.</p>",
+          "links": [
+            {
+              "label": "RP-Initiated Logout",
+              "href": "../authentication/oidc/rp-initiated-logout/"
+            },
+            {
+              "label": "Front-Channel Logout",
+              "href": "../authentication/oidc/front-channel-logout/"
+            },
+            {
+              "label": "Back-Channel Logout",
+              "href": "../authentication/oidc/back-channel-logout/"
+            },
+            {
+              "label": "Watch back-channel logout in the Flow Explorer",
+              "href": "../explorer/?flow=oidc-back-channel-logout"
+            }
+          ]
+        },
+        {
+          "id": "sessions-vs-tokens",
+          "title": "Choosing sessions vs. tokens (and avoiding the deprecated Implicit flow)",
+          "objective": "Pick a session representation on purpose, and recognize why Implicit was replaced.",
+          "content": "<p>How should a system remember an authenticated user across requests? Three shapes, with the same underlying tension — <b>revocation and freshness</b> versus <b>scale and statelessness</b>, plus the browser-security profile (XSS vs. CSRF).</p><p><b>Server-side session cookie</b> — an opaque ID in an <code>HttpOnly</code> cookie, with state in a session store. Revocation is instant (delete the session); ideal for classic first-party web apps.</p><p><b>Stateless JWT</b> — a self-contained signed token verified locally, scaling without any central lookup. The cost is revocation: it needs short TTLs plus a denylist to un-issue early.</p><p><b>Reference token + introspection</b> — an opaque bearer token the API introspects (or caches) at the AS, giving central revocation while keeping the token contents opaque.</p><p>Whatever you choose, do not reach for the <b>⛔ deprecated Implicit flow</b>. It returned tokens directly in the redirect URL fragment, exposing them to browser history, referrer leakage, and script access, with <i>no</i> client authentication and no refresh-token rotation. The OAuth 2.0 Security BCP forbids <code>response_type=token</code> and OAuth 2.1 removes the flow entirely. Its replacement is <b>Authorization Code + PKCE</b>: a code exchanged over the back channel, proof-bound with PKCE, and eligible for refresh-token rotation. Migrating a legacy SPA means switching <code>response_type</code> from <code>id_token token</code> to <code>code</code> plus PKCE, and rotating any long-lived tokens issued under Implicit.</p>",
+          "links": [
+            {
+              "label": "Choosing Session vs Token",
+              "href": "../reference/decision-guides/choosing-session-vs-token/"
+            },
+            {
+              "label": "Implicit Flow (deprecated)",
+              "href": "../authentication/oidc/implicit/"
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "q": "A previously rotated refresh token is presented again at the token endpoint. What should the authorization server do?",
+          "choices": [
+            "Silently issue a new access token; rotation makes replay harmless",
+            "Revoke the entire token family and force interactive re-authentication",
+            "Return the same access token it issued the first time",
+            "Extend the family's sliding expiry window"
+          ],
+          "answer": 1,
+          "explain": "A rotated token should never be seen again. Its reuse means two parties hold copies and one is a thief. The AS cannot tell which, so it revokes the whole family and forces re-authentication — this is reuse detection."
+        },
+        {
+          "q": "A resource server validates a self-contained JWT locally against the JWKS. An admin revokes that token. When does the API stop honoring it?",
+          "choices": [
+            "Immediately, because revocation propagates to JWKS",
+            "Not until the token's exp, unless the API also introspects or checks a denylist",
+            "After the next refresh rotation",
+            "Only when the user next signs in"
+          ],
+          "answer": 1,
+          "explain": "Local JWT validation is stateless: the token stays valid until exp regardless of revocation. To get immediate effect, validate via introspection (which reflects revocation at once) or keep access-token lifetimes short."
+        },
+        {
+          "q": "Why does the RFC 7009 revocation endpoint return 200 even for a token it has never seen?",
+          "choices": [
+            "To signal the token was successfully created",
+            "So the endpoint cannot be used as an oracle to probe token validity",
+            "Because unknown tokens are always still active",
+            "To trigger a retry from the client"
+          ],
+          "answer": 1,
+          "explain": "Returning 200 for unknown or already-invalid tokens is deliberate: a differentiated response would let a caller test whether a given token is valid. The endpoint must not become a validity oracle."
+        },
+        {
+          "q": "Which logout mechanism is the reliable one for propagating a single logout to other RPs, and why?",
+          "choices": [
+            "Front-channel, because iframes always render",
+            "RP-initiated, because it clears the IdP session",
+            "Back-channel, because the IdP POSTs a signed logout token server-to-server with no dependence on browser cookies",
+            "They are equally reliable"
+          ],
+          "answer": 2,
+          "explain": "Front-channel logout runs through browser iframes and is best-effort — third-party-cookie blocking and CSP cause partial logout, with no confirmation to the IdP. Back-channel logout delivers a validated logout-token JWT directly to each RP, independent of the browser, so it is the reliable path."
+        },
+        {
+          "q": "A legacy SPA uses the OIDC Implicit flow (response_type=id_token token). What is the recommended migration?",
+          "choices": [
+            "Keep Implicit but add longer token lifetimes",
+            "Switch to the Resource Owner Password Credentials grant",
+            "Move to Authorization Code + PKCE and rotate any long-lived tokens issued under Implicit",
+            "Add a silent-renewal iframe to keep it compliant"
+          ],
+          "answer": 2,
+          "explain": "Implicit is deprecated: it leaks tokens in the URL fragment, has no client authentication, and cannot use refresh-token rotation. The Security BCP and OAuth 2.1 replace it with Authorization Code + PKCE — a back-channel code exchange bound with PKCE."
+        }
+      ]
+    },
+    {
+      "id": "authorization",
+      "title": "Authorization Models",
+      "summary": "The five ways systems decide what a proven identity may do: roles, attributes, relationships, externalized policy, and the token-time vs. runtime split. How each model works, where each breaks, and a rule of thumb for picking one.",
+      "lessons": [
+        {
+          "id": "rbac",
+          "title": "RBAC — roles, hierarchy, and role explosion",
+          "objective": "Model access by job function and recognize when roles stop scaling.",
+          "content": "<p><b>Role-Based Access Control</b> decides access by <b>role</b>, not by listing permissions per user. Users are assigned one or more <b>roles</b>; each role bundles a set of <b>permissions</b> — an action on a resource type, e.g. <code>invoice:approve</code>. A subject may act if <i>any</i> assigned role grants the matching permission. This is the ANSI/INCITS 359 model: the core relations are <code>User → Role</code> (assignment) and <code>Role → Permission</code> (grant).</p><p><b>Role hierarchy</b> adds senior-to-junior inheritance — a senior role automatically gets every junior role's permissions, so you define \"Auditor\" once and let \"Senior Auditor\" inherit it. Optional <b>sessions</b> activate only a subset of a user's roles at a time, keeping least privilege (constrained RBAC). <b>Separation of Duty</b> guards against fraud: the person who creates a payment cannot also approve it (enforce static SoD at assignment, dynamic SoD at activation).</p><p>RBAC is the default in enterprise apps and cloud IAM (AWS IAM roles, Kubernetes RBAC, Entra ID). It fits when access maps cleanly onto stable <b>job functions</b>. Its failure mode is <b>role explosion</b>: the moment roles start encoding data values — <code>Approver-EU-Tier1</code>, <code>Approver-US-Tier2</code> — the role count races toward the user count and you have rebuilt ABAC badly. RBAC alone cannot express \"owner of <i>this</i> record\" or \"same department as the resource\"; do not fake those with roles — that is the signal to move contextual conditions into attributes or relationships.</p>",
+          "links": [
+            {
+              "label": "RBAC diagram",
+              "href": "../authorization/rbac/"
+            },
+            {
+              "label": "Choosing an authorization model",
+              "href": "../reference/decision-guides/choosing-an-authorization-model/"
+            }
+          ]
+        },
+        {
+          "id": "abac",
+          "title": "ABAC — attributes and policies",
+          "objective": "Express context- and data-dependent access as boolean rules over attributes.",
+          "content": "<p><b>Attribute-Based Access Control</b> decides access by evaluating <b>attributes</b> against <b>policies</b> rather than static role grants. A decision is a function of four attribute categories (NIST SP 800-162):</p><p><b>Subject</b> — who is asking: department, clearance, employment type, group.<br><b>Resource</b> — what is being acted on: classification, owner, tenant, data region.<br><b>Action</b> — the operation: read, write, approve, delete.<br><b>Environment</b> — the context: time of day, source IP, device posture, risk score.</p><p>A policy is a boolean rule over these, e.g. <i>\"Permit read if <code>subject.clearance >= resource.classification</code> AND <code>subject.region == resource.region</code> AND <code>env.deviceManaged == true</code>.\"</i> Because conditions compare <b>values</b> at request time, ABAC expresses rules that would require an explosion of roles under RBAC — multi-tenant isolation, data-residency, clearance models, time- or location-bounded access.</p><p>The tradeoffs are real. <b>Attribute integrity is everything</b>: ABAC is only as trustworthy as its attribute sources, so source them from signed tokens or authoritative systems, never from a spoofable client header. Choose an explicit <b>combining algorithm</b> (deny-overrides, permit-overrides, first-applicable) with a safe default, and treat an <b>Indeterminate</b> result (attribute missing, source down) as Deny for sensitive resources. Watch attribute <b>staleness</b>: a cache TTL on a revoked clearance is a window of over-privilege.</p>",
+          "links": [
+            {
+              "label": "ABAC diagram",
+              "href": "../authorization/abac/"
+            },
+            {
+              "label": "RBAC diagram",
+              "href": "../authorization/rbac/"
+            }
+          ]
+        },
+        {
+          "id": "rebac",
+          "title": "ReBAC — relationships and Google Zanzibar",
+          "objective": "Authorize from an object graph using tuples and Check.",
+          "content": "<p><b>Relationship-Based Access Control</b> decides access from the <b>relationships</b> between subjects and objects rather than from roles or standalone attributes. Google <b>Zanzibar</b> is the canonical implementation and the model behind SpiceDB, OpenFGA, Ory Keto, and Auth0 FGA. Its building blocks:</p><p><b>Relation tuple</b> — the atomic fact, written <code>object#relation@user</code>, e.g. <code>document:readme#owner@user:anna</code> (\"anna is an owner of document readme\").<br><b>Userset</b> — a set of users defined by a relation, so a tuple's \"user\" can itself be a group: <code>document:readme#viewer@group:eng#member</code> gives groups-as-subjects.<br><b>Namespace schema</b> — per-type config with <b>userset rewrites</b> that compose relations transitively: <code>viewer = viewer + editor</code> (editors are viewers), <code>viewer = viewer + parent->viewer</code> (inherit from a parent folder).<br><b>Check(object, relation, user)</b> — the authorization API: <i>is this user related to this object via this relation?</i> It returns a boolean, walking the tuple graph and the rewrites.</p><p>ReBAC shines for fine-grained, per-object access at scale: \"who can view <i>this specific</i> document,\" nested folders, org/team hierarchies, Google-Docs-style sharing — object graphs that RBAC role explosion and ABAC attribute plumbing cannot express cleanly. Two cautions dominate. A <b>zookie</b> (consistency token) binds a Check to a minimum snapshot; pass the zookie from a permission-revoking write into later Checks to avoid the <b>\"new enemy\" problem</b> — a stale replica leaking content after a revoke. And <b>writes must be authorized</b>: anyone who can write <code>document:x#owner@user:self</code> has just granted themselves access, so guard the write path.</p>",
+          "links": [
+            {
+              "label": "ReBAC / Zanzibar diagram",
+              "href": "../authorization/rebac-zanzibar/"
+            },
+            {
+              "label": "ABAC diagram",
+              "href": "../authorization/abac/"
+            }
+          ]
+        },
+        {
+          "id": "pbac",
+          "title": "PBAC — external policy engines and PEP/PDP/PIP/PAP",
+          "objective": "Externalize decisions into a policy engine and name the four cooperating roles.",
+          "content": "<p><b>Policy-Based Access Control</b> <b>externalizes</b> the authorization decision into a dedicated <b>policy engine</b> the application calls instead of hard-coding <code>if</code> checks. The engine evaluates declarative policy against an input document (subject, action, resource, context) and returns a decision. Two dominant implementations: <b>Open Policy Agent (OPA)</b>, a general-purpose engine whose policies are written in <b>Rego</b> and distributed as signed <b>bundles</b>; and <b>AWS Cedar</b>, a purpose-built language of <code>permit</code>/<code>forbid</code> statements over principal, action, resource, and context that is analyzable and <b>forbid-overrides</b> by design.</p><p>Both realize the reference architecture that XACML named and that is now shared vocabulary:</p><p><b>PEP — Policy Enforcement Point.</b> Sits in the request path (API gateway or sidecar), builds the decision request, calls the PDP, and <b>enforces</b> the result. It holds no policy logic.<br><b>PDP — Policy Decision Point.</b> Evaluates policy and returns a decision, optionally with <b>obligations</b> (things the PEP must do, e.g. redact a field) and advice.<br><b>PIP — Policy Information Point.</b> Supplies attributes the request lacks (department, owner, risk score) from directories or services.<br><b>PAP — Policy Administration Point.</b> Where policy is authored, versioned, and distributed — not in the request path.</p><p>The payoff is <b>separation of decision from enforcement</b>: policy changes at the PAP reach the PDPs without redeploying services, and PBAC can express RBAC, ABAC, or relationship rules — it is a <i>mechanism</i>, not a distinct model. The rules: <b>fail closed</b> (an unreachable or erroring PDP must deny, never allow), <b>sign and verify bundles</b> so a compromised control plane cannot ship an allow-everything policy, and treat <b>decision logs</b> as both audit evidence and sensitive data.</p>",
+          "links": [
+            {
+              "label": "PBAC policy engine (OPA / Cedar)",
+              "href": "../authorization/pbac-policy-engine/"
+            },
+            {
+              "label": "Policy decision & enforcement (PEP/PDP)",
+              "href": "../authorization/policy-decision-enforcement/"
+            }
+          ]
+        },
+        {
+          "id": "scopes-claims-entitlements",
+          "title": "Scopes vs. claims vs. entitlements",
+          "objective": "Separate coarse token-time authority from fine-grained runtime decisions.",
+          "content": "<p>Three primitives operate at <b>different layers</b> and are constantly confused:</p><p><b>OAuth scopes</b> are a <b>token-time, coarse</b> grant. A scope like <code>invoices.read</code> names a capability the client asked for and the user consented to; it bounds what the <b>client</b> may attempt on the user's behalf — a ceiling on delegated authority, fixed for the life of the token, not per-object permission.</p><p><b>Claims</b> are assertions about the subject or authorization context carried in the token: identity claims (<code>sub</code>, <code>email</code>) in the ID token, authorization claims (<code>roles</code>, <code>groups</code>, <code>tenant</code>, <code>acr</code>) in the access token. They are what the issuer <i>stated at issuance</i> — readable without a network call, but only as fresh as the token.</p><p><b>Entitlements</b> are <b>fine-grained, runtime</b> authorization facts — \"may user U perform action A on <i>this specific</i> resource R\" — resolved <b>at the resource</b> against live policy and data. They are not a token format; they are the decision an authorization model (RBAC, ReBAC, ABAC) produces per request.</p><p>The relationship is a funnel: <b>scope</b> gates whether the client may even ask; <b>claims</b> carry who the subject is and coarse context; <b>entitlement</b> decides this exact operation on this exact object, now. A request must pass all three. The cardinal rule: <b>scope is a ceiling, not a permission</b> — <code>invoices.write</code> means \"the client may attempt writes,\" never \"the user may write <i>this</i> invoice.\" Enforcing only scope is the classic broken-object-level-authorization (BOLA/IDOR) flaw, so always add the instance-level entitlement check at the resource, and do not trust role/group claims past their freshness — re-decide sensitive actions against live data.</p>",
+          "links": [
+            {
+              "label": "Scopes, claims & entitlements",
+              "href": "../authorization/scopes-claims-entitlements/"
+            },
+            {
+              "label": "Choosing an authorization model",
+              "href": "../reference/decision-guides/choosing-an-authorization-model/"
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "q": "A team keeps adding roles like Approver-EU-Tier1 and Approver-US-Tier2 as new regions and tiers appear. What is happening and what does it signal?",
+          "choices": [
+            "Healthy use of role hierarchy; nothing to change",
+            "Role explosion — the distinctions belong in attributes or relationships, not new roles",
+            "Separation of Duty being enforced correctly",
+            "A sign to remove the role hierarchy entirely"
+          ],
+          "answer": 1,
+          "explain": "When roles start encoding data values (region, tier, tenant, ownership), the role count races toward the user count. That is role explosion, and the contextual conditions belong in ABAC attributes or ReBAC relationships instead of ever more roles."
+        },
+        {
+          "q": "A policy reads: Permit if subject.clearance >= resource.classification AND env.deviceManaged == true. Which authorization model is this?",
+          "choices": [
+            "RBAC, because clearance is a role",
+            "ReBAC, because it relates a subject to a resource",
+            "ABAC, because the decision is a boolean rule over subject, resource, and environment attributes",
+            "PBAC, because it is written as a policy"
+          ],
+          "answer": 2,
+          "explain": "The decision compares attribute values (subject clearance, resource classification, environment device posture) at request time. That is ABAC. A policy engine could evaluate it, but the model — the shape of the decision — is attribute-based."
+        },
+        {
+          "q": "In Google Zanzibar, after revoking someone's access you want your next Check to reflect the revoke rather than read a stale replica. What do you use?",
+          "choices": [
+            "A userset rewrite",
+            "The Expand API",
+            "A permit-overrides combining algorithm",
+            "The zookie (consistency token) from the revoking write"
+          ],
+          "answer": 3,
+          "explain": "A zookie encodes a snapshot timestamp. Passing the zookie from a permission-revoking write into later Checks forces an at-least-as-fresh read, closing the 'new enemy' window where a stale ACL could still permit access."
+        },
+        {
+          "q": "In the PEP/PDP/PIP/PAP pattern, which component fetches attributes the decision request is missing, such as a user's department or a resource owner?",
+          "choices": [
+            "PEP (Policy Enforcement Point)",
+            "PDP (Policy Decision Point)",
+            "PIP (Policy Information Point)",
+            "PAP (Policy Administration Point)"
+          ],
+          "answer": 2,
+          "explain": "The PIP supplies attributes the request lacks, pulled from directories, databases, or risk services. The PEP enforces, the PDP decides, and the PAP authors and distributes policy out of the request path."
+        },
+        {
+          "q": "A token carries the scope invoices.write. A request tries to edit invoice #42 that the subject does not own. What is the correct outcome?",
+          "choices": [
+            "Allow — the scope grants write access to invoices",
+            "Deny — scope is a ceiling on what the client may attempt; the resource must still check the instance-level entitlement",
+            "Allow — scopes always imply per-object permission",
+            "Deny — invoices.write is an identity claim, not a scope"
+          ],
+          "answer": 1,
+          "explain": "Scope bounds what the client may attempt, never per-object permission. Enforcing only scope is the classic BOLA/IDOR flaw; the resource must resolve the runtime entitlement (does this subject own or relate to invoice #42?) before allowing the write."
+        }
+      ]
+    },
+    {
+      "id": "lifecycle-directories",
+      "title": "Identity Lifecycle & Directories",
+      "summary": "How identities are born, changed, and killed off — HR-driven joiner/mover/leaver orchestration, SCIM provisioning, access recertification, factor enrollment, and the directories that back it all — with the leaver case as the highest-risk moment of the whole lifecycle.",
+      "lessons": [
+        {
+          "id": "jml-orchestration",
+          "title": "Joiner, Mover, Leaver orchestration",
+          "objective": "See identity as event-driven state that HR authorizes and IGA enforces — and why the leaver is the riskiest event.",
+          "content": "<p>An identity has a lifecycle, and it is <b>event-driven and attribute-based</b>. The pattern is always the same three moving parts:</p><p><b>HR is the source of truth</b> for <i>who exists and what they are</i> — it emits the joiner, mover, and leaver events. The <b>IGA engine</b> is authoritative for <i>what access that implies</i> — it re-evaluates policy on every event. The <b>IdP and downstream apps</b> are the <i>targets</i> that get provisioned or deprovisioned.</p><p><b>Joiner</b> — create the identity, grant <b>birthright access</b> (the baseline every employee in that role/department/location gets automatically, no ticket required), provision apps, issue credentials, prompt for MFA enrollment.</p><p><b>Mover</b> — an attribute changes (new department, new title). IGA re-evaluates: add the new entitlements <i>and</i> revoke the stale ones. The stale-revoke half is the one organizations forget, and it is exactly how privilege creep accumulates.</p><p><b>Leaver</b> — <b>the highest-risk transition.</b> A departing person still holding live access is an active attacker surface. Timely deprovisioning means: disable the account, <i>kill running sessions and refresh tokens</i> (disabling the account does not evict a session already minted), revoke app access, reclaim licenses, then archive and delete after the retention window. Speed matters — the gap between the last day and the disable is pure exposure.</p><p>Two edge cases every design must handle: <b>out-of-order events</b> (a leaver arriving before a pending mover finishes — IGA reconciles to the latest authoritative state) and a <b>reconciliation sweep</b> that compares intended state against actual state to catch orphaned accounts the events missed.</p>",
+          "links": [
+            {
+              "label": "JML orchestration overview",
+              "href": "../identity-lifecycle/user-lifecycle/jml-orchestration/"
+            },
+            {
+              "label": "SCIM provisioning (the wire protocol)",
+              "href": "../identity-lifecycle/user-lifecycle/scim-provisioning/"
+            }
+          ]
+        },
+        {
+          "id": "scim-provisioning",
+          "title": "SCIM provisioning",
+          "objective": "Understand the standard protocol that turns 'IGA provisions an app' into concrete REST calls.",
+          "content": "<p>When IGA or the IdP \"provisions an app,\" it is almost always speaking <b>SCIM (System for Cross-domain Identity Management) 2.0</b> — RFC 7643 for the schema, RFC 7644 for the protocol. SCIM is the standard REST/JSON wire format for pushing users and groups from a <b>client</b> (the IdP/IGA, the provisioning source) into a <b>service provider</b> (the downstream app exposing <code>/Users</code> and <code>/Groups</code> endpoints).</p><p>The user CRUD lifecycle maps to plain HTTP verbs:</p><ul><li><code>POST /Users</code> — create a new user, returns <code>201</code> with a server-assigned <code>id</code> (this is the joiner)</li><li><code>PATCH /Users/{id}</code> — partial update (add/replace/remove ops)</li><li><code>PUT /Users/{id}</code> — full replacement of the resource</li><li><code>PATCH /Groups/{id}</code> — add or remove a single member without rewriting the whole group (this is the mover)</li><li><code>DELETE /Users/{id}</code> — often mapped to soft-delete rather than a hard purge</li></ul><p>The details that separate a toy client from a production one are the error and edge cases: a <b><code>409 Conflict</code></b> on create (the <code>userName</code> already exists — the client <code>GET</code>s and switches to <code>PATCH</code>/<code>PUT</code>), <b>soft-delete via <code>active=false</code></b> (deactivate but preserve the record, the norm for a leaver under retention), and <b><code>429 Too Many Requests</code></b> rate limiting with a <code>Retry-After</code> back-off. Okta, Entra ID, OneLogin, and SailPoint all speak SCIM to their app connectors.</p>",
+          "links": [
+            {
+              "label": "SCIM 2.0 provisioning",
+              "href": "../identity-lifecycle/user-lifecycle/scim-provisioning/"
+            },
+            {
+              "label": "JML orchestration (what SCIM implements)",
+              "href": "../identity-lifecycle/user-lifecycle/jml-orchestration/"
+            }
+          ]
+        },
+        {
+          "id": "access-reviews",
+          "title": "Access reviews and certification",
+          "objective": "Learn the detective control that catches the privilege creep the event-driven flows let through.",
+          "content": "<p>Joiner and mover are <b>preventive</b> — they try to keep access correct at the moment of change. But access still drifts: privileges granted by exception and never removed, entitlements a forgotten mover left behind, orphaned grants. <b>Access review (recertification)</b> is the periodic <b>detective</b> control that asks: <i>does everyone who has access still deserve it?</i></p><p>The IGA engine generates a <b>campaign</b> — a scoped, time-bounded batch of review items, each pairing a user (or role/entitlement) with a <b>reviewer</b>, usually the line manager or the resource owner. For every item the reviewer must <b>certify</b> (affirm it is still needed) or <b>revoke</b> (mark it for removal). Revocations flow into remediation, which deprovisions the access through the very same machinery as leaver offboarding.</p><p>Two design defaults matter. <b>Auto-revoke on no response</b>: items left undecided at the deadline default to revoke — a secure default, not silent retention. And beware <b>rubber-stamping</b>: bulk-approving a whole campaign in one click technically closes the items but hollows out the control.</p><p>Auditors care because certifications produce <b>evidence</b> — a signed, timestamped record that a responsible human affirmatively decided each grant is still appropriate. SOX and ISO 27001 effectively mandate them, and high-risk or privileged access is reviewed on a tighter cadence than baseline access.</p>",
+          "links": [
+            {
+              "label": "Access review & certification",
+              "href": "../identity-lifecycle/user-lifecycle/access-review-certification/"
+            },
+            {
+              "label": "Self-service password reset",
+              "href": "../identity-lifecycle/password-management/self-service-reset/"
+            }
+          ]
+        },
+        {
+          "id": "enrollment-mfa-fido2",
+          "title": "Enrollment: MFA and FIDO2 passkeys",
+          "objective": "Contrast registering a shared-secret factor with registering a phishing-resistant key pair.",
+          "content": "<p>A joiner has an account, but not yet a strong factor. <b>Enrollment</b> is the act of registering one — and it always happens <i>inside an authenticated (often freshly re-authenticated) session</i>, because adding a factor is itself a sensitive operation.</p><p><b>MFA enrollment (TOTP).</b> The server generates a per-user secret and hands it over as a QR code (an <code>otpauth://</code> URI) plus a manual key; the authenticator app derives 6-digit time-based codes (RFC 6238). The user proves possession by typing the <b>first generated code</b> before the factor is activated, and the server issues one-time backup codes. Rules that keep it safe: the <b>server generates and owns the secret</b> (never accept a client-supplied one), treat the factor as inactive until proof-of-possession succeeds, verify against the current time window with small skew tolerance, and rate-limit attempts. SMS/voice OTP follows the same shape but is a weaker, phishable channel.</p><p><b>FIDO2 / passkey registration.</b> A different and stronger model. In the WebAuthn attestation ceremony the Relying Party issues a challenge and creation options; the browser calls <code>navigator.credentials.create()</code>; the authenticator generates a <b>public/private key pair scoped to the RP ID</b>, keeps the private key, and returns an attestation object. The server validates it and stores only the <b>credential public key + credential ID</b>. Because there is no shared secret to phish and the key is bound to the origin, passkeys are <b>phishing-resistant</b> where TOTP is not. Server-side checks: the <code>clientDataJSON.type</code> is <code>webauthn.create</code>, the challenge matches and is single-use, the origin is expected, and <code>excludeCredentials</code> stops an already-enrolled authenticator from double-registering.</p>",
+          "links": [
+            {
+              "label": "MFA enrollment",
+              "href": "../identity-lifecycle/enrollment-and-update/mfa-enrollment/"
+            },
+            {
+              "label": "FIDO2 / passkey registration",
+              "href": "../identity-lifecycle/enrollment-and-update/fido2-passkey-registration/"
+            }
+          ]
+        },
+        {
+          "id": "directories-and-sync",
+          "title": "Directories: AD logon and hybrid sync",
+          "objective": "Know how domain logon works and how the three hybrid sign-in models differ.",
+          "content": "<p>Under all of this sits a <b>directory</b> — historically Active Directory. <b>Interactive logon</b> is what happens when a user signs in to a domain-joined Windows machine. The logon stack (Winlogon, LSASS and its Security Support Providers) turns credentials into domain authentication via <b>Negotiate (SPNEGO)</b>: Windows <b>prefers Kerberos</b> — which yields a cached TGT and later service tickets — and only <b>falls back to NTLM</b> when Kerberos is unavailable (no reachable KDC, access by IP literal, a local account, or a target with no Service Principal Name). The user's group SIDs ride in the Kerberos <b>PAC</b>, from which Windows builds the logon token. <b>NTLM is Legacy and discouraged</b>: it is exposed to relay attacks, pass-the-hash, and offline cracking, so restrict it and prefer Kerberos.</p><p>When the directory extends to the cloud, there are three <b>hybrid sign-in</b> models — the tradeoff is <i>where the password is actually validated</i>:</p><ul><li><b>Password hash sync (PHS)</b> — a sync agent copies a <b>hash of the on-prem NT hash</b> (re-hashed with PBKDF2-HMAC-SHA256, salted) up to the cloud IdP. Sign-in is validated <b>entirely in the cloud</b>, so it keeps working during an on-prem outage and needs no inbound firewall openings. The plaintext never leaves the domain controller, and the stored value cannot be replayed on-prem. It also enables leaked-credential detection.</li><li><b>Pass-through authentication (PTA)</b> — same password, but validated <b>live against on-prem AD</b> at each sign-in via a lightweight agent. No password hash is stored in the cloud, but sign-in now depends on on-prem availability.</li><li><b>Federation</b> — the cloud <b>redirects authentication to an on-prem STS</b> (e.g. ADFS); the on-prem system fully owns the credential check and returns a token. Most control, most infrastructure, and the cloud never sees a verifier at all.</li></ul><p>Remember the leaver angle here too: a disabled AD account must <b>sync as disabled</b> so cloud sign-in is blocked — verify sync scoping so deprovisioning actually propagates.</p>",
+          "links": [
+            {
+              "label": "Active Directory interactive logon",
+              "href": "../identity-lifecycle/directory-and-sync/active-directory-logon/"
+            },
+            {
+              "label": "Password hash synchronization",
+              "href": "../identity-lifecycle/directory-and-sync/password-hash-sync/"
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "q": "An employee is terminated at 5pm. IT disables the AD account at 5:05pm but the person keeps accessing a SaaS app for another hour. What was most likely missed?",
+          "choices": [
+            "Birthright access was never granted",
+            "Running sessions and refresh tokens were not revoked",
+            "The joiner event never fired",
+            "SCIM returned a 409 Conflict"
+          ],
+          "answer": 1,
+          "explain": "Disabling the account stops new logons but does not evict a session or refresh token already minted. Timely leaver deprovisioning must kill live sessions and tokens, not just disable the account — the leaver is the highest-risk transition precisely because of gaps like this."
+        },
+        {
+          "q": "An IGA engine needs to add a single user to one group in a downstream app without rewriting the group's entire membership. Which SCIM call fits?",
+          "choices": [
+            "PUT /Users/{id}",
+            "POST /Users",
+            "PATCH /Groups/{id}",
+            "DELETE /Groups/{id}"
+          ],
+          "answer": 2,
+          "explain": "A PATCH to /Groups/{id} carries a targeted add/remove Operations patch, changing one member without replacing the whole members array. POST /Users creates a user; PUT fully replaces a resource."
+        },
+        {
+          "q": "Why is a periodic access certification campaign considered a detective control rather than a preventive one?",
+          "choices": [
+            "It blocks access at the moment an attribute changes",
+            "It runs before the joiner is provisioned",
+            "It catches privilege creep and stale grants that the event-driven joiner/mover flows already let through",
+            "It only applies to service accounts"
+          ],
+          "answer": 2,
+          "explain": "Joiner and mover are preventive — they fix access at the moment of change. Certification is detective: it periodically re-checks existing access to catch drift, exception grants never removed, and orphaned entitlements the events missed."
+        },
+        {
+          "q": "What makes FIDO2 passkey registration phishing-resistant in a way that TOTP enrollment is not?",
+          "choices": [
+            "TOTP codes are longer than passkey signatures",
+            "The passkey uses an origin-bound public/private key pair with no shared secret to steal, while TOTP relies on a shared secret and a code the user can be tricked into typing",
+            "Passkeys are sent over SMS",
+            "The server supplies the passkey secret to the client"
+          ],
+          "answer": 1,
+          "explain": "In WebAuthn the authenticator generates a key pair scoped to the RP ID and keeps the private key; the server stores only the public key, and the ceremony is bound to the origin. There is no shared secret to phish and a code cannot be replayed on a lookalike site — unlike a TOTP code the user types."
+        },
+        {
+          "q": "An organization wants cloud sign-in to keep working even during a complete on-prem Active Directory outage, with no inbound firewall openings. Which hybrid model fits best?",
+          "choices": [
+            "Federation to an on-prem STS",
+            "Pass-through authentication (PTA)",
+            "Password hash synchronization (PHS)",
+            "NTLM fallback"
+          ],
+          "answer": 2,
+          "explain": "PHS validates the password entirely in the cloud from a synced (re-hashed, salted) verifier, so sign-in survives an on-prem outage and needs no inbound openings. PTA and federation both depend on on-prem availability at sign-in time."
+        }
+      ]
+    },
+    {
+      "id": "strong-auth",
+      "title": "Strong & Phishing-Resistant Authentication",
+      "summary": "What makes an authentication factor phishing-resistant, and what makes one weak: public-key passkeys vs. shared-secret OTP, how Kerberos tickets prove identity without resending a password, how to choose an MFA factor, and how adaptive and step-up policies gate access on risk.",
+      "lessons": [
+        {
+          "id": "webauthn-passkeys",
+          "title": "WebAuthn & passkeys: why public-key auth resists phishing",
+          "objective": "Understand why a passkey cannot be handed to a look-alike site the way a password or OTP can.",
+          "content": "<p>A password is a <b>shared secret</b>: the user knows it and the server stores a copy. Anything the user can type, the user can be tricked into typing somewhere else — including a phishing page that relays it onward. One-time codes have the same flaw: a code the user reads and retypes can be relayed in real time.</p><p><b>WebAuthn / passkeys</b> break that pattern. Registration stores a <b>public key</b> on the server; the matching <b>private key</b> never leaves the authenticator (Touch ID, Windows Hello, a phone, or a security key). To log in, the server sends a random <b>challenge</b>; the authenticator signs it after a local <i>user verification</i> gesture (biometric or PIN), and the server checks the signature against the stored public key. There is <b>no shared secret to steal and no bearer token to replay</b> — the proof is a fresh digital signature.</p><p>The phishing resistance comes from <b>origin binding</b>, enforced by the browser, not the user. Credentials are scoped to the site's <code>RP ID</code>, and the browser stamps the real <code>origin</code> into the signed <code>clientDataJSON</code>. A look-alike domain has a different RP ID, so the authenticator simply <i>has no credential to offer</i> and the server rejects any assertion whose origin does not match. The user cannot be socially engineered into defeating this, because there is nothing to type or read aloud.</p><p>The server still must verify everything: the signature, that the <code>challenge</code> matches the single-use one it issued, that the <code>origin</code> and <code>rpIdHash</code> are expected, and that the user-presence and (when required) user-verification flags are set. A signature counter that goes backwards can signal a cloned authenticator.</p>",
+          "links": [
+            {
+              "label": "WebAuthn / Passkey authentication ceremony",
+              "href": "../authentication/tokenless/webauthn-passkey-authentication/"
+            },
+            {
+              "label": "Step through it in the Flow Explorer",
+              "href": "../explorer/?flow=tokenless-webauthn-passkey-authentication"
+            }
+          ]
+        },
+        {
+          "id": "kerberos-tickets",
+          "title": "Kerberos: tickets and the AS / TGS / AP exchanges",
+          "objective": "See how Kerberos proves identity to many services without re-sending the password each time.",
+          "content": "<p>Kerberos is the ticket-based protocol behind Windows domain logon and <code>kinit</code> on Linux/macOS. Its goal is single sign-on: prove who you are <i>once</i>, then reach many services without re-entering credentials. A trusted <b>Key Distribution Center (KDC)</b> issues encrypted <b>tickets</b> that vouch for the user, and three exchanges chain together:</p><p><b>AS exchange (AS-REQ / AS-REP)</b> — the initial authentication. The client proves knowledge of the user's long-term key (derived from the password) via encrypted pre-auth data and receives a <b>Ticket-Granting Ticket (TGT)</b>, encrypted with the KDC's own <code>krbtgt</code> key so it is opaque to the client, plus a TGT session key. The password is never sent again after this.</p><p><b>TGS exchange (TGS-REQ / TGS-REP)</b> — the client presents the TGT to ask for a <b>service ticket</b> for one specific service, named by its <b>Service Principal Name</b> (e.g. <code>HTTP/web01.example.com</code>). The KDC returns a ticket encrypted with that service's account key. This is transparent — no password prompt.</p><p><b>AP exchange (AP-REQ / AP-REP)</b> — the client presents the service ticket <i>to the service itself</i> along with a fresh <b>authenticator</b> (a timestamp encrypted with the session key). The service decrypts the ticket with its own key and checks the authenticator against a <b>replay cache</b>. If mutual authentication is requested, the service returns an AP-REP proving it too holds the key. The KDC is not contacted for this step.</p><p>Because each ticket is encrypted for a specific key holder and each authenticator is fresh and single-use, a captured message cannot be replayed against a different service — the identity proof travels as tickets, not as a reusable password.</p>",
+          "links": [
+            {
+              "label": "AS exchange (AS-REQ / AS-REP)",
+              "href": "../authentication/kerberos/as-exchange/"
+            },
+            {
+              "label": "TGS exchange (TGS-REQ / TGS-REP)",
+              "href": "../authentication/kerberos/tgs-exchange/"
+            },
+            {
+              "label": "AP exchange (AP-REQ / AP-REP)",
+              "href": "../authentication/kerberos/ap-exchange/"
+            }
+          ]
+        },
+        {
+          "id": "choosing-an-mfa-factor",
+          "title": "Choosing an MFA factor: strong vs. weak",
+          "objective": "Rank the common second factors by phishing resistance and know why SMS is the weakest.",
+          "content": "<p>Not all multi-factor options are equal. The overriding principle is <b>phishing resistance</b>: can a real-time proxy sitting between the user and the site steal or relay the factor? The tiers:</p><p><b>Phishing-resistant (preferred).</b> <b>FIDO2 / passkeys</b> (WebAuthn), <b>Windows Hello for Business</b>, and <b>PIV / smartcard</b> certificates cryptographically bind the credential to the origin. There is no code to read and no secret to type, so an attacker-in-the-middle page cannot capture anything reusable. These are the recommended defaults.</p><p><b>Acceptable second tier.</b> <b>Authenticator push with number matching</b> and <b>TOTP</b> (authenticator-app codes) are far better than nothing. But both are still <i>phishable</i>: a proxy can relay a TOTP code within its short window, and push without number matching invites <b>MFA-fatigue</b> approvals. Number matching hardens push; it does not make it origin-bound.</p><p><b>⛔ SMS and voice OTP — not a primary factor.</b> A texted code is a shared secret the user reads and retypes, so it is trivially relayed by a phishing proxy. Worse, the delivery channel itself is attackable: <b>SIM-swap</b>, <b>SS7</b> interception, and carrier social engineering can divert the code without ever touching the user's phone. SMS is deprecated as a primary factor; keep it only as a last-resort recovery path when nothing else is possible.</p><p>The short version: a <b>passkey is strong</b> because the secret never leaves the device and the browser enforces origin binding; an <b>SMS OTP is weak</b> because the secret is disclosed to the user, is replayable, and rides an insecure channel.</p>",
+          "links": [
+            {
+              "label": "Choosing an MFA factor (decision guide)",
+              "href": "../reference/decision-guides/choosing-an-mfa-factor/"
+            },
+            {
+              "label": "WebAuthn / Passkey authentication",
+              "href": "../authentication/tokenless/webauthn-passkey-authentication/"
+            }
+          ]
+        },
+        {
+          "id": "adaptive-and-step-up",
+          "title": "Adaptive & step-up authentication: gating on risk",
+          "objective": "Understand how risk signals and sensitive-action triggers decide between allow, step-up, and deny.",
+          "content": "<p>A fixed \"always MFA\" or \"never MFA\" policy is too blunt. Two related patterns make authentication <b>context-dependent</b>.</p><p><b>Risk-based adaptive authentication</b> acts <i>at sign-in</i>. The IdP gathers <b>signals</b> — device posture and fingerprint, geolocation, login velocity, IP / ASN reputation, threat intelligence, leaked-credential hits — and a <b>risk engine</b> scores them into a level. A policy maps the level to one of three outcomes: <b>Allow</b> (primary factor is enough, issue tokens), <b>Step-up</b> (challenge for a stronger or additional factor, then re-evaluate), or <b>Deny</b> (a hard signal like impossible travel or a known-bad IP blocks and alerts). Low-risk, familiar sign-ins stay frictionless while risky ones are challenged or stopped.</p><p><b>Step-up authentication</b> acts <i>mid-session</i>. An already-authenticated user attempts a <b>sensitive action</b> — a wire transfer, changing MFA methods, an admin operation — and the resource decides the session's assurance is too low. Using standard signalling (in OIDC, <code>acr_values</code> and <code>max_age</code>; RFC 9470 lets an API return an <code>insufficient_user_authentication</code> challenge), the IdP re-challenges for a stronger or more recent factor and re-issues a token carrying the elevated <code>acr</code>. The two compose: a risk engine can itself demand step-up.</p><p>Two rules make this safe. <b>Fail closed:</b> if a signal source is unreachable, default toward step-up or deny, never silently toward allow. <b>Step up to phishing-resistant factors:</b> stepping up to SMS or plain push can be relayed by an attacker-in-the-middle, defeating the point — prefer FIDO2 / passkeys for the elevated challenge. And the relying party must trust the <i>freshly issued token's</i> <code>acr</code> and <code>auth_time</code>, not merely its own memory that it once prompted.</p>",
+          "links": [
+            {
+              "label": "Risk-based adaptive authentication",
+              "href": "../authentication/adaptive-access/risk-based-adaptive-authentication/"
+            },
+            {
+              "label": "Step-up authentication",
+              "href": "../authentication/adaptive-access/step-up-authentication/"
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "q": "Why can a passkey not be captured by a look-alike phishing site the way a password can?",
+          "choices": [
+            "The passkey is a longer, more complex password that is harder to guess",
+            "The private key never leaves the authenticator and the browser scopes the credential to the site's RP ID and signs the real origin",
+            "Passkeys are encrypted in transit while passwords are sent in cleartext",
+            "The server emails the user a confirmation before accepting the passkey"
+          ],
+          "answer": 1,
+          "explain": "Phishing resistance comes from origin binding enforced by the browser: credentials are scoped to the RP ID and the real origin is stamped into the signed clientDataJSON. A look-alike domain has a different RP ID, so the authenticator has no credential to offer and there is no shared secret to relay."
+        },
+        {
+          "q": "In Kerberos, which exchange produces the Ticket-Granting Ticket (TGT) that lets the client obtain service tickets without re-entering the password?",
+          "choices": [
+            "The AP exchange (AP-REQ / AP-REP)",
+            "The TGS exchange (TGS-REQ / TGS-REP)",
+            "The AS exchange (AS-REQ / AS-REP)",
+            "The replay-cache check"
+          ],
+          "answer": 2,
+          "explain": "The AS exchange is the initial authentication: the client proves knowledge of the user's long-term key and receives the TGT (encrypted with the krbtgt key) plus a TGT session key. The TGT is then spent in the TGS exchange to get per-service tickets."
+        },
+        {
+          "q": "Which set of MFA factors is phishing-resistant (origin-bound and not relayable by a real-time proxy)?",
+          "choices": [
+            "SMS OTP, voice OTP, and email codes",
+            "FIDO2 / passkeys, Windows Hello for Business, and PIV / smartcard",
+            "TOTP authenticator codes and push without number matching",
+            "Any factor, as long as it is a second factor on top of a password"
+          ],
+          "answer": 1,
+          "explain": "FIDO2/passkeys, WHfB, and PIV/smartcard cryptographically bind the credential to the origin, so an attacker-in-the-middle cannot capture anything reusable. TOTP and push are phishable second tiers; SMS/voice codes are the weakest."
+        },
+        {
+          "q": "Why is an SMS one-time code considered a weak primary factor?",
+          "choices": [
+            "Phones cannot receive text messages reliably enough",
+            "It is a shared secret the user reads and retypes, so a phishing proxy can relay it, and the delivery channel is attackable via SIM-swap and SS7",
+            "SMS codes expire too slowly to be useful",
+            "It requires a biometric that many users cannot provide"
+          ],
+          "answer": 1,
+          "explain": "A texted code is disclosed to the user and retyped, making it trivially relayable in real time, and the channel itself is vulnerable to SIM-swap, SS7 interception, and carrier social engineering. That is why SMS is deprecated as a primary factor and kept only as a last-resort recovery path."
+        },
+        {
+          "q": "A risk engine scores a sign-in as high risk because of impossible travel plus a leaked-credential hit. Under a well-designed adaptive policy, what should happen, and what is the correct default if a signal source is unreachable?",
+          "choices": [
+            "Allow the sign-in; default to allow when signals are missing",
+            "Deny and alert on the hard signals; fail closed (default to step-up or deny) when a signal source is unreachable",
+            "Silently downgrade to a password-only prompt in both cases",
+            "Always deny every sign-in regardless of score"
+          ],
+          "answer": 1,
+          "explain": "Hard signals like impossible travel and leaked-credential matches should trigger the Deny outcome with an alert. And an unreachable risk engine or feed must fail closed toward step-up or deny, never silently toward allow, so missing signals cannot become a free pass."
+        }
+      ]
+    },
+    {
+      "id": "cloud-workload",
+      "title": "Cloud IAM & Workload Identity",
+      "summary": "How machines get cloud access without stored secrets: temporary credentials from STS, OIDC federation for keyless CI, policy gates at token issuance, and workload-bound identities from Kubernetes to SPIFFE. One theme runs through all of it — replace long-lived stored keys with short-lived, federated, workload-bound credentials.",
+      "lessons": [
+        {
+          "id": "aws-sts-assumerole",
+          "title": "AWS STS AssumeRole: temporary credentials and role trust",
+          "objective": "Understand how an already-authenticated principal trades into a role for short-lived credentials, and why two policies must agree.",
+          "content": "<p>AWS <b>Security Token Service (STS)</b> issues <b>temporary security credentials</b> — an <code>AccessKeyId</code>, a <code>SecretAccessKey</code>, and a <code>SessionToken</code> — that expire. The core API is <code>sts:AssumeRole</code>: an already-authenticated principal (an IAM user, another role, or a service) assumes a task-specific IAM <b>role</b> and receives credentials scoped to that role's permissions.</p><p>Whether the assume succeeds is decided by <b>two policies that must both allow it</b>:</p><ul><li>the caller's <b>identity policy</b> — it must permit <code>Action: sts:AssumeRole</code> on the target role's ARN; and</li><li>the role's <b>trust policy</b> (the <code>AssumeRolePolicyDocument</code>) — it names which principals are allowed to assume the role.</li></ul><p>A broad trust policy is the classic misconfiguration, so scope the <code>Principal</code> and add conditions like <code>aws:PrincipalOrgID</code> or <code>aws:SourceAccount</code>. For third-party/vendor access, require an <code>ExternalId</code> to defeat the confused-deputy problem — and never let the vendor choose it or reuse it across customers.</p><p>Credentials are valid for <code>DurationSeconds</code> (15 minutes up to the role's <code>MaxSessionDuration</code>, capped at 12 hours; role chaining caps at 1 hour). You can narrow them further with an inline <b>session policy</b> — effective permissions are the <i>intersection</i> of the role's policies and the session policy, so a session policy can only restrict, never grant beyond the role. This is the foundation: short-lived, auditable credentials in place of long-lived IAM user access keys that sit in a config file waiting to leak.</p>",
+          "links": [
+            {
+              "label": "AWS STS AssumeRole",
+              "href": "../platforms/cloud-iam/aws/sts-assumerole/"
+            }
+          ]
+        },
+        {
+          "id": "oidc-web-identity-federation",
+          "title": "Keyless CI via OIDC: AssumeRoleWithWebIdentity",
+          "objective": "See how a signed OIDC token replaces stored AWS keys entirely, and why the trust policy must pin both aud and sub.",
+          "content": "<p><code>sts:AssumeRoleWithWebIdentity</code> exchanges a signed <b>OIDC ID token</b> (a JWT) from an external identity provider for temporary AWS credentials — with <b>no long-lived AWS access keys involved at all</b>. The call is unsigned, because the JWT itself is the proof.</p><p>The flagship use is <b>GitHub Actions deploying to AWS keylessly</b>. The workflow asks GitHub for an OIDC token from <code>token.actions.githubusercontent.com</code>, calls <code>AssumeRoleWithWebIdentity</code>, and receives short-lived credentials scoped to the deploy role. The stored <code>AWS_ACCESS_KEY_ID</code> secret disappears completely.</p><p>Setup requires an <b>IAM OIDC identity provider</b> that records the issuer URL and a certificate thumbprint (AWS now validates most issuers directly against the issuer's published <b>JWKS</b>). STS then validates the JWT signature, that <code>iss</code> matches the provider, that <code>aud</code> is in the allowed <code>ClientIDList</code>, that <code>exp</code> has not passed, and finally the trust-policy claim conditions.</p><p>Those conditions are where security lives. The trust policy keys are prefixed by the issuer host, e.g. <code>token.actions.githubusercontent.com:aud</code> and <code>:sub</code>. <b>Always pin both</b>: use <code>StringEquals</code> on <code>aud</code>, and a tightly scoped <code>StringLike</code> on <code>sub</code> such as <code>repo:my-org/my-repo:ref:refs/heads/main</code>. An <code>aud</code>-only policy on the GitHub issuer trusts <i>every repository on GitHub</i>; a wildcard <code>sub</code> like <code>repo:my-org/*</code> lets the wrong branch or a fork assume the role. This is the same mechanism EKS uses for IRSA — projected ServiceAccount tokens exchanged for role credentials.</p>",
+          "links": [
+            {
+              "label": "AssumeRoleWithWebIdentity (OIDC federation)",
+              "href": "../platforms/cloud-iam/aws/assumerole-web-identity-oidc/"
+            }
+          ]
+        },
+        {
+          "id": "entra-conditional-access",
+          "title": "Entra Conditional Access at token issuance",
+          "objective": "Understand how a policy engine evaluates request signals at the moment a token is minted, and how that fits Zero Trust.",
+          "content": "<p>Not every gate is about swapping keys — sometimes the question is whether a token should be issued at all, given the context of the request. <b>Conditional Access (CA)</b> is Microsoft Entra ID's policy engine, and it runs <i>at the moment a token is about to be issued</i>.</p><p>The Entra authorization endpoint evaluates every enabled CA policy against the <b>signals</b> of the request: the user or group, the target cloud app, the client app type, sign-in and user <b>risk</b> (from Identity Protection), <b>device state</b> (compliant / Entra-joined), network location (named locations, trusted IPs), and authentication context.</p><p>Each matching policy produces two kinds of output:</p><ul><li><b>Grant controls</b> — block, require MFA, require a compliant device, require an approved client app, require terms of use, require password change.</li><li><b>Session controls</b> — sign-in frequency, persistent browser, app-enforced restrictions, and Continuous Access Evaluation.</li></ul><p>The <i>union</i> of all matching policies must be satisfied before a token is minted. This is Zero Trust's \"verify explicitly\" in practice. A few operational truths: CA is <b>fail-closed</b> for block policies but only evaluates signals it actually has — so disable legacy authentication, or password-only protocols will bypass your MFA policies. Always keep a <b>break-glass</b> account excluded from CA to avoid tenant lock-out, and validate new policies in <b>report-only</b> mode with the What-If tool first. Location signals rely on source IP and can be spoofed; prefer device compliance and phishing-resistant MFA over IP allow-lists. Pair CA with Continuous Access Evaluation so revocation is near-real-time rather than waiting for token expiry.</p>",
+          "links": [
+            {
+              "label": "Conditional Access policy evaluation",
+              "href": "../platforms/cloud-iam/entra/conditional-access-evaluation/"
+            }
+          ]
+        },
+        {
+          "id": "gcp-workload-identity-federation",
+          "title": "GCP Workload Identity Federation",
+          "objective": "Follow the token-exchange-then-impersonate pattern that lets external workloads reach Google Cloud without a downloadable key.",
+          "content": "<p>Google Cloud's answer to the stored-key problem for workloads running <b>outside</b> GCP — GitHub Actions, AWS, Azure, on-prem OIDC/SAML IdPs — is <b>Workload Identity Federation</b>. It is the recommended replacement for downloading a service account JSON key.</p><p>The external workload presents a credential its own IdP already issues: an OIDC ID token, an AWS <code>GetCallerIdentity</code> signature, or a SAML assertion. Google's <b>Security Token Service</b> (<code>sts.googleapis.com</code>) exchanges that for a short-lived <b>federated access token</b>. The workload then usually <b>impersonates a service account</b> via <code>generateAccessToken</code> to obtain the final Google credential — a two-leg pattern: exchange, then impersonate.</p><p>Trust is defined by a <b>Workload Identity Pool</b> containing one or more <b>Providers</b>. Each provider pins the external issuer and the allowed <code>audience</code>, and carries an <b>attribute mapping</b> written in CEL — for example <code>google.subject = assertion.sub</code> and <code>attribute.repository = assertion.repository</code>. The federated identity is expressed as a <code>principalSet://</code> member such as one keyed on <code>attribute.repository/ORG/REPO</code>, and SA impersonation is granted to that member.</p><p>The critical control is the provider's <b>attribute_condition</b> (also CEL): set it so only the intended repo, branch, or AWS account can federate. A missing condition trusts <i>every</i> token the issuer can mint. Always validate the <code>audience</code> so tokens minted for one provider cannot be replayed to another, and enforce <code>iam.disableServiceAccountKeyCreation</code> so teams cannot quietly fall back to keys. Same principle as AWS web-identity, expressed in Google's vocabulary.</p>",
+          "links": [
+            {
+              "label": "GCP Workload Identity Federation",
+              "href": "../platforms/cloud-iam/gcp/workload-identity-federation/"
+            },
+            {
+              "label": "Generic federation pattern",
+              "href": "../workload-identity/workload-identity-federation-generic/"
+            }
+          ]
+        },
+        {
+          "id": "non-human-identity",
+          "title": "Non-human identity: SPIFFE/SPIRE and projected ServiceAccount tokens",
+          "objective": "Understand attestation-based, platform-neutral workload identity and the audience-bound Kubernetes token that feeds cloud exchanges.",
+          "content": "<p>Federation still needs the workload to <i>already have</i> a token to present. Where does that first identity come from? Two answers close the loop, both replacing on-disk secrets with attested, short-lived, workload-bound credentials.</p><p><b>Kubernetes projected ServiceAccount tokens.</b> A projected token is a short-lived, audience-bound OIDC JWT that the kubelet obtains from the API server's <b>TokenRequest API</b> and mounts into a Pod as a projected volume. Unlike the old, never-expiring Secret-based tokens, it has an explicit <code>aud</code>, a bounded <code>exp</code> the kubelet refreshes before it lapses, and it is bound to the Pod's lifetime. Because the cluster publishes an OIDC discovery document and JWKS, any external relying party that trusts the cluster issuer — AWS STS <code>AssumeRoleWithWebIdentity</code>, GCP/Azure federation, Vault — can verify it and return its own credential. The <code>sub</code> is <code>system:serviceaccount:&lt;ns&gt;:&lt;sa&gt;</code>; always map the exact subject, never namespace alone on a shared cluster. Treat legacy Secret-mounted tokens as deprecated: they never expire and are not audience-bound.</p><p><b>SPIFFE/SPIRE.</b> SPIFFE defines a platform-neutral identity — the <b>SPIFFE ID</b>, a URI like <code>spiffe://example.org/ns/prod/sa/frontend</code> — carried in an <b>SVID</b>. SPIRE is the reference implementation: a <b>SPIRE Server</b> is the trust-domain signing authority and registry; a <b>SPIRE Agent</b> on each node performs <b>node attestation</b> (AWS Instance Identity Document, GCP instance identity, Kubernetes PSAT, TPM, join token) and then <b>workload attestation</b> (kernel peer credentials plus <code>unix</code>/<code>docker</code>/<code>k8s</code> selectors) before handing each workload an SVID over the Workload API. SVIDs come as an <b>X.509-SVID</b> (SPIFFE ID in the URI SAN, for mTLS) or a <b>JWT-SVID</b> (<code>sub</code> is the SPIFFE ID, <code>aud</code> names the target service). Attestation is the root of trust, TTLs are short (default 1h) with automatic rotation, and no private key is ever persisted. Together these give workloads an identity with no stored secret at all — the endpoint of the whole theme.</p>",
+          "links": [
+            {
+              "label": "Kubernetes projected ServiceAccount token",
+              "href": "../workload-identity/kubernetes-serviceaccount-token/"
+            },
+            {
+              "label": "SPIFFE identity issuance with SPIRE",
+              "href": "../workload-identity/spiffe-spire-issuance/"
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "q": "A caller has an identity policy allowing sts:AssumeRole on a role's ARN, but the assume still fails. What is the most likely cause?",
+          "choices": [
+            "The credentials returned were not signed with SigV4",
+            "The role's trust policy does not name the caller as an allowed principal",
+            "The DurationSeconds was set below 15 minutes",
+            "STS only issues credentials to IAM users, not roles"
+          ],
+          "answer": 1,
+          "explain": "Two policies must both allow the assume: the caller's identity policy AND the role's trust policy (the AssumeRolePolicyDocument). If the trust policy does not name the caller as an allowed principal, the assume is denied even when the identity policy permits it."
+        },
+        {
+          "q": "A GitHub Actions role trust policy pins token.actions.githubusercontent.com:aud but has no sub condition. What is the risk?",
+          "choices": [
+            "Nothing — pinning aud alone fully scopes the role to your workflow",
+            "Any repository on GitHub can mint a token that satisfies the policy and assume the role",
+            "The role can no longer be assumed by any workflow",
+            "GitHub will refuse to issue the OIDC token without a sub claim"
+          ],
+          "answer": 1,
+          "explain": "An aud-only condition on the GitHub issuer trusts every repository on GitHub, since aud identifies the audience but not which repo/branch requested the token. You must also pin a tightly scoped sub (e.g. repo:my-org/my-repo:ref:refs/heads/main) so only the intended workflow can assume the role."
+        },
+        {
+          "q": "In Entra Conditional Access, when are policies evaluated and what determines the outcome?",
+          "choices": [
+            "After a token is issued, and only network location matters",
+            "At the moment a token is about to be issued, and the union of all matching policies must be satisfied",
+            "Only during password reset, based solely on user risk",
+            "Once per day as a batch job that revokes tokens"
+          ],
+          "answer": 1,
+          "explain": "CA runs at token issuance. The authorization endpoint evaluates every enabled policy against the request's signals (user, app, risk, device, location) and the union of all matching policies' grant controls must be satisfied before a token is minted."
+        },
+        {
+          "q": "In GCP Workload Identity Federation, what happens after sts.googleapis.com returns a federated access token, and what is the key restriction on which external tokens are accepted?",
+          "choices": [
+            "The workload downloads a service account key; the pool's audience is ignored",
+            "The workload usually impersonates a service account via generateAccessToken; the provider's attribute_condition restricts which tokens federate",
+            "Google immediately revokes the token; only SAML assertions are accepted",
+            "The federated token is permanent; only the sub claim is checked"
+          ],
+          "answer": 1,
+          "explain": "It is a two-leg pattern: the STS exchange yields a short-lived federated token, then the workload typically impersonates a service account via generateAccessToken for the final credential. A provider's attribute_condition (CEL) restricts which external tokens are accepted — a missing condition trusts every token the issuer can mint."
+        },
+        {
+          "q": "How does a Kubernetes projected ServiceAccount token differ from a legacy Secret-based ServiceAccount token?",
+          "choices": [
+            "The projected token never expires and is not audience-bound",
+            "The projected token is audience-bound, has a bounded expiry the kubelet refreshes, and is tied to the Pod's lifetime",
+            "The projected token can only be used inside the cluster and never verified externally",
+            "There is no difference; both are stored as long-lived Secrets"
+          ],
+          "answer": 1,
+          "explain": "A projected token has an explicit audience (aud), a bounded expiry (exp) the kubelet refreshes before it lapses, and is bound to the Pod's lifetime. Legacy Secret-based tokens never expire and are not audience-bound, so they are treated as deprecated. Because the cluster publishes OIDC discovery + JWKS, external relying parties can still verify the projected token."
+        }
+      ]
+    },
+    {
+      "id": "privileged-adaptive",
+      "title": "Privileged & Adaptive Access",
+      "summary": "Two halves of the same discipline: minimize standing privilege so a compromised account is usually not privileged, and re-check the session continuously instead of trusting the login forever.",
+      "lessons": [
+        {
+          "id": "jit-privilege-elevation",
+          "title": "Just-in-time privilege elevation",
+          "objective": "Trace the eligible → request → approve → time-bound → auto-revoke lifecycle and see why standing privilege is the thing to remove.",
+          "content": "<p>The old model gives an administrator a privileged role <i>permanently</i>. The problem is <b>standing privilege</b>: if that account is phished, it is privileged the moment it is compromised. Just-in-time (JIT) elevation flips the default — the identity is only made <b>eligible</b> for the role, and the privilege sits dormant until it is activated.</p><p>The lifecycle is a chain of gates:</p><p><b>Eligible</b> — a standing assignment that grants <i>nothing</i> on its own. Eligibility is not access.<br><b>Request / activate</b> — the admin supplies a <i>justification</i> (often bound to a change ticket) and passes a <b>fresh, phishing-resistant MFA</b> challenge — a valid session is not enough, because activation is the moment privilege is actually conferred.<br><b>Approve</b> — sensitive roles pause for a human approver; lower-tier roles may auto-approve after MFA + justification.<br><b>Time-bound</b> — activation grants the role for a <i>short, scoped</i> window: the least role, for the least time, on the least scope.<br><b>Auto-revoke</b> — when the window expires the assignment is removed automatically, with no user action, and the identity returns to zero standing privilege.</p><p>The payoff: a compromised admin account is usually <i>not currently privileged</i>, which shrinks the attack window to the rare, logged, justified moments of activation. Microsoft Entra PIM is the canonical implementation; AWS temporary role assumption and third-party PAM follow the same pattern.</p>",
+          "links": [
+            {
+              "label": "Just-in-time privilege elevation",
+              "href": "../privileged-access/jit-privilege-elevation/"
+            },
+            {
+              "label": "Credential vault check-out",
+              "href": "../privileged-access/credential-vault-checkout/"
+            }
+          ]
+        },
+        {
+          "id": "break-glass-emergency-access",
+          "title": "Break-glass emergency access",
+          "objective": "Understand the sealed, monitored, rehearsed exception you keep for when the normal paths themselves fail.",
+          "content": "<p>JIT and approval flows depend on the identity provider being up. What happens when the IdP is down, a Conditional Access misconfiguration has locked every admin out, or a ransomware incident demands immediate top-level control? That is the job of a small number of <b>break-glass</b> accounts held in reserve — the documented exception to your own guardrails.</p><p>Because these accounts <i>bypass</i> the usual controls, the entire control set is <b>detection over prevention</b>. You cannot rely on the fence, so you rely on making every use impossible to hide and impossible to ignore:</p><p><b>Sealed</b> — the credential is split into parts held by different custodians (a physical safe or a tightly controlled vault entry) so no single person can wield it alone. This <i>multi-person (M-of-N) control</i> stops one insider or one stolen credential half.<br><b>Monitored</b> — any invocation fires <b>loud, hard-to-suppress</b> real-time alerts to security and leadership. A break-glass account signing in on a normal Tuesday is itself an incident.<br><b>Rehearsed</b> — the procedure is tested and recertified periodically. A sealed account nobody can actually open in a crisis is worse than useless.</p><p>Two rules make or break it. Exclude these accounts from the very control that could lock them out (e.g. exempt them from the Conditional Access policy that failed) — but monitor them the hardest. And after <i>every</i> use, run the mandatory review: <b>rotate the secret, re-split, re-seal</b>, and file the record. An emergency credential still valid after the incident is just an unmonitored superuser password.</p>",
+          "links": [
+            {
+              "label": "Break-glass emergency access",
+              "href": "../privileged-access/break-glass-emergency-access/"
+            },
+            {
+              "label": "Just-in-time privilege elevation",
+              "href": "../privileged-access/jit-privilege-elevation/"
+            }
+          ]
+        },
+        {
+          "id": "pam-vaulting-session-recording",
+          "title": "PAM vaulting and session recording",
+          "objective": "See how a vault removes direct credential handling and how a session proxy makes shared-account activity attributable.",
+          "content": "<p>JIT elevates a role on <i>your own</i> identity. But some privileges are a <b>shared secret</b> — a local-admin password, a database <code>sa</code> account, an appliance root — that cannot practically be made per-person. The PAM answer is to never let the secret touch the administrator's machine.</p><p><b>Vault check-out / check-in.</b> The credential lives only inside the vault. To use it the admin <b>checks it out</b>: the vault verifies who they are, checks entitlement and any approval, then either reveals the secret for a bounded window or — far better — <b>brokers</b> it by injecting it straight into a session so the human never sees the value at all. On <b>check-in</b> (explicit, on session end, or on timeout) the vault <b>rotates</b> the credential, so what was checked out can never be reused. Prefer brokering over revealing: a secret the human never sees cannot be written down, pasted into chat, or phished later. Bind every check-out to a specific human so the log answers \"who used root at 02:00\", not just \"root logged in\".</p><p><b>Session recording and monitoring.</b> The brokered connection is routed through an inline <b>session proxy</b> (a Privileged Session Manager) that injects the target credential, <b>records the session</b> — screen capture plus a structured keystroke/command log — and runs a <b>real-time policy engine</b> per command. A prohibited command can be blocked in-line; a hard-rule violation or a live reviewer can terminate the session mid-stream. Recordings go to append-only / WORM storage with integrity hashing, because a log an admin can edit is not audit evidence. And the proxy <b>fails closed</b>: if the recorder or policy engine is down, deny new privileged sessions rather than allow an unrecorded one.</p>",
+          "links": [
+            {
+              "label": "Credential vault check-out",
+              "href": "../privileged-access/credential-vault-checkout/"
+            },
+            {
+              "label": "Session recording & monitoring",
+              "href": "../privileged-access/session-recording-monitoring/"
+            }
+          ]
+        },
+        {
+          "id": "continuous-adaptive-access",
+          "title": "Continuous and adaptive access",
+          "objective": "Move the check from login-time to session-time: CAE near-real-time revocation, device posture, and the MFA-fatigue problem.",
+          "content": "<p>Everything so far minimizes <i>standing</i> privilege. Adaptive access attacks the other assumption: that a decision made at <b>login</b> stays valid for the life of the session. It does not.</p><p><b>Continuous Access Evaluation (CAE).</b> A bearer token is honoured until it <i>expires</i> — so a one-hour token stays valid for up to an hour even if the user is disabled, the password is reset, or the session is flagged risky the moment after issuance. CAE closes that gap by keeping the resource server and IdP talking after issuance. On a <b>critical event</b> (account disabled, password reset, MFA revoked, admin sign-out, elevated risk, network-location change) the next API call is met with a <b>claims challenge</b> (<code>WWW-Authenticate</code> with a <code>claims</code> parameter) instead of being served; the client takes that back to the IdP, which re-evaluates and re-issues or blocks. Enforcement moves from token-expiry to <i>near</i>-real-time — it shrinks the window, it does not eliminate it, so pair it with short lifetimes for the most sensitive resources.</p><p><b>Device posture.</b> A valid identity is necessary but not sufficient; the request must also come from a <b>compliant, managed device</b>. The policy engine requires a device certificate or hardware attestation, then checks posture (encrypted, patched, EDR healthy, not jailbroken) and maps it to grant / limited / block. Do not trust client-asserted posture — root it in <b>hardware attestation</b> (TPM, Secure Enclave). And compliance is a snapshot: pair it with CAE so posture drift revokes access mid-session, not only at the next login.</p><p><b>The MFA-fatigue problem.</b> Push-based MFA has a specific weakness: an attacker who already holds the password sprays <b>approve/deny</b> prompts until a worn-down user taps Approve (\"push bombing\"). <b>Number matching</b> defeats it — the sign-in screen shows a two- or three-digit number the user must <i>type</i> into the app. The number lives on the <i>initiator's</i> screen, which during an attack is the attacker's, so the victim has no correct number to enter. It stops blind approval, but <b>not</b> a real-time AiTM relay — for that, move to phishing-resistant FIDO2 / passkeys. And treat unrequested prompts as signal: a burst the user never started means the password has already fallen.</p>",
+          "links": [
+            {
+              "label": "Continuous Access Evaluation (CAE)",
+              "href": "../authentication/adaptive-access/continuous-access-evaluation/"
+            },
+            {
+              "label": "Device posture conditional access",
+              "href": "../authentication/adaptive-access/device-posture-conditional-access/"
+            },
+            {
+              "label": "MFA fatigue & number matching",
+              "href": "../authentication/adaptive-access/mfa-fatigue-number-matching/"
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "q": "Under just-in-time elevation, what does an \"eligible\" assignment grant before activation?",
+          "choices": [
+            "Full use of the privileged role at all times",
+            "Nothing on its own — the privilege is dormant until it is activated",
+            "A permanent role that is merely hidden from audit",
+            "Standing access limited to business hours"
+          ],
+          "answer": 1,
+          "explain": "Eligibility is not access. The standing state is unprivileged; the role is conferred only on activation (justification + fresh MFA, possibly approval) and is auto-revoked when the time-bound window ends."
+        },
+        {
+          "q": "Why is a fresh, phishing-resistant MFA challenge required at the moment of activation, not just a valid existing session?",
+          "choices": [
+            "Because sessions cannot carry MFA claims",
+            "Because activation is the moment privilege is actually conferred, so it deserves the strongest proof",
+            "To reset the session cookie",
+            "Because approvers cannot see session state"
+          ],
+          "answer": 1,
+          "explain": "A valid sign-in session is not enough: activation is when standing-zero privilege becomes real access, so it is re-authenticated with a fresh phishing-resistant factor rather than trusting an earlier login."
+        },
+        {
+          "q": "Break-glass emergency accounts bypass the usual guardrails. What is the primary control model that keeps them safe?",
+          "choices": [
+            "Prevention — tight network firewalls block their use",
+            "Detection and accountability — loud alerting, logging, multi-person control, and mandatory post-use review",
+            "Short-lived tokens that expire in minutes",
+            "Automatic role revocation after each API call"
+          ],
+          "answer": 1,
+          "explain": "Because these accounts exist precisely to bypass controls, the guarantees come from detection over prevention: seal the credential under multi-person control, raise hard-to-suppress alerts on any use, and mandatorily reseal and rotate afterward."
+        },
+        {
+          "q": "In the strongest credential-vault model, how does the administrator use a shared privileged password?",
+          "choices": [
+            "The vault emails the password for offline storage",
+            "The vault brokers it — injecting the secret into the session so the human never sees the value, then rotating on check-in",
+            "The password is copied permanently to the admin's workstation",
+            "The admin memorizes the password so it need not be rotated"
+          ],
+          "answer": 1,
+          "explain": "Brokering is preferred over revealing: a secret the human never sees cannot be written down, pasted into chat, or phished later. The vault rotates the credential on check-in so the checked-out value can never be reused."
+        },
+        {
+          "q": "Number matching stops push-bombing but does NOT stop which attack?",
+          "choices": [
+            "A user tapping Approve out of fatigue",
+            "An attacker with only the victim's password spraying prompts",
+            "A real-time adversary-in-the-middle (AiTM) proxy that relays a legitimate challenge",
+            "A guessed or mistyped number on the authenticator"
+          ],
+          "answer": 2,
+          "explain": "Number matching defeats blind approval because the number lives on the initiator's (attacker's) screen. It does not stop an AiTM proxy relaying a genuine challenge in real time — that requires phishing-resistant FIDO2 / passkeys."
+        }
+      ]
+    },
+    {
+      "id": "threats-defense",
+      "title": "Threats & defense",
+      "summary": "Five identity attacks that beat passwords and even MFA — AiTM phishing, token replay, Golden SAML, Kerberoasting, and consent/device-code phishing — each paired with the control that actually stops it.",
+      "lessons": [
+        {
+          "id": "aitm-mfa-phishing",
+          "title": "Adversary-in-the-middle MFA phishing",
+          "objective": "See why reverse-proxy phishing defeats OTP and push, and why passkeys break it.",
+          "content": "<p><b>The attack.</b> Adversary-in-the-middle (AiTM) phishing defeats most multi-factor authentication by <i>proxying</i> the real login instead of harvesting a static password. The attacker stands up a <b>reverse-proxy phishing site</b> that relays every request and response between the victim and the legitimate IdP in real time. The victim sees the genuine login and MFA challenge — because it <i>is</i> genuine, relayed through the proxy — completes MFA, and the IdP issues a <b>session cookie or token</b>. Because that cookie flows back through the proxy, the attacker captures it and <b>replays the authenticated session</b>. No password or second factor is needed thereafter. OTP, push, and SMS all fall the same way: the proxy simply relays the one-time value, so the second factor adds no friction.</p><p><b>The defense.</b> The durable fix is <b>phishing-resistant FIDO2 / passkeys</b>. A passkey signs over the <i>real origin</i>, and the IdP checks it; an assertion produced against the proxy's look-alike origin will not validate, so the login never completes — origin binding is what actually breaks AiTM. Layer on <b>sender-constrained sessions</b> (token binding, DPoP, mTLS) so a captured cookie cannot be replayed from another host, <b>continuous access evaluation</b> and short session lifetimes to evict a replayed session fast on risk signals, and conditional access requiring compliant/managed devices — which the attacker's replay host is not.</p>",
+          "links": [
+            {
+              "label": "AiTM MFA phishing",
+              "href": "../threat-defense/aitm-mfa-phishing/"
+            },
+            {
+              "label": "Token theft & replay",
+              "href": "../threat-defense/token-theft-replay/"
+            }
+          ]
+        },
+        {
+          "id": "token-theft-replay",
+          "title": "Token theft and replay",
+          "objective": "Understand how stolen bearer tokens are replayed, and how to make tokens non-portable.",
+          "content": "<p><b>The attack.</b> A <b>bearer</b> token grants access to whoever presents it, so an attacker who lifts an access or refresh token — from browser storage, logs, a memory dump, an infostealer, or a compromised proxy — can <b>replay it against the API</b> or <b>redeem a stolen refresh token</b> for fresh access tokens, impersonating the victim with no password or MFA prompt. A long-lived refresh token is especially valuable: it can be redeemed repeatedly and often outlives a password reset, giving durable persistence. This is frequently the payoff stage of AiTM or consent phishing, which produce the very tokens replayed here.</p><p><b>The defense.</b> Make the token <b>non-bearer</b> by sender-constraining it: <b>DPoP</b> (a proof-of-possession JWT) or <b>mutual-TLS</b> certificate binding ties the token to a client key, so a copy replayed from another host lacks the private key and is rejected. Pair that with <b>refresh-token rotation and reuse detection</b> — each refresh returns a new token and invalidates the old one, so a replayed refresh token trips a tripwire and the IdP <b>revokes the entire token family</b>. Add <b>continuous access evaluation (CAE)</b> and short access-token lifetimes to invalidate stolen tokens mid-lifetime, and protect tokens at rest by keeping them out of <code>localStorage</code> and logs.</p>",
+          "links": [
+            {
+              "label": "Token theft & replay",
+              "href": "../threat-defense/token-theft-replay/"
+            },
+            {
+              "label": "AiTM MFA phishing",
+              "href": "../threat-defense/aitm-mfa-phishing/"
+            }
+          ]
+        },
+        {
+          "id": "golden-saml",
+          "title": "Golden SAML",
+          "objective": "Learn how a stolen IdP signing key forges assertions, and why key custody is the control.",
+          "content": "<p><b>The attack.</b> <b>Golden SAML</b> is a forgery against SAML federation. An attacker who steals the Identity Provider's <b>token-signing private key</b> (and its certificate) can mint arbitrarily valid SAML <b>assertions</b> for any user, with any groups or attributes, <i>without ever authenticating</i> at the IdP. Because the Service Provider trusts anything signed by that key, a forged assertion is indistinguishable from a real one — and it bypasses the MFA and conditional access that live at the IdP. It is a post-compromise move: the attacker must already have exported the key from a soft key store, a backup, or the federation config database, and can then persist even after passwords are reset, since the <i>signing key</i> is the secret.</p><p><b>The defense.</b> This is fundamentally a <b>key-management</b> problem — once the key leaks, the SP cannot cryptographically tell a forgery from the genuine article. The primary control is to <b>hold the signing key in an HSM</b> (or a KMS with non-exportable keys) so it cannot be stolen and reused offline, and to <b>harden the federation server as a Tier-0 asset</b>. For detection, <b>correlate SP logins with IdP authentication events</b>: a golden assertion produces a successful SP session with <i>no matching IdP sign-in</i>, the single strongest signal. Rotate the signing key on a schedule and after any suspected compromise, enforce short assertion lifetimes with strict <code>NotOnOrAfter</code> and audience validation, and watch for unexpected signing certificates added to SP trust.</p>",
+          "links": [
+            {
+              "label": "Golden SAML",
+              "href": "../threat-defense/golden-saml/"
+            }
+          ]
+        },
+        {
+          "id": "kerberoasting",
+          "title": "Kerberoasting",
+          "objective": "Grasp offline cracking of service tickets and why strong or managed passwords defeat it.",
+          "content": "<p><b>The attack.</b> <b>Kerberoasting</b> abuses a normal feature of the Kerberos TGS exchange: any authenticated domain user can request a <b>service ticket</b> for any account that has a <b>Service Principal Name (SPN)</b> registered. Part of that ticket is encrypted with a key <i>derived from the service account's password</i>. The attacker requests the ticket, extracts the encrypted portion, and <b>cracks the password offline</b> — with no further traffic to the KDC and no failed-logon noise. A single low-privileged foothold is enough to roast every SPN in the domain, and accounts with weak, human-chosen passwords and legacy <code>RC4</code> encryption fall quickly, especially over-privileged SQL, IIS, and legacy-app accounts.</p><p><b>The defense.</b> Kerberoasting cannot be blocked at the protocol level — issuing service tickets is the KDC's job — so the goal is to make the cracked material <b>worthless</b> and the request pattern <b>visible</b>. The top control is <b>group Managed Service Accounts (gMSA/dMSA)</b> or 25+ character random passwords: a 120-character auto-rotated secret makes offline cracking computationally infeasible. <b>Enforce AES and remove RC4</b> so tickets are far more expensive to crack, practice <b>SPN hygiene and least privilege</b> so no service account sits in Tier-0 groups, and monitor <b>Windows event 4769</b> for a single account requesting many distinct SPNs or RC4 tickets. A <b>honeypot SPN</b> with no legitimate use turns any request for it into a high-fidelity alert.</p>",
+          "links": [
+            {
+              "label": "Kerberoasting",
+              "href": "../threat-defense/kerberoasting/"
+            }
+          ]
+        },
+        {
+          "id": "consent-and-device-code-phishing",
+          "title": "Consent and device-code phishing",
+          "objective": "Recognize illicit OAuth grants and the governance controls that block or contain them.",
+          "content": "<p><b>The attack.</b> Both techniques abuse legitimate OAuth flows without ever stealing a password. In <b>consent phishing</b> (the illicit consent grant), the attacker registers or impersonates a malicious app and lures the victim to a <i>genuine</i> IdP consent screen; when the victim clicks <b>Accept</b>, the IdP issues the attacker's app real access and refresh tokens for scopes like mail, files, and <code>offline_access</code>. In <b>device-code phishing</b>, the attacker starts the OAuth device grant on their own machine, obtains a valid <code>user_code</code>, and phishes the victim to enter it at the real verification URL; on approval, tokens land in the attacker's polling client. Both <b>survive password resets and bypass MFA</b> — MFA is satisfied during the victim's own login — and device-code phishing needs no fake page at all, since the victim only ever touches the legitimate IdP.</p><p><b>The defense.</b> These are <b>authorization</b> problems, not authentication ones — the crypto and login are valid — so defense centers on governing which apps and grants are permitted. <b>Restrict user consent</b> to verified publishers and a low-risk scope allowlist, and route everything else through an <b>admin consent workflow</b> with human review; require <b>publisher verification</b> so unverified apps never reach a grantable screen. For the device grant, use <b>conditional access to restrict or disable it</b> to compliant/managed devices, enforce <b>short <code>user_code</code> lifetimes</b> and polling slow-down, and show a clear approval screen that names the app and asks &quot;did you start this?&quot;. Back both with <b>app-governance / risky-app detection</b> that can revoke a grant and its refresh tokens after the fact, plus least-privilege scopes and periodic access reviews.</p>",
+          "links": [
+            {
+              "label": "OAuth consent phishing",
+              "href": "../threat-defense/oauth-consent-phishing/"
+            },
+            {
+              "label": "Device-code phishing",
+              "href": "../threat-defense/device-code-phishing/"
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "q": "A user completes a push-approval MFA prompt on a real-looking login page, yet the attacker gains an authenticated session. What made this possible?",
+          "choices": [
+            "The attacker guessed the one-time code",
+            "A reverse proxy relayed the genuine login and captured the issued session cookie",
+            "The user's password was weak",
+            "MFA was disabled for the account"
+          ],
+          "answer": 1,
+          "explain": "In AiTM phishing the attacker proxies the real IdP, so the victim's genuine MFA succeeds and the resulting session cookie flows back through the proxy to be replayed. The second factor adds no friction because it is simply relayed."
+        },
+        {
+          "q": "Which control most directly prevents AiTM phishing from completing the login at all?",
+          "choices": [
+            "SMS one-time passwords",
+            "Longer password requirements",
+            "Origin-bound FIDO2 / passkeys",
+            "A CAPTCHA on the login page"
+          ],
+          "answer": 2,
+          "explain": "A passkey signs over the real origin and the IdP verifies it, so an assertion produced against the proxy's look-alike origin fails validation. Origin binding stops the login rather than merely containing a stolen session."
+        },
+        {
+          "q": "An attacker presents a previously-rotated refresh token to the IdP. In a well-configured system, what should happen?",
+          "choices": [
+            "The IdP silently issues a new access token",
+            "Nothing — refresh tokens never expire",
+            "The IdP detects reuse and revokes the entire token family",
+            "The API validates only the signature and allows it"
+          ],
+          "answer": 2,
+          "explain": "Refresh-token rotation with reuse detection makes each refresh single-use; presenting an already-used token is a high-fidelity signal that a stolen copy is in play, so the whole token family is revoked."
+        },
+        {
+          "q": "What is the single strongest detection signal for a Golden SAML forgery?",
+          "choices": [
+            "A spike in failed password attempts at the IdP",
+            "A successful SP session with no corresponding IdP authentication event",
+            "An expired signing certificate",
+            "A high volume of Kerberos event 4769"
+          ],
+          "answer": 1,
+          "explain": "A forged assertion is signed with the stolen key and never touches the IdP's login, so it produces an SP sign-in with no matching IdP authentication. Correlating SP and IdP logs surfaces exactly that mismatch."
+        },
+        {
+          "q": "Why is a group Managed Service Account (gMSA) the top control against Kerberoasting?",
+          "choices": [
+            "It blocks the KDC from ever issuing service tickets",
+            "It forces all logins through MFA",
+            "It gives the account a long, random, auto-rotated password that is infeasible to crack offline",
+            "It removes the account's SPN automatically"
+          ],
+          "answer": 2,
+          "explain": "Kerberoasting relies on cracking the service account's password offline. A gMSA uses a 120+ character randomly generated secret rotated automatically, so the extracted ciphertext is not practically crackable — the attack is neutralized even though tickets are still issued."
+        }
+      ]
+    },
+    {
+      "id": "architecture-delivery",
+      "title": "Architecture, CI/CD & Delivery",
+      "summary": "The capstone: how the pieces assemble into a real system. Inside a modern IdP, how enterprise identity products fit together, how zero trust decides every request, and how you ship and stand up all of it — keyless deploys, signed artifacts, and environments as code.",
+      "lessons": [
+        {
+          "id": "idp-reference-architecture",
+          "title": "Inside an identity provider",
+          "objective": "See the components a modern IdP is built from and the trust boundaries between them.",
+          "content": "<p>Everything you have learned about login flows runs <i>through</i> a system: the <b>Identity Provider</b>. Seen from the inside, an IdP is not one box but a set of cooperating planes, each with a different job and a different level of exposure:</p><ul><li><b>Edge / TLS gateway</b> — the only internet-facing component. TLS terminates here; a WAF and rate limiter blunt credential stuffing and DoS before traffic reaches anything sensitive.</li><li><b>Authentication service</b> — runs the login ceremony, verifies primary credentials, and orchestrates factors via the <b>Factor / MFA service</b> (TOTP, push, WebAuthn/passkey).</li><li><b>Token / assertion service</b> — mints OIDC ID/access tokens (JWT) and SAML assertions. It signs with private keys held in an <b>HSM/KMS</b>, the crown jewels — keys never leave the boundary, and the public half is published via JWKS or SAML metadata.</li><li><b>Session store</b> — the IdP's own long-lived, revocable SSO session, distinct from the short-lived tokens it mints for relying parties.</li><li><b>User directory</b> — the authoritative store of identities, credential hashes, and group membership; the highest-value data store, isolated in the data tier.</li><li><b>Policy/admin plane</b> and <b>append-only audit log</b> — management flows through its own MFA-protected, audited path, and every authN, token issuance, and admin action is written to a tamper-evident log.</li></ul><p>The point of drawing these boundaries is <b>containment</b>: only the edge is public, only the token service touches signing keys, and a compromise in one plane does not automatically grant the others.</p>",
+          "links": [
+            {
+              "label": "IdP reference architecture",
+              "href": "../infrastructure/architecture/identity-provider-reference-architecture/"
+            }
+          ]
+        },
+        {
+          "id": "enterprise-identity-environment",
+          "title": "A real enterprise identity environment",
+          "objective": "Place SailPoint, Okta/Entra, Active Directory, and applications in one picture.",
+          "content": "<p>A single IdP is only part of the estate. In a real enterprise, several systems each own a distinct role and hand off to the next:</p><ul><li><b>HR system of record</b> (e.g. Workday) — authoritative worker data; a hire, transfer, or termination here triggers the joiner/mover/leaver lifecycle.</li><li><b>Identity governance / IGA</b> (e.g. SailPoint) — the control plane. It provisions accounts, runs access requests and certifications, and enforces separation of duties.</li><li><b>Access management / IdP</b> (e.g. Okta, Microsoft Entra ID) — run-time authentication, MFA, and SSO into applications.</li><li><b>Directory</b> (e.g. Active Directory) — on-prem accounts, groups, and Kerberos/LDAP.</li><li><b>Privileged access / PAM</b> (e.g. CyberArk) — vaulted credentials and brokered privileged sessions.</li><li><b>Applications</b> — the relying parties that consume SSO and provisioned access.</li></ul><p>The shape is what matters, and product names are interchangeable: an <i>HR source of truth</i> feeds an <i>IGA control plane</i> that provisions a <i>directory, an IdP, and apps</i>, while the <i>IdP handles authentication and SSO at run time</i> and a <i>PAM tool brokers privileged access</i>. Governance decides <b>who should have access</b>; the IdP enforces <b>who is present right now</b>.</p>",
+          "links": [
+            {
+              "label": "Enterprise identity environment",
+              "href": "../infrastructure/architecture/enterprise-identity-environment/"
+            }
+          ]
+        },
+        {
+          "id": "zero-trust-architecture",
+          "title": "Zero trust: decide every request",
+          "objective": "Understand the PDP/PEP split, continuous verification, and why network location grants nothing.",
+          "content": "<p>Zero trust (NIST SP 800-207) replaces the old \"inside the perimeter is trusted\" model with a rule: <b>every request to every resource is mediated and re-verified</b>. Two roles do the work:</p><p><b>Policy Decision Point (PDP)</b> — the brain, made of a <b>Policy Engine</b> that computes the allow/deny decision from policy plus signals, and a <b>Policy Administrator</b> that establishes or tears down the connection and issues session credentials.</p><p><b>Policy Enforcement Point (PEP)</b> — the inline gate sitting in front of each resource. It allows, blocks, or terminates a session on the PDP's instruction. An API gateway is a concrete PEP.</p><p>The decision is a <b>function of live signals</b>, not a one-time login: identity and MFA from the IdP, device posture from EDR, and risk from SIEM/threat intel are combined <i>per request</i>. Key consequences:</p><ul><li><b>No network-location trust</b> — internal traffic is challenged exactly like internet traffic. This is the model that replaces IP-allowlist \"network auth\".</li><li><b>Continuous verification</b> — sessions are short and re-evaluated; a device that falls out of compliance mid-session is denied on the next check, and the PA can revoke an established session when a signal changes.</li><li><b>Least privilege, per-resource</b> — access is to a single resource for a single session, so lateral movement is denied by default.</li><li><b>Control plane vs data plane</b> — the PDP never carries application data, so compromising the data path does not grant policy authority. But the PDP and its signal feeds are high-value: poisoned posture or risk data corrupts every decision.</li></ul>",
+          "links": [
+            {
+              "label": "Zero-trust architecture",
+              "href": "../infrastructure/architecture/zero-trust-architecture/"
+            }
+          ]
+        },
+        {
+          "id": "secure-delivery",
+          "title": "Secure delivery: keyless deploys and provenance",
+          "objective": "Ship without stored cloud keys and refuse artifacts that cannot prove where they came from.",
+          "content": "<p>The same identity principles apply to how software reaches production. Two patterns remove long-lived secrets from the pipeline.</p><p><b>OIDC-to-cloud federation (keyless deploy).</b> Instead of pasting a long-lived cloud access key into CI secrets, the CI system acts as an OIDC issuer: for each job it mints a short-lived, signed JWT describing the workflow — claims like <code>sub=repo:org/repo:ref:refs/heads/main</code>, <code>aud</code>, and <code>environment</code>. The cloud is configured to trust that issuer and <b>exchanges the JWT for short-lived credentials</b> (AWS <code>sts:AssumeRoleWithWebIdentity</code>, GCP Workload Identity Federation, Azure workload identity federation). The exchange succeeds only if the signature verifies against the issuer's JWKS <i>and</i> the claims satisfy the trust policy. The cardinal rule: <b>scope <code>sub</code> and <code>aud</code> tightly and never wildcard the subject</b> — a loose <code>repo:org/*</code> lets a fork assume your role.</p><p><b>Artifact signing and provenance (verify on deploy).</b> Prove an artifact was built by a trusted pipeline from trusted source, and refuse anything that cannot. With <b>Sigstore keyless</b> signing, cosign gets an OIDC identity token, <b>Fulcio</b> issues a short-lived cert bound to that identity, cosign signs the artifact <b>digest</b>, and the signature is recorded in the <b>Rekor</b> transparency log — no signing key is stored. The build also emits signed <b>in-toto provenance</b> (source, builder, materials), graded by <b>SLSA</b> level. At deploy, an admission controller or deploy gate verifies the <i>signer identity</i> (not just that a signature exists), checks the provenance meets the required SLSA level and builder, and only then admits the artifact. Verify at <b>admission</b>, not only at build.</p>",
+          "links": [
+            {
+              "label": "OIDC-to-cloud federation (keyless deploy)",
+              "href": "../infrastructure/cicd/oidc-to-cloud-federation/"
+            },
+            {
+              "label": "Artifact signing and provenance",
+              "href": "../infrastructure/cicd/artifact-signing-provenance/"
+            }
+          ]
+        },
+        {
+          "id": "environments-as-code",
+          "title": "Environments as code, and where to go next",
+          "objective": "Stand up Okta/Auth0/SailPoint/Entra/AD from reviewed, versioned templates — then keep exploring.",
+          "content": "<p>The identity platforms themselves can be declared and deployed like any other infrastructure. The <b>environment templates</b> are copyable, parameterized starters — one per platform, each with a GitHub Actions workflow:</p><ul><li><b>Okta</b> (Workforce) and <b>Auth0</b> (CIAM) — Terraform providers.</li><li><b>SailPoint ISC</b> — SP-Config JSON driven by the SailPoint CLI/API.</li><li><b>Microsoft Entra ID</b> — the <code>azuread</code> Terraform provider.</li><li><b>Active Directory</b> — a PowerShell baseline for OUs, groups, and tiering.</li></ul><p>The shared conventions turn these into a safe workflow: <b>multi-environment</b> (<code>dev</code>/<code>test</code>/<code>prod</code>, never one shared state), <b>remote state</b>, <b>secrets never in code</b> (only <code>*.tfvars.example</code> is committed; real values come from CI secrets or, better, OIDC federation), <b>least privilege</b> per-environment service principals, and <b>plan on PR, apply on merge</b> gated by a protected <code>production</code> environment with manual approval. They are starter templates, not turn-key production configs — always read a plan before applying to a real tenant.</p><p><b>Where to go next.</b> You now have the whole picture: identity vocabulary, login and token flows, authorization, lifecycle, and how it all assembles and ships. When you face a real choice, reach for the <b>decision guides</b> — which authentication protocol, session vs. token, authorization model, MFA factor, OAuth grant, or workload-to-cloud auth. And to watch any flow run message by message, open the interactive <b>Flow Explorer</b>. Build the mental model here; make the call there.</p>",
+          "links": [
+            {
+              "label": "Identity environment templates (IaC)",
+              "href": "../infrastructure/cicd/environment-templates/"
+            },
+            {
+              "label": "Decision guides",
+              "href": "../reference/decision-guides/"
+            },
+            {
+              "label": "Try the Flow Explorer",
+              "href": "../explorer/"
+            }
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "q": "In the IdP reference architecture, which component holds the private keys used to sign tokens and assertions?",
+          "choices": [
+            "The Edge / TLS gateway",
+            "The Token / assertion service, backed by an HSM/KMS",
+            "The user directory",
+            "The session store"
+          ],
+          "answer": 1,
+          "explain": "The token/assertion service signs with private keys held in an HSM/KMS. Those keys are the crown jewels — they never leave the boundary, and only the public half is published via JWKS or SAML metadata."
+        },
+        {
+          "q": "In a typical enterprise identity environment, which system is the authoritative source that triggers the joiner/mover/leaver lifecycle?",
+          "choices": [
+            "The IdP (Okta / Entra ID)",
+            "Active Directory",
+            "The HR system of record (e.g. Workday)",
+            "The PAM tool (e.g. CyberArk)"
+          ],
+          "answer": 2,
+          "explain": "The HR system of record holds authoritative worker data; a hire, transfer, or termination there triggers the lifecycle, which the IGA control plane then provisions into the directory, IdP, and apps."
+        },
+        {
+          "q": "A laptop passes login and starts a session, then falls out of patch compliance an hour later. What does a zero-trust architecture do?",
+          "choices": [
+            "Nothing — it was already trusted at login for the life of the session",
+            "Denies it on the next evaluation, because decisions combine live signals per request and sessions are continuously re-verified",
+            "Trusts it as long as it stays on the internal network",
+            "Re-runs MFA but keeps network access regardless of posture"
+          ],
+          "answer": 1,
+          "explain": "Zero trust makes each decision a function of live signals (identity, device posture, risk), not a one-time login. A device that falls out of compliance is denied on the next check, and the Policy Administrator can revoke an established session."
+        },
+        {
+          "q": "What is the single most important condition to get right in an OIDC-to-cloud trust policy for keyless deploys?",
+          "choices": [
+            "Give the credentials a long TTL so jobs never expire mid-run",
+            "Store a backup access key in CI secrets in case OIDC fails",
+            "Scope the subject and audience tightly and never wildcard the subject",
+            "Allow any valid signature from the CI issuer"
+          ],
+          "answer": 2,
+          "explain": "The exchange must require a tightly scoped sub and aud. A wildcard subject like repo:org/* lets a fork or unrelated repo assume the role, undoing the whole model. Pin to a ref or, better, an environment claim."
+        },
+        {
+          "q": "With keyless artifact signing (Sigstore), how should a deploy gate decide whether to admit an image?",
+          "choices": [
+            "Admit any image that carries some signature",
+            "Verify at build time only; admission does not need to re-check",
+            "Verify the signer identity (OIDC issuer/subject) and that provenance meets the required SLSA level and builder, at admission",
+            "Require a long-lived signing key to be stored and rotated"
+          ],
+          "answer": 2,
+          "explain": "Verify the signer identity, not merely the presence of a signature, and require trusted-builder provenance at a minimum SLSA level. Do this at admission, since build-time checks do not stop a tampered artifact from being deployed by another path."
+        }
+      ]
+    }
+  ]
+}

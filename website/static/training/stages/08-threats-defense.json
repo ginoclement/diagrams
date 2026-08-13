@@ -1,0 +1,136 @@
+{
+  "id": "threats-defense",
+  "title": "Threats & defense",
+  "summary": "Five identity attacks that beat passwords and even MFA — AiTM phishing, token replay, Golden SAML, Kerberoasting, and consent/device-code phishing — each paired with the control that actually stops it.",
+  "lessons": [
+    {
+      "id": "aitm-mfa-phishing",
+      "title": "Adversary-in-the-middle MFA phishing",
+      "objective": "See why reverse-proxy phishing defeats OTP and push, and why passkeys break it.",
+      "content": "<p><b>The attack.</b> Adversary-in-the-middle (AiTM) phishing defeats most multi-factor authentication by <i>proxying</i> the real login instead of harvesting a static password. The attacker stands up a <b>reverse-proxy phishing site</b> that relays every request and response between the victim and the legitimate IdP in real time. The victim sees the genuine login and MFA challenge — because it <i>is</i> genuine, relayed through the proxy — completes MFA, and the IdP issues a <b>session cookie or token</b>. Because that cookie flows back through the proxy, the attacker captures it and <b>replays the authenticated session</b>. No password or second factor is needed thereafter. OTP, push, and SMS all fall the same way: the proxy simply relays the one-time value, so the second factor adds no friction.</p><p><b>The defense.</b> The durable fix is <b>phishing-resistant FIDO2 / passkeys</b>. A passkey signs over the <i>real origin</i>, and the IdP checks it; an assertion produced against the proxy's look-alike origin will not validate, so the login never completes — origin binding is what actually breaks AiTM. Layer on <b>sender-constrained sessions</b> (token binding, DPoP, mTLS) so a captured cookie cannot be replayed from another host, <b>continuous access evaluation</b> and short session lifetimes to evict a replayed session fast on risk signals, and conditional access requiring compliant/managed devices — which the attacker's replay host is not.</p>",
+      "links": [
+        {
+          "label": "AiTM MFA phishing",
+          "href": "../threat-defense/aitm-mfa-phishing/"
+        },
+        {
+          "label": "Token theft & replay",
+          "href": "../threat-defense/token-theft-replay/"
+        }
+      ]
+    },
+    {
+      "id": "token-theft-replay",
+      "title": "Token theft and replay",
+      "objective": "Understand how stolen bearer tokens are replayed, and how to make tokens non-portable.",
+      "content": "<p><b>The attack.</b> A <b>bearer</b> token grants access to whoever presents it, so an attacker who lifts an access or refresh token — from browser storage, logs, a memory dump, an infostealer, or a compromised proxy — can <b>replay it against the API</b> or <b>redeem a stolen refresh token</b> for fresh access tokens, impersonating the victim with no password or MFA prompt. A long-lived refresh token is especially valuable: it can be redeemed repeatedly and often outlives a password reset, giving durable persistence. This is frequently the payoff stage of AiTM or consent phishing, which produce the very tokens replayed here.</p><p><b>The defense.</b> Make the token <b>non-bearer</b> by sender-constraining it: <b>DPoP</b> (a proof-of-possession JWT) or <b>mutual-TLS</b> certificate binding ties the token to a client key, so a copy replayed from another host lacks the private key and is rejected. Pair that with <b>refresh-token rotation and reuse detection</b> — each refresh returns a new token and invalidates the old one, so a replayed refresh token trips a tripwire and the IdP <b>revokes the entire token family</b>. Add <b>continuous access evaluation (CAE)</b> and short access-token lifetimes to invalidate stolen tokens mid-lifetime, and protect tokens at rest by keeping them out of <code>localStorage</code> and logs.</p>",
+      "links": [
+        {
+          "label": "Token theft & replay",
+          "href": "../threat-defense/token-theft-replay/"
+        },
+        {
+          "label": "AiTM MFA phishing",
+          "href": "../threat-defense/aitm-mfa-phishing/"
+        }
+      ]
+    },
+    {
+      "id": "golden-saml",
+      "title": "Golden SAML",
+      "objective": "Learn how a stolen IdP signing key forges assertions, and why key custody is the control.",
+      "content": "<p><b>The attack.</b> <b>Golden SAML</b> is a forgery against SAML federation. An attacker who steals the Identity Provider's <b>token-signing private key</b> (and its certificate) can mint arbitrarily valid SAML <b>assertions</b> for any user, with any groups or attributes, <i>without ever authenticating</i> at the IdP. Because the Service Provider trusts anything signed by that key, a forged assertion is indistinguishable from a real one — and it bypasses the MFA and conditional access that live at the IdP. It is a post-compromise move: the attacker must already have exported the key from a soft key store, a backup, or the federation config database, and can then persist even after passwords are reset, since the <i>signing key</i> is the secret.</p><p><b>The defense.</b> This is fundamentally a <b>key-management</b> problem — once the key leaks, the SP cannot cryptographically tell a forgery from the genuine article. The primary control is to <b>hold the signing key in an HSM</b> (or a KMS with non-exportable keys) so it cannot be stolen and reused offline, and to <b>harden the federation server as a Tier-0 asset</b>. For detection, <b>correlate SP logins with IdP authentication events</b>: a golden assertion produces a successful SP session with <i>no matching IdP sign-in</i>, the single strongest signal. Rotate the signing key on a schedule and after any suspected compromise, enforce short assertion lifetimes with strict <code>NotOnOrAfter</code> and audience validation, and watch for unexpected signing certificates added to SP trust.</p>",
+      "links": [
+        {
+          "label": "Golden SAML",
+          "href": "../threat-defense/golden-saml/"
+        }
+      ]
+    },
+    {
+      "id": "kerberoasting",
+      "title": "Kerberoasting",
+      "objective": "Grasp offline cracking of service tickets and why strong or managed passwords defeat it.",
+      "content": "<p><b>The attack.</b> <b>Kerberoasting</b> abuses a normal feature of the Kerberos TGS exchange: any authenticated domain user can request a <b>service ticket</b> for any account that has a <b>Service Principal Name (SPN)</b> registered. Part of that ticket is encrypted with a key <i>derived from the service account's password</i>. The attacker requests the ticket, extracts the encrypted portion, and <b>cracks the password offline</b> — with no further traffic to the KDC and no failed-logon noise. A single low-privileged foothold is enough to roast every SPN in the domain, and accounts with weak, human-chosen passwords and legacy <code>RC4</code> encryption fall quickly, especially over-privileged SQL, IIS, and legacy-app accounts.</p><p><b>The defense.</b> Kerberoasting cannot be blocked at the protocol level — issuing service tickets is the KDC's job — so the goal is to make the cracked material <b>worthless</b> and the request pattern <b>visible</b>. The top control is <b>group Managed Service Accounts (gMSA/dMSA)</b> or 25+ character random passwords: a 120-character auto-rotated secret makes offline cracking computationally infeasible. <b>Enforce AES and remove RC4</b> so tickets are far more expensive to crack, practice <b>SPN hygiene and least privilege</b> so no service account sits in Tier-0 groups, and monitor <b>Windows event 4769</b> for a single account requesting many distinct SPNs or RC4 tickets. A <b>honeypot SPN</b> with no legitimate use turns any request for it into a high-fidelity alert.</p>",
+      "links": [
+        {
+          "label": "Kerberoasting",
+          "href": "../threat-defense/kerberoasting/"
+        }
+      ]
+    },
+    {
+      "id": "consent-and-device-code-phishing",
+      "title": "Consent and device-code phishing",
+      "objective": "Recognize illicit OAuth grants and the governance controls that block or contain them.",
+      "content": "<p><b>The attack.</b> Both techniques abuse legitimate OAuth flows without ever stealing a password. In <b>consent phishing</b> (the illicit consent grant), the attacker registers or impersonates a malicious app and lures the victim to a <i>genuine</i> IdP consent screen; when the victim clicks <b>Accept</b>, the IdP issues the attacker's app real access and refresh tokens for scopes like mail, files, and <code>offline_access</code>. In <b>device-code phishing</b>, the attacker starts the OAuth device grant on their own machine, obtains a valid <code>user_code</code>, and phishes the victim to enter it at the real verification URL; on approval, tokens land in the attacker's polling client. Both <b>survive password resets and bypass MFA</b> — MFA is satisfied during the victim's own login — and device-code phishing needs no fake page at all, since the victim only ever touches the legitimate IdP.</p><p><b>The defense.</b> These are <b>authorization</b> problems, not authentication ones — the crypto and login are valid — so defense centers on governing which apps and grants are permitted. <b>Restrict user consent</b> to verified publishers and a low-risk scope allowlist, and route everything else through an <b>admin consent workflow</b> with human review; require <b>publisher verification</b> so unverified apps never reach a grantable screen. For the device grant, use <b>conditional access to restrict or disable it</b> to compliant/managed devices, enforce <b>short <code>user_code</code> lifetimes</b> and polling slow-down, and show a clear approval screen that names the app and asks &quot;did you start this?&quot;. Back both with <b>app-governance / risky-app detection</b> that can revoke a grant and its refresh tokens after the fact, plus least-privilege scopes and periodic access reviews.</p>",
+      "links": [
+        {
+          "label": "OAuth consent phishing",
+          "href": "../threat-defense/oauth-consent-phishing/"
+        },
+        {
+          "label": "Device-code phishing",
+          "href": "../threat-defense/device-code-phishing/"
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "q": "A user completes a push-approval MFA prompt on a real-looking login page, yet the attacker gains an authenticated session. What made this possible?",
+      "choices": [
+        "The attacker guessed the one-time code",
+        "A reverse proxy relayed the genuine login and captured the issued session cookie",
+        "The user's password was weak",
+        "MFA was disabled for the account"
+      ],
+      "answer": 1,
+      "explain": "In AiTM phishing the attacker proxies the real IdP, so the victim's genuine MFA succeeds and the resulting session cookie flows back through the proxy to be replayed. The second factor adds no friction because it is simply relayed."
+    },
+    {
+      "q": "Which control most directly prevents AiTM phishing from completing the login at all?",
+      "choices": [
+        "SMS one-time passwords",
+        "Longer password requirements",
+        "Origin-bound FIDO2 / passkeys",
+        "A CAPTCHA on the login page"
+      ],
+      "answer": 2,
+      "explain": "A passkey signs over the real origin and the IdP verifies it, so an assertion produced against the proxy's look-alike origin fails validation. Origin binding stops the login rather than merely containing a stolen session."
+    },
+    {
+      "q": "An attacker presents a previously-rotated refresh token to the IdP. In a well-configured system, what should happen?",
+      "choices": [
+        "The IdP silently issues a new access token",
+        "Nothing — refresh tokens never expire",
+        "The IdP detects reuse and revokes the entire token family",
+        "The API validates only the signature and allows it"
+      ],
+      "answer": 2,
+      "explain": "Refresh-token rotation with reuse detection makes each refresh single-use; presenting an already-used token is a high-fidelity signal that a stolen copy is in play, so the whole token family is revoked."
+    },
+    {
+      "q": "What is the single strongest detection signal for a Golden SAML forgery?",
+      "choices": [
+        "A spike in failed password attempts at the IdP",
+        "A successful SP session with no corresponding IdP authentication event",
+        "An expired signing certificate",
+        "A high volume of Kerberos event 4769"
+      ],
+      "answer": 1,
+      "explain": "A forged assertion is signed with the stolen key and never touches the IdP's login, so it produces an SP sign-in with no matching IdP authentication. Correlating SP and IdP logs surfaces exactly that mismatch."
+    },
+    {
+      "q": "Why is a group Managed Service Account (gMSA) the top control against Kerberoasting?",
+      "choices": [
+        "It blocks the KDC from ever issuing service tickets",
+        "It forces all logins through MFA",
+        "It gives the account a long, random, auto-rotated password that is infeasible to crack offline",
+        "It removes the account's SPN automatically"
+      ],
+      "answer": 2,
+      "explain": "Kerberoasting relies on cracking the service account's password offline. A gMSA uses a 120+ character randomly generated secret rotated automatically, so the extracted ciphertext is not practically crackable — the attack is neutralized even though tickets are still issued."
+    }
+  ]
+}

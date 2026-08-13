@@ -1,0 +1,132 @@
+{
+  "id": "strong-auth",
+  "title": "Strong & Phishing-Resistant Authentication",
+  "summary": "What makes an authentication factor phishing-resistant, and what makes one weak: public-key passkeys vs. shared-secret OTP, how Kerberos tickets prove identity without resending a password, how to choose an MFA factor, and how adaptive and step-up policies gate access on risk.",
+  "lessons": [
+    {
+      "id": "webauthn-passkeys",
+      "title": "WebAuthn & passkeys: why public-key auth resists phishing",
+      "objective": "Understand why a passkey cannot be handed to a look-alike site the way a password or OTP can.",
+      "content": "<p>A password is a <b>shared secret</b>: the user knows it and the server stores a copy. Anything the user can type, the user can be tricked into typing somewhere else — including a phishing page that relays it onward. One-time codes have the same flaw: a code the user reads and retypes can be relayed in real time.</p><p><b>WebAuthn / passkeys</b> break that pattern. Registration stores a <b>public key</b> on the server; the matching <b>private key</b> never leaves the authenticator (Touch ID, Windows Hello, a phone, or a security key). To log in, the server sends a random <b>challenge</b>; the authenticator signs it after a local <i>user verification</i> gesture (biometric or PIN), and the server checks the signature against the stored public key. There is <b>no shared secret to steal and no bearer token to replay</b> — the proof is a fresh digital signature.</p><p>The phishing resistance comes from <b>origin binding</b>, enforced by the browser, not the user. Credentials are scoped to the site's <code>RP ID</code>, and the browser stamps the real <code>origin</code> into the signed <code>clientDataJSON</code>. A look-alike domain has a different RP ID, so the authenticator simply <i>has no credential to offer</i> and the server rejects any assertion whose origin does not match. The user cannot be socially engineered into defeating this, because there is nothing to type or read aloud.</p><p>The server still must verify everything: the signature, that the <code>challenge</code> matches the single-use one it issued, that the <code>origin</code> and <code>rpIdHash</code> are expected, and that the user-presence and (when required) user-verification flags are set. A signature counter that goes backwards can signal a cloned authenticator.</p>",
+      "links": [
+        {
+          "label": "WebAuthn / Passkey authentication ceremony",
+          "href": "../authentication/tokenless/webauthn-passkey-authentication/"
+        },
+        {
+          "label": "Step through it in the Flow Explorer",
+          "href": "../explorer/?flow=tokenless-webauthn-passkey-authentication"
+        }
+      ]
+    },
+    {
+      "id": "kerberos-tickets",
+      "title": "Kerberos: tickets and the AS / TGS / AP exchanges",
+      "objective": "See how Kerberos proves identity to many services without re-sending the password each time.",
+      "content": "<p>Kerberos is the ticket-based protocol behind Windows domain logon and <code>kinit</code> on Linux/macOS. Its goal is single sign-on: prove who you are <i>once</i>, then reach many services without re-entering credentials. A trusted <b>Key Distribution Center (KDC)</b> issues encrypted <b>tickets</b> that vouch for the user, and three exchanges chain together:</p><p><b>AS exchange (AS-REQ / AS-REP)</b> — the initial authentication. The client proves knowledge of the user's long-term key (derived from the password) via encrypted pre-auth data and receives a <b>Ticket-Granting Ticket (TGT)</b>, encrypted with the KDC's own <code>krbtgt</code> key so it is opaque to the client, plus a TGT session key. The password is never sent again after this.</p><p><b>TGS exchange (TGS-REQ / TGS-REP)</b> — the client presents the TGT to ask for a <b>service ticket</b> for one specific service, named by its <b>Service Principal Name</b> (e.g. <code>HTTP/web01.example.com</code>). The KDC returns a ticket encrypted with that service's account key. This is transparent — no password prompt.</p><p><b>AP exchange (AP-REQ / AP-REP)</b> — the client presents the service ticket <i>to the service itself</i> along with a fresh <b>authenticator</b> (a timestamp encrypted with the session key). The service decrypts the ticket with its own key and checks the authenticator against a <b>replay cache</b>. If mutual authentication is requested, the service returns an AP-REP proving it too holds the key. The KDC is not contacted for this step.</p><p>Because each ticket is encrypted for a specific key holder and each authenticator is fresh and single-use, a captured message cannot be replayed against a different service — the identity proof travels as tickets, not as a reusable password.</p>",
+      "links": [
+        {
+          "label": "AS exchange (AS-REQ / AS-REP)",
+          "href": "../authentication/kerberos/as-exchange/"
+        },
+        {
+          "label": "TGS exchange (TGS-REQ / TGS-REP)",
+          "href": "../authentication/kerberos/tgs-exchange/"
+        },
+        {
+          "label": "AP exchange (AP-REQ / AP-REP)",
+          "href": "../authentication/kerberos/ap-exchange/"
+        }
+      ]
+    },
+    {
+      "id": "choosing-an-mfa-factor",
+      "title": "Choosing an MFA factor: strong vs. weak",
+      "objective": "Rank the common second factors by phishing resistance and know why SMS is the weakest.",
+      "content": "<p>Not all multi-factor options are equal. The overriding principle is <b>phishing resistance</b>: can a real-time proxy sitting between the user and the site steal or relay the factor? The tiers:</p><p><b>Phishing-resistant (preferred).</b> <b>FIDO2 / passkeys</b> (WebAuthn), <b>Windows Hello for Business</b>, and <b>PIV / smartcard</b> certificates cryptographically bind the credential to the origin. There is no code to read and no secret to type, so an attacker-in-the-middle page cannot capture anything reusable. These are the recommended defaults.</p><p><b>Acceptable second tier.</b> <b>Authenticator push with number matching</b> and <b>TOTP</b> (authenticator-app codes) are far better than nothing. But both are still <i>phishable</i>: a proxy can relay a TOTP code within its short window, and push without number matching invites <b>MFA-fatigue</b> approvals. Number matching hardens push; it does not make it origin-bound.</p><p><b>⛔ SMS and voice OTP — not a primary factor.</b> A texted code is a shared secret the user reads and retypes, so it is trivially relayed by a phishing proxy. Worse, the delivery channel itself is attackable: <b>SIM-swap</b>, <b>SS7</b> interception, and carrier social engineering can divert the code without ever touching the user's phone. SMS is deprecated as a primary factor; keep it only as a last-resort recovery path when nothing else is possible.</p><p>The short version: a <b>passkey is strong</b> because the secret never leaves the device and the browser enforces origin binding; an <b>SMS OTP is weak</b> because the secret is disclosed to the user, is replayable, and rides an insecure channel.</p>",
+      "links": [
+        {
+          "label": "Choosing an MFA factor (decision guide)",
+          "href": "../reference/decision-guides/choosing-an-mfa-factor/"
+        },
+        {
+          "label": "WebAuthn / Passkey authentication",
+          "href": "../authentication/tokenless/webauthn-passkey-authentication/"
+        }
+      ]
+    },
+    {
+      "id": "adaptive-and-step-up",
+      "title": "Adaptive & step-up authentication: gating on risk",
+      "objective": "Understand how risk signals and sensitive-action triggers decide between allow, step-up, and deny.",
+      "content": "<p>A fixed \"always MFA\" or \"never MFA\" policy is too blunt. Two related patterns make authentication <b>context-dependent</b>.</p><p><b>Risk-based adaptive authentication</b> acts <i>at sign-in</i>. The IdP gathers <b>signals</b> — device posture and fingerprint, geolocation, login velocity, IP / ASN reputation, threat intelligence, leaked-credential hits — and a <b>risk engine</b> scores them into a level. A policy maps the level to one of three outcomes: <b>Allow</b> (primary factor is enough, issue tokens), <b>Step-up</b> (challenge for a stronger or additional factor, then re-evaluate), or <b>Deny</b> (a hard signal like impossible travel or a known-bad IP blocks and alerts). Low-risk, familiar sign-ins stay frictionless while risky ones are challenged or stopped.</p><p><b>Step-up authentication</b> acts <i>mid-session</i>. An already-authenticated user attempts a <b>sensitive action</b> — a wire transfer, changing MFA methods, an admin operation — and the resource decides the session's assurance is too low. Using standard signalling (in OIDC, <code>acr_values</code> and <code>max_age</code>; RFC 9470 lets an API return an <code>insufficient_user_authentication</code> challenge), the IdP re-challenges for a stronger or more recent factor and re-issues a token carrying the elevated <code>acr</code>. The two compose: a risk engine can itself demand step-up.</p><p>Two rules make this safe. <b>Fail closed:</b> if a signal source is unreachable, default toward step-up or deny, never silently toward allow. <b>Step up to phishing-resistant factors:</b> stepping up to SMS or plain push can be relayed by an attacker-in-the-middle, defeating the point — prefer FIDO2 / passkeys for the elevated challenge. And the relying party must trust the <i>freshly issued token's</i> <code>acr</code> and <code>auth_time</code>, not merely its own memory that it once prompted.</p>",
+      "links": [
+        {
+          "label": "Risk-based adaptive authentication",
+          "href": "../authentication/adaptive-access/risk-based-adaptive-authentication/"
+        },
+        {
+          "label": "Step-up authentication",
+          "href": "../authentication/adaptive-access/step-up-authentication/"
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why can a passkey not be captured by a look-alike phishing site the way a password can?",
+      "choices": [
+        "The passkey is a longer, more complex password that is harder to guess",
+        "The private key never leaves the authenticator and the browser scopes the credential to the site's RP ID and signs the real origin",
+        "Passkeys are encrypted in transit while passwords are sent in cleartext",
+        "The server emails the user a confirmation before accepting the passkey"
+      ],
+      "answer": 1,
+      "explain": "Phishing resistance comes from origin binding enforced by the browser: credentials are scoped to the RP ID and the real origin is stamped into the signed clientDataJSON. A look-alike domain has a different RP ID, so the authenticator has no credential to offer and there is no shared secret to relay."
+    },
+    {
+      "q": "In Kerberos, which exchange produces the Ticket-Granting Ticket (TGT) that lets the client obtain service tickets without re-entering the password?",
+      "choices": [
+        "The AP exchange (AP-REQ / AP-REP)",
+        "The TGS exchange (TGS-REQ / TGS-REP)",
+        "The AS exchange (AS-REQ / AS-REP)",
+        "The replay-cache check"
+      ],
+      "answer": 2,
+      "explain": "The AS exchange is the initial authentication: the client proves knowledge of the user's long-term key and receives the TGT (encrypted with the krbtgt key) plus a TGT session key. The TGT is then spent in the TGS exchange to get per-service tickets."
+    },
+    {
+      "q": "Which set of MFA factors is phishing-resistant (origin-bound and not relayable by a real-time proxy)?",
+      "choices": [
+        "SMS OTP, voice OTP, and email codes",
+        "FIDO2 / passkeys, Windows Hello for Business, and PIV / smartcard",
+        "TOTP authenticator codes and push without number matching",
+        "Any factor, as long as it is a second factor on top of a password"
+      ],
+      "answer": 1,
+      "explain": "FIDO2/passkeys, WHfB, and PIV/smartcard cryptographically bind the credential to the origin, so an attacker-in-the-middle cannot capture anything reusable. TOTP and push are phishable second tiers; SMS/voice codes are the weakest."
+    },
+    {
+      "q": "Why is an SMS one-time code considered a weak primary factor?",
+      "choices": [
+        "Phones cannot receive text messages reliably enough",
+        "It is a shared secret the user reads and retypes, so a phishing proxy can relay it, and the delivery channel is attackable via SIM-swap and SS7",
+        "SMS codes expire too slowly to be useful",
+        "It requires a biometric that many users cannot provide"
+      ],
+      "answer": 1,
+      "explain": "A texted code is disclosed to the user and retyped, making it trivially relayable in real time, and the channel itself is vulnerable to SIM-swap, SS7 interception, and carrier social engineering. That is why SMS is deprecated as a primary factor and kept only as a last-resort recovery path."
+    },
+    {
+      "q": "A risk engine scores a sign-in as high risk because of impossible travel plus a leaked-credential hit. Under a well-designed adaptive policy, what should happen, and what is the correct default if a signal source is unreachable?",
+      "choices": [
+        "Allow the sign-in; default to allow when signals are missing",
+        "Deny and alert on the hard signals; fail closed (default to step-up or deny) when a signal source is unreachable",
+        "Silently downgrade to a password-only prompt in both cases",
+        "Always deny every sign-in regardless of score"
+      ],
+      "answer": 1,
+      "explain": "Hard signals like impossible travel and leaked-credential matches should trigger the Deny outcome with an alert. And an unreachable risk engine or feed must fail closed toward step-up or deny, never silently toward allow, so missing signals cannot become a free pass."
+    }
+  ]
+}

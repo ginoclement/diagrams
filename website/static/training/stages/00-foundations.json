@@ -1,0 +1,101 @@
+{
+  "id": "foundations",
+  "title": "Foundations",
+  "summary": "The vocabulary and mental models everything else builds on: identity vs. authentication vs. authorization, sessions, and how to read the diagrams in this repository.",
+  "lessons": [
+    {
+      "id": "identity-vs-authn-vs-authz",
+      "title": "Identity, authentication, and authorization",
+      "objective": "Tell apart the three ideas people most often conflate.",
+      "content": "<p>Three distinct questions sit at the heart of every access decision:</p><p><b>Identity</b> — <i>who are you?</i> A claim to be a particular principal (a person, a service, a device). An identifier like a username or a <code>sub</code> claim names the identity; it is not proof.</p><p><b>Authentication (authN)</b> — <i>can you prove it?</i> Verifying the claim with one or more factors: something you know (password), have (a passkey, a token), or are (biometric). The output is a trusted assertion that <i>this</i> principal is present.</p><p><b>Authorization (authZ)</b> — <i>what are you allowed to do?</i> Given a proven identity, deciding whether a specific action on a specific resource is permitted. Roles, attributes, relationships, and policy live here.</p><p>The order matters: you authenticate first to establish <i>who</i>, then authorize to decide <i>what</i>. A system can authenticate you perfectly and still deny you — that is authorization doing its job.</p>",
+      "links": [
+        {
+          "label": "Authorization models",
+          "href": "../authorization/rbac/"
+        },
+        {
+          "label": "OIDC Authorization Code + PKCE",
+          "href": "../authentication/oidc/authorization-code-pkce/"
+        }
+      ]
+    },
+    {
+      "id": "reading-the-diagrams",
+      "title": "How to read the diagrams",
+      "objective": "Get fluent in the three views every flow uses.",
+      "content": "<p>Most flows in this library are drawn three ways, and each answers a different question:</p><p><b>Sequence</b> — the messages exchanged over time, in order. Best for “what actually goes over the wire, and in what order?”</p><p><b>Swimlane</b> — the same flow with one lane per actor (User, Browser, IdP, API…). Best for “who is responsible for each step?”</p><p><b>Flowchart</b> — the decision and error logic, with every deny/error path drawn explicitly. Best for “where can this fail, and what gates each outcome?”</p><p>Each flow folder also carries a <b>Status</b> badge — ✅ Current, 🟡 Legacy, ⛔ Deprecated, 🔵 Emerging — so you can tell at a glance whether a mechanism is something to build on or something to migrate off.</p>",
+      "links": [
+        {
+          "label": "Glossary & legend",
+          "href": "../GLOSSARY/"
+        },
+        {
+          "label": "Conventions",
+          "href": "../CONVENTIONS/"
+        }
+      ]
+    },
+    {
+      "id": "sessions-and-tokens",
+      "title": "Sessions and tokens",
+      "objective": "Understand how a system remembers you after you authenticate.",
+      "content": "<p>Authentication happens once, but you make many requests. Something has to carry the “I already proved who I am” signal on each one. Two broad approaches:</p><p><b>Server-side session</b> — the server stores session state and hands the browser an opaque <b>session cookie</b>. Each request sends the cookie; the server looks up the session. Easy to revoke (delete the session), but the server holds state.</p><p><b>Token</b> — the client holds a signed <b>token</b> (often a JWT) that carries claims the server can verify without a lookup. Stateless and scalable, but harder to revoke before expiry — which is why short lifetimes, refresh rotation, and mechanisms like introspection and CAE exist.</p><p>The interactive Flow Explorer lets you step through a real token flow and see exactly what each request carries.</p>",
+      "links": [
+        {
+          "label": "Session cookie flow",
+          "href": "../authentication/tokenless/session-cookie/"
+        },
+        {
+          "label": "Try the Flow Explorer",
+          "href": "../explorer/?flow=oidc-authorization-code-pkce"
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "q": "A user signs in successfully but gets a 403 when opening the admin page. Which stage denied them?",
+      "choices": [
+        "Authentication",
+        "Authorization",
+        "Identity resolution",
+        "Session creation"
+      ],
+      "answer": 1,
+      "explain": "They proved who they are (authentication succeeded); the system then decided this proven identity may not perform this action — that is authorization."
+    },
+    {
+      "q": "You want to know exactly which HTTP requests a flow makes and in what order. Which diagram view is best?",
+      "choices": [
+        "Swimlane",
+        "Flowchart",
+        "Sequence",
+        "Status badge"
+      ],
+      "answer": 2,
+      "explain": "The sequence diagram shows the ordered messages exchanged over time. Swimlane shows responsibilities; flowchart shows decision/error logic."
+    },
+    {
+      "q": "Which statement about server-side sessions vs. tokens is correct?",
+      "choices": [
+        "Tokens are always more secure than sessions",
+        "Server-side sessions are easy to revoke; stateless tokens are harder to revoke before they expire",
+        "Session cookies cannot be used with HTTPS",
+        "JWTs are stored on the server, not the client"
+      ],
+      "answer": 1,
+      "explain": "Deleting a server-side session revokes it immediately. A stateless JWT stays valid until it expires, which is why short lifetimes, refresh rotation, introspection, and CAE exist."
+    },
+    {
+      "q": "A diagram carries a ⛔ Deprecated status badge. What does that signal?",
+      "choices": [
+        "It is the newest, recommended approach",
+        "It is actively discouraged; prefer the linked alternative",
+        "It is still the default for new builds",
+        "It has not been reviewed yet"
+      ],
+      "answer": 1,
+      "explain": "⛔ Deprecated means the mechanism is discouraged for new work and the page points to what to use instead (e.g. the OIDC Implicit flow → Authorization Code + PKCE)."
+    }
+  ]
+}
