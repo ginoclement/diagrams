@@ -77,3 +77,54 @@ button.primary:focus-visible,button.ghost:focus-visible,.stagecard:focus-visible
 .reset{font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0}
 .reset:hover{color:var(--err)}
 .recommend{font-size:12px;color:var(--muted);font-style:italic}
+
+/* ---------- gamification ---------- */
+.xpbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:8px 12px;margin:0 0 18px;font-size:13px}
+.xpbar .lvl{font-weight:700;color:var(--brand);text-decoration:none;white-space:nowrap}
+.xpbar .minibar{flex:1;min-width:80px}
+.xpbar .xp{font-family:var(--mono);font-size:12px;color:var(--ink);white-space:nowrap}
+.xpbar .muted{color:var(--muted)}
+.xpbar .streak{font-family:var(--mono);font-size:12px;white-space:nowrap}
+.xpbar .badgecount{font-family:var(--mono);font-size:12px;text-decoration:none;color:var(--ink);white-space:nowrap}
+.xpbar .lblink{margin-left:auto;font-weight:600;text-decoration:none;color:var(--brand);white-space:nowrap}
+.minibar.big{height:8px}
+.ghostlink{font-size:13px;font-weight:600;text-decoration:none;color:var(--brand)}
+.xpchip{margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--brand);
+  background:var(--brand-soft);border:1px solid color-mix(in srgb,var(--brand) 30%,transparent);border-radius:5px;padding:1px 6px;white-space:nowrap}
+.lessonrow.done .xpchip{color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent);border-color:color-mix(in srgb,var(--ok) 30%,transparent)}
+
+/* toasts */
+#toasts{position:fixed;top:16px;right:16px;display:flex;flex-direction:column;gap:8px;z-index:9999;pointer-events:none}
+.toast{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:9px;
+  padding:10px 14px;font-size:13.5px;box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateX(20px);transition:.28s;max-width:300px}
+.toast.in{opacity:1;transform:none}
+.toast .tb{font-family:var(--mono);font-weight:700;color:var(--brand)}
+.toast .tbadge{font-size:18px;vertical-align:middle}
+.confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:9998}
+
+/* profile */
+.prow{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.ring{flex:0 0 auto;width:74px;height:74px;border-radius:50%;display:grid;place-items:center;text-align:center;
+  font-size:11px;color:var(--muted);line-height:1.1;background:var(--panel-2);border:3px solid var(--brand)}
+.ring b{font-size:22px;color:var(--brand)}
+.lname{font-size:20px;font-weight:700}
+.pstats{font-size:13px;color:var(--muted);font-family:var(--mono)}
+.nameedit{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.nameedit label{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.nameedit input{font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);min-width:200px}
+.badgegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.badge-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.badge-card.locked{opacity:.4;filter:grayscale(1)}
+.badge-card.earned{border-color:color-mix(in srgb,var(--brand) 45%,transparent)}
+.badge-card .bi{font-size:30px;line-height:1}
+.badge-card .bn{font-weight:700;font-size:13.5px;margin-top:8px}
+.badge-card .bd{font-size:11.5px;color:var(--muted);margin-top:4px}
+
+/* leaderboard */
+.lbtable{width:100%;border-collapse:collapse;font-size:13.5px}
+.lbtable th,.lbtable td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line)}
+.lbtable th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.lbtable td:last-child,.lbtable th:last-child{text-align:right;font-family:var(--mono)}
+.lbtable tr.me{background:var(--brand-soft)}
+.youtag{font-family:var(--mono);font-size:10px;font-weight:700;color:#fff;background:var(--brand);border-radius:4px;padding:0 5px}

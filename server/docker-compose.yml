@@ -1,0 +1,16 @@
+# Local run:  docker compose up --build   → http://localhost:8080/health
+services:
+  leaderboard:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      # Lock this down to your site origin in production, e.g. https://ginoclement.github.io
+      ALLOW_ORIGIN: "*"
+      DATA_FILE: "/app/data/leaderboard.json"
+    volumes:
+      - leaderboard-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  leaderboard-data:
